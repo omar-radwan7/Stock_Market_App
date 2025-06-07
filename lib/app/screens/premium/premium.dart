@@ -14,11 +14,7 @@ class FigmaToCodeApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: Scaffold(
-        body: ListView(children: [
-          Premiumpage(),
-        ]),
-      ),
+      home: Scaffold(body: ListView(children: [Premiumpage()])),
     );
   }
 }
@@ -26,1266 +22,232 @@ class FigmaToCodeApp extends StatelessWidget {
 class Premiumpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 439,
-          height: 2293,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: const Color(0xFF181D27),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFF4C336F), Color(0xFF170201), Color(0xFF0D1531)],
+            stops: [0.0, 0.2, 1.0],
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.only(top: kToolbarHeight + 20, bottom: 20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome to TradeWise Premium',
+                        style: TextStyle(
+                          color: Color(0xFF008CFF),
+                          fontSize: 24,
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      SizedBox(height: 40),
+                      Text(
+                        'Choose your pricing plan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 21,
+                          fontFamily: 'Inter',
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 40),
+                _buildPricingPlan('Basic', 19, Color(0xFF0A2F58), [
+                  'Basic stock analysis',
+                  'Limited watchlists',
+                  'Standard market reports',
+                  'Email support',
+                ]),
+                SizedBox(height: 20),
+                _buildPricingPlan('Pro', 39, Color(0xFF0C1531), [
+                  'Advanced stock analysis',
+                  'Unlimited watchlists',
+                  'Premium market reports',
+                  'Priority support',
+                ]),
+                SizedBox(height: 20),
+                _buildPricingPlan('Business', 79, Color(0xFF071850), [
+                  'Professional trading tools',
+                  'Team collaboration',
+                  'Custom reports',
+                  '24/7 dedicated support',
+                ]),
+                SizedBox(height: 20),
+                _buildPricingPlan('Enterprise', 149, Color(0xFF0B2783), [
+                  'Full API access',
+                  'Custom solutions',
+                  'Dedicated account manager',
+                  'On-site training',
+                ]),
+              ],
             ),
           ),
-          child: Stack(
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPricingPlan(
+    String title,
+    int price,
+    Color backgroundColor,
+    List<String> features,
+  ) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.all(24),
+      decoration: ShapeDecoration(
+        color: backgroundColor,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1, color: Color(0xFFEFF0F6)),
+          borderRadius: BorderRadius.circular(24),
+        ),
+        shadows: [
+          BoxShadow(
+            color: Color(0x1414132A),
+            blurRadius: 12,
+            offset: Offset(0, 2),
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 24,
+              fontFamily: 'DM Sans',
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Positioned(
-                left: 57,
-                top: 248,
-                child: Container(
-                  width: 326,
-                  height: 401,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF4A3AFF),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                  ),
+              Text(
+                '\$$price',
+                style: TextStyle(
+                  color: Color(0xFF34C759),
+                  fontSize: 54,
+                  fontFamily: 'DM Sans',
+                  fontWeight: FontWeight.w700,
+                  height: 1.22,
                 ),
               ),
-              Positioned(
-                left: 47,
-                top: 11,
-                child: Container(
-                  width: 375,
-                  height: 44,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(width: 375, height: 44),
-                      ),
-                      Positioned(
-                        left: 336,
-                        top: 17.33,
-                        child: Opacity(
-                          opacity: 0.35,
-                          child: Container(
-                            width: 22,
-                            height: 11.33,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.white),
-                                borderRadius: BorderRadius.circular(2.67),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 338,
-                        top: 19.33,
-                        child: Container(
-                          width: 18,
-                          height: 7.33,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(1.33),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 25,
-                top: 33,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
-                  '9:45',
-                  style: TextStyle(
-                    color: const Color(0xFFF5F5F5),
-                    fontSize: 15,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 25,
-                top: 63,
-                child: Container(
-                  width: 22,
-                  height: 20,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(),
-                  child: Stack(),
-                ),
-              ),
-              Positioned(
-                left: 22,
-                top: 200,
-                child: Text(
-                  'Choose your pricing plane',
+                  '/month',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 21,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 54,
-                top: 719,
-                child: Container(
-                  width: 329,
-                  height: 553,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF0A2F58),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 1,
-                        color: const Color(0xFFEFF0F6),
-                      ),
-                      borderRadius: BorderRadius.circular(24),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x1414132A),
-                        blurRadius: 12,
-                        offset: Offset(0, 2),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 23,
-                        top: 16,
-                        child: Container(
-                          width: 308,
-                          height: 572,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 10,
-                                child: Container(
-                                  width: 307,
-                                  height: 150,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 231,
-                                          height: 72,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 72,
-                                                  height: 72,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: Container(
-                                                          width: 72,
-                                                          height: 72,
-                                                          decoration: ShapeDecoration(
-                                                            color: Colors.white /* Miscellaneous-Floating-Tab---Pill-Fill */,
-                                                            shape: RoundedRectangleBorder(
-                                                              borderRadius: BorderRadius.circular(16),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 90,
-                                                top: 6,
-                                                child: Container(
-                                                  width: 141,
-                                                  height: 60,
-                                                  child: Stack(
-                                                    children: [
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 0,
-                                                        child: Text(
-                                                          'TradeWise',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFFEBEDF0) /* Miscellaneous-Keyboard-Accessory-Bar---Selection */,
-                                                            fontSize: 18,
-                                                            fontFamily: 'DM Sans',
-                                                            fontWeight: FontWeight.w500,
-                                                            height: 1.11,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        left: 0,
-                                                        top: 20,
-                                                        child: Text(
-                                                          'Company',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFF170F49),
-                                                            fontSize: 24,
-                                                            fontFamily: 'DM Sans',
-                                                            fontWeight: FontWeight.w700,
-                                                            height: 1.46,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 7,
-                                                top: 5.82,
-                                                child: Container(
-                                                  width: 57,
-                                                  height: 60,
-                                                  decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                      image: NetworkImage("https://placehold.co/57x60"),
-                                                      fit: BoxFit.fill,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 0,
-                                        top: 84.82,
-                                        child: Container(
-                                          width: 307,
-                                          height: 60,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: SizedBox(
-                                                  width: 307,
-                                                  child: Text(
-                                                    'Best for active traders & analysts. ',
-                                                    style: TextStyle(
-                                                      color: const Color(0xFFEBEDF0) /* Miscellaneous-Keyboard-Accessory-Bar---Selection */,
-                                                      fontSize: 18,
-                                                      fontFamily: 'DM Sans',
-                                                      fontWeight: FontWeight.w400,
-                                                      height: 1.67,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                top: 192,
-                                child: Container(
-                                  width: 280,
-                                  height: 286,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 6.82,
-                                        child: Text(
-                                          'What’s included',
-                                          style: TextStyle(
-                                            color: const Color(0xFF34C759) /* Colors-Green */,
-                                            fontSize: 18,
-                                            fontFamily: 'DM Sans',
-                                            fontWeight: FontWeight.w700,
-                                            height: 1.11,
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 0,
-                                        top: 50.82,
-                                        child: Container(
-                                          width: 298,
-                                          height: 195,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      spacing: 14,
-                                                      children: [
-                                                        Container(
-                                                          width: 26,
-                                                          height: 26,
-                                                          clipBehavior: Clip.antiAlias,
-                                                          decoration: BoxDecoration(),
-                                                          child: Stack(),
-                                                        ),
-                                                        Text(
-                                                          'Unlimited watchlists',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFF34C759) /* Colors-Green */,
-                                                            fontSize: 17,
-                                                            fontFamily: 'DM Sans',
-                                                            fontWeight: FontWeight.w400,
-                                                            height: 1.18,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 0,
-                                                top: 36,
-                                                child: Container(
-                                                  width: 260,
-                                                  child: Row(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    mainAxisAlignment: MainAxisAlignment.start,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        spacing: 14,
-                                                        children: [
-                                                          Container(
-                                                            width: 26,
-                                                            height: 26,
-                                                            clipBehavior: Clip.antiAlias,
-                                                            decoration: BoxDecoration(),
-                                                            child: Stack(),
-                                                          ),
-                                                          Text(
-                                                            'AI-powered stock \nrecommendations',
-                                                            style: TextStyle(
-                                                              color: const Color(0xFF34C759) /* Colors-Green */,
-                                                              fontSize: 16,
-                                                              fontFamily: 'DM Sans',
-                                                              fontWeight: FontWeight.w400,
-                                                              height: 1.25,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 0,
-                                                top: 89.82,
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      spacing: 14,
-                                                      children: [
-                                                        Container(
-                                                          width: 26,
-                                                          height: 26,
-                                                          clipBehavior: Clip.antiAlias,
-                                                          decoration: BoxDecoration(),
-                                                          child: Stack(),
-                                                        ),
-                                                        Text(
-                                                          'Exclusive expert market reports',
-                                                          style: TextStyle(
-                                                            color: const Color(0xFF34C759) /* Colors-Green */,
-                                                            fontSize: 16,
-                                                            fontFamily: 'DM Sans',
-                                                            fontWeight: FontWeight.w400,
-                                                            height: 1.25,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 0,
-                                                top: 132,
-                                                child: Container(
-                                                  width: 26,
-                                                  height: 26,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration: BoxDecoration(),
-                                                  child: Stack(),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 40,
-                                                top: 135,
-                                                child: Text(
-                                                  'Early access to new features',
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF00BF72),
-                                                    fontSize: 16,
-                                                    fontFamily: 'DM Sans',
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.25,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 40,
-                                                top: 175,
-                                                child: Text(
-                                                  'Portfolio insights & analytics',
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF34C759) /* Colors-Green */,
-                                                    fontSize: 16,
-                                                    fontFamily: 'DM Sans',
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.25,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 0,
-                                                top: 173,
-                                                child: Container(
-                                                  width: 26,
-                                                  height: 26,
-                                                  clipBehavior: Clip.antiAlias,
-                                                  decoration: BoxDecoration(),
-                                                  child: Stack(),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 0,
-                                        top: -66.18,
-                                        child: Container(
-                                          width: 229,
-                                          height: 66,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Text(
-                                                  '\$39',
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF34C759) /* Colors-Green */,
-                                                    fontSize: 54,
-                                                    fontFamily: 'DM Sans',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1.22,
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 142.57,
-                                                top: 11.82,
-                                                child: Opacity(
-                                                  opacity: 0,
-                                                  child: Container(
-                                                    width: 6,
-                                                    height: 5.57,
-                                                    decoration: BoxDecoration(color: Colors.white),
-                                                  ),
-                                                ),
-                                              ),
-                                              Positioned(
-                                                left: 100,
-                                                top: 28.54,
-                                                child: Text(
-                                                  '/monthly',
-                                                  style: TextStyle(
-                                                    color: const Color(0xFFEBEDF0) /* Miscellaneous-Keyboard-Accessory-Bar---Selection */,
-                                                    fontSize: 20,
-                                                    fontFamily: 'DM Sans',
-                                                    fontWeight: FontWeight.w500,
-                                                    height: 1.10,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 83,
-                                top: 481.82,
-                                child: Text(
-                                  'Choose plan',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 15,
-                                    fontFamily: 'DM Sans',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.33,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 115,
-                top: 585,
-                child: Container(
-                  width: 196,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 23,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        height: 44,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              left: 0,
-                              top: 0,
-                              child: Container(
-                                width: 196,
-                                height: 44,
-                                decoration: ShapeDecoration(
-                                  color: const Color(0xFFBB6BD9),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(24),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 32,
-                              top: 10,
-                              child: SizedBox(
-                                width: 131,
-                                child: Text(
-                                  'Choose plan',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 22,
-                top: 92,
-                child: SizedBox(
-                  width: 280,
-                  child: Text(
-                    'Welcome to TradeWise Premium',
-                    style: TextStyle(
-                      color: const Color(0xFF008CFF),
-                      fontSize: 24,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 72,
-                top: 279,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 20,
-                  children: [
-                    Container(
-                      width: 179,
-                      height: 46,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: SizedBox(
-                              width: 70.66,
-                              child: Text(
-                                '\$19',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 36,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w700,
-                                  height: 1.28,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 71,
-                            top: 17,
-                            child: SizedBox(
-                              width: 77.72,
-                              child: Text(
-                                '/month',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 17,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      width: 232,
-                      height: 88,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: BoxDecoration(),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: Text(
-                              'TradeWise pro',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 28,
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                            left: 0,
-                            top: 48,
-                            child: SizedBox(
-                              width: 232,
-                              child: Text(
-                                'Perfect for casual investors.',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Positioned(
-                left: 72,
-                top: 1371,
-                child: Container(
-                  width: 308,
-                  height: 624,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 10,
-                        child: Container(
-                          width: 307,
-                          height: 150,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 166,
-                                  height: 72,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 90,
-                                        top: 6,
-                                        child: Container(
-                                          width: 76,
-                                          height: 60,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 20,
-                                                child: Text(
-                                                  'Entrepreneur',
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF170F49),
-                                                    fontSize: 24,
-                                                    fontFamily: 'DM Sans',
-                                                    fontWeight: FontWeight.w700,
-                                                    height: 1.46,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 0,
-                                        top: 8,
-                                        child: Container(
-                                          width: 72,
-                                          height: 72,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 72,
-                                                  height: 72,
-                                                  decoration: ShapeDecoration(
-                                                    color: Colors.white /* Miscellaneous-Floating-Tab---Pill-Fill */,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.circular(16),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 7,
-                                        top: 14,
-                                        child: Container(
-                                          width: 57,
-                                          height: 60,
-                                          decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage("https://placehold.co/57x60"),
-                                              fit: BoxFit.fill,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 90,
-                                top: 6,
-                                child: Text(
-                                  'TradeWise',
-                                  style: TextStyle(
-                                    color: const Color(0xFF6E6B8F),
-                                    fontSize: 18,
-                                    fontFamily: 'DM Sans',
-                                    fontWeight: FontWeight.w500,
-                                    height: 1.11,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                top: 90,
-                                child: Container(
-                                  width: 307,
-                                  height: 60,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: SizedBox(
-                                          width: 307,
-                                          child: Text(
-                                            'For investment clubs or small firms.',
-                                            style: TextStyle(
-                                              color: const Color(0xFF6E6B8F),
-                                              fontSize: 18,
-                                              fontFamily: 'DM Sans',
-                                              fontWeight: FontWeight.w400,
-                                              height: 1.67,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 0,
-                        top: 151,
-                        child: Container(
-                          width: 280,
-                          height: 332,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 64,
-                                child: Text(
-                                  'What’s included',
-                                  style: TextStyle(
-                                    color: const Color(0xFF170F49),
-                                    fontSize: 18,
-                                    fontFamily: 'DM Sans',
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.11,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                top: 108,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  spacing: 16,
-                                  children: [
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 14,
-                                          children: [
-                                            Container(
-                                              width: 26,
-                                              height: 26,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(),
-                                            ),
-                                            Text(
-                                              'All analytics features',
-                                              style: TextStyle(
-                                                color: const Color(0xFF170F49),
-                                                fontSize: 18,
-                                                fontFamily: 'DM Sans',
-                                                fontWeight: FontWeight.w400,
-                                                height: 1.11,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 14,
-                                          children: [
-                                            Container(
-                                              width: 26,
-                                              height: 26,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(),
-                                            ),
-                                            Text(
-                                              'Advanced data exports',
-                                              style: TextStyle(
-                                                color: const Color(0xFF170F49),
-                                                fontSize: 18,
-                                                fontFamily: 'DM Sans',
-                                                fontWeight: FontWeight.w400,
-                                                height: 1.11,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 14,
-                                          children: [
-                                            Container(
-                                              width: 26,
-                                              height: 26,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(),
-                                            ),
-                                            Text(
-                                              'Multi-user access',
-                                              style: TextStyle(
-                                                color: const Color(0xFF170F49),
-                                                fontSize: 18,
-                                                fontFamily: 'DM Sans',
-                                                fontWeight: FontWeight.w400,
-                                                height: 1.11,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          spacing: 14,
-                                          children: [
-                                            Container(
-                                              width: 26,
-                                              height: 26,
-                                              clipBehavior: Clip.antiAlias,
-                                              decoration: BoxDecoration(),
-                                              child: Stack(),
-                                            ),
-                                            Text(
-                                              'Up to 3 team members',
-                                              style: TextStyle(
-                                                color: const Color(0xFF170F49),
-                                                fontSize: 18,
-                                                fontFamily: 'DM Sans',
-                                                fontWeight: FontWeight.w400,
-                                                height: 1.11,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                top: -19,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 10,
-                                  children: [
-                                    Text(
-                                      '\$49',
-                                      style: TextStyle(
-                                        color: const Color(0xFF170F49),
-                                        fontSize: 54,
-                                        fontFamily: 'DM Sans',
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.22,
-                                      ),
-                                    ),
-                                    Opacity(
-                                      opacity: 0,
-                                      child: Container(
-                                        width: 6,
-                                        height: 5.57,
-                                        decoration: BoxDecoration(color: Colors.white),
-                                      ),
-                                    ),
-                                    Text(
-                                      '/monthly',
-                                      style: TextStyle(
-                                        color: const Color(0xFF6E6B8F),
-                                        fontSize: 20,
-                                        fontFamily: 'DM Sans',
-                                        fontWeight: FontWeight.w500,
-                                        height: 1.10,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                left: 40,
-                                top: 322,
-                                child: Text(
-                                  'Shared portfolios',
-                                  style: TextStyle(
-                                    color: const Color(0xFF170F49),
-                                    fontSize: 19,
-                                    fontFamily: 'DM Sans',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.05,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 40,
-                                top: 280,
-                                child: Text(
-                                  'Advanced data exports',
-                                  style: TextStyle(
-                                    color: const Color(0xFF170F49),
-                                    fontSize: 18,
-                                    fontFamily: 'DM Sans',
-                                    fontWeight: FontWeight.w400,
-                                    height: 1.11,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 89,
-                        top: 547,
-                        child: Text(
-                          'Choose plan',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'DM Sans',
-                            fontWeight: FontWeight.w700,
-                            height: 1.33,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 107,
-                top: 469,
-                child: SizedBox(
-                  width: 278,
-                  child: Text(
-                    'Extended watchlist (up to 25 stocks)',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 107,
-                top: 503,
-                child: Text(
-                  'Advanced charting (1D–1Y, indicators)',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 105,
-                top: 542,
-                child: Text(
-                  'News filtering by industry.',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 63,
-                top: 2072,
-                child: SizedBox(
-                  width: 286,
-                  height: 68,
-                  child: Text(
-                    '\nTry Company offer free for 7 days.                      No credit card required. Cancel anytime.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 21,
-                      fontFamily: 'DM Sans',
-                      fontWeight: FontWeight.w700,
-                      height: 0.95,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 45,
-                top: 2035,
-                child: Text(
-                  '⚡ Special Offer:',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 21,
+                    fontSize: 20,
                     fontFamily: 'DM Sans',
-                    fontWeight: FontWeight.w700,
-                    height: 0.95,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 126,
-                top: 2191,
-                child: Container(
-                  width: 159,
-                  height: 41,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF14AE5C),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 157,
-                top: 2202,
-                child: Text(
-                  'Choose plan',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontFamily: 'DM Sans',
-                    fontWeight: FontWeight.w700,
-                    height: 1.25,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 105,
-                top: 428,
-                child: Text(
-                  'Full real-time data for all stocks.',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontFamily: 'Poppins',
                     fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 31,
-                top: 2265,
-                child: Container(
-                  width: 375,
-                  height: 34,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 121,
-                        top: 21,
-                        child: Container(
-                          width: 134,
-                          height: 5,
-                          decoration: ShapeDecoration(
-                            color: const Color(0x7FB9C1D9),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          SizedBox(height: 30),
+          Text(
+            'Premium Features',
+            style: TextStyle(
+              color: Color(0xFF34C759),
+              fontSize: 18,
+              fontFamily: 'DM Sans',
+              fontWeight: FontWeight.w700,
+              height: 1.11,
+            ),
+          ),
+          SizedBox(height: 20),
+          ...features.map((feature) => _buildFeatureItem(feature)).toList(),
+          SizedBox(height: 20),
+          Center(
+            child: Container(
+              width: 196,
+              height: 44,
+              decoration: ShapeDecoration(
+                color: Color(0xFFBB6BD9),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(24),
+                ),
+              ),
+              child: Center(
+                child: Text(
+                  'Choose plan',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureItem(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        children: [
+          Container(
+            width: 26,
+            height: 26,
+            margin: EdgeInsets.only(right: 14),
+            decoration: BoxDecoration(
+              color: Color(0xFF34C759),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(Icons.check, color: Colors.white, size: 16),
+          ),
+          Expanded(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: Color(0xFF34C759),
+                fontSize: 16,
+                fontFamily: 'DM Sans',
+                fontWeight: FontWeight.w400,
+                height: 1.25,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'app/screens/home/home_screen.dart';
 import 'app/screens/portfolio/portfolio_screen.dart';
 import 'app/screens/news/news_screen.dart';
+import 'app/screens/stocks/tree_map.dart';
+import 'app/screens/profile/profile.dart';
+import 'app/screens/premium/premium.dart';
 import 'app/providers/news_provider.dart';
 import 'app/providers/portfolio_provider.dart';
+import 'app/providers/stock_provider.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+    ),
+  );
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => NewsProvider()),
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
+        ChangeNotifierProvider(create: (_) => StockProvider()),
       ],
       child: const MyApp(),
     ),
@@ -25,10 +37,27 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Stock Market App',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
+        scaffoldBackgroundColor: const Color(0xFF0D1531),
+        primaryColor: const Color(0xFF4C336F),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFF4C336F),
+          secondary: Color(0xFF3DE85F),
+          background: Color(0xFF0D1531),
+        ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
       ),
       home: const MainNavigation(),
+      routes: {
+        '/profile': (context) => Profilepage(),
+        '/premium': (context) => Premiumpage(),
+      },
     );
   }
 }
@@ -41,12 +70,13 @@ class MainNavigation extends StatefulWidget {
 }
 
 class _MainNavigationState extends State<MainNavigation> {
-  int _selectedIndex = 1; // Portfolio is default
+  int _selectedIndex = 0;
 
-  static final List<Widget> _screens = <Widget>[
-    Homepage(),
-    PortfolioScreen(),
-    Businessnewspage(),
+  final List<Widget> _screens = [
+    const Homepage(),
+    const PortfolioScreen(),
+    NewsPage(),
+    const TreeMapScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -55,30 +85,66 @@ class _MainNavigationState extends State<MainNavigation> {
     });
   }
 
+  Future<bool> _onWillPop() async {
+    if (_selectedIndex != 0) {
+      setState(() {
+        _selectedIndex = 0;
+      });
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF211B2A),
-        selectedItemColor: Colors.white,
-        unselectedItemColor: Colors.white54,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.pie_chart),
-            label: 'Portfolio',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.article),
-            label: 'News',
-          ),
-        ],
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        body: Stack(
+          children: [
+            _screens[_selectedIndex],
+            Positioned(
+              top: 40,
+              right: 16,
+              child: IconButton(
+                icon: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Theme.of(context).primaryColor.withOpacity(0.3),
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                onPressed: () => Navigator.pushNamed(context, '/profile'),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: Theme.of(context).primaryColor,
+          selectedItemColor: Theme.of(context).colorScheme.secondary,
+          unselectedItemColor: Colors.white.withOpacity(0.5),
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance_wallet),
+              label: 'Portfolio',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.article), label: 'News'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.grid_view),
+              label: 'Market',
+            ),
+          ],
+        ),
       ),
     );
   }

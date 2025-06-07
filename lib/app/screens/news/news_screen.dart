@@ -14,469 +14,391 @@ class FigmaToCodeApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: Scaffold(
-        body: ListView(children: [
-          Businessnewspage(),
-        ]),
+      home: Scaffold(body: ListView(children: [NewsPage()])),
+    );
+  }
+}
+
+class NewsPage extends StatefulWidget {
+  @override
+  State<NewsPage> createState() => _NewsPageState();
+}
+
+class _NewsPageState extends State<NewsPage> {
+  final ScrollController _scrollController = ScrollController();
+  bool _showTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 100 && !_showTitle) {
+      setState(() => _showTitle = true);
+    } else if (_scrollController.offset <= 100 && _showTitle) {
+      setState(() => _showTitle = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
+            ),
+          ),
+        ),
+        title: AnimatedOpacity(
+          opacity: _showTitle ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: const Text(
+            'Market News',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: 'Barlow',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.surface,
+            ],
+            stops: const [0.0, 0.5, 1.0],
+          ),
+        ),
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 100),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Latest Market News',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.80,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    ...List.generate(
+                      10,
+                      (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child:
+                            index < 3
+                                ? ExpandableNewsCard(
+                                  title:
+                                      'Breaking: Tech Stocks Surge as Fed Signals Rate Cut',
+                                  summary:
+                                      'Major tech stocks including Apple, Google, and Microsoft saw significant gains today as the Federal Reserve hinted at potential rate cuts in the coming months.',
+                                  fullContent:
+                                      'Major tech stocks including Apple, Google, and Microsoft saw significant gains today as the Federal Reserve hinted at potential rate cuts in the coming months. The NASDAQ composite index jumped by 2.3%, marking its biggest single-day gain in three months. Investors responded positively to Fed Chair Jerome Powell\'s comments suggesting a more dovish monetary policy approach in response to cooling inflation data. Market analysts predict this could lead to increased investment in growth stocks, particularly in the technology sector. The rally was broad-based, with semiconductor stocks also posting strong gains.',
+                                  imageUrl: 'https://placehold.co/600x400',
+                                  date: '2h ago',
+                                  source: 'Financial Times',
+                                )
+                                : NewsCard(
+                                  title:
+                                      'Market Update: S&P 500 Reaches New All-Time High',
+                                  summary:
+                                      'The S&P 500 index reached a new record high today, driven by strong earnings reports and positive economic data.',
+                                  imageUrl: 'https://placehold.co/600x400',
+                                  date: '4h ago',
+                                  source: 'Bloomberg',
+                                ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class Businessnewspage extends StatelessWidget {
+class ExpandableNewsCard extends StatefulWidget {
+  final String title;
+  final String summary;
+  final String fullContent;
+  final String imageUrl;
+  final String date;
+  final String source;
+
+  const ExpandableNewsCard({
+    super.key,
+    required this.title,
+    required this.summary,
+    required this.fullContent,
+    required this.imageUrl,
+    required this.date,
+    required this.source,
+  });
+
+  @override
+  State<ExpandableNewsCard> createState() => _ExpandableNewsCardState();
+}
+
+class _ExpandableNewsCardState extends State<ExpandableNewsCard> {
+  bool isExpanded = false;
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 439,
-          height: 952,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: const Color(0xFF343434),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 300),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              isExpanded = !isExpanded;
+            });
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            isExpanded ? widget.fullContent : widget.summary,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.8),
+                              fontSize: 14,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.w400,
+                            ),
+                            maxLines: isExpanded ? null : 2,
+                            overflow: isExpanded ? null : TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.network(
+                        widget.imageUrl,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      widget.source,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      widget.date,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: 12,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ],
+                ),
+                if (isExpanded) ...[
+                  const SizedBox(height: 16),
+                  Center(
+                    child: Text(
+                      'Tap to collapse',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: 12,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ] else ...[
+                  const SizedBox(height: 8),
+                  Center(
+                    child: Text(
+                      'Tap to read more',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.6),
+                        fontSize: 12,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
-          child: Stack(
+        ),
+      ),
+    );
+  }
+}
+
+class NewsCard extends StatelessWidget {
+  final String title;
+  final String summary;
+  final String imageUrl;
+  final String date;
+  final String source;
+
+  const NewsCard({
+    super.key,
+    required this.title,
+    required this.summary,
+    required this.imageUrl,
+    required this.date,
+    required this.source,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Positioned(
-                left: 27,
-                top: 24,
-                child: Text(
-                  '9:42',
-                  style: TextStyle(
-                    color: const Color(0xFFF5F5F5),
-                    fontSize: 15,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 27,
-                top: 90,
-                child: Text(
-                  'Business',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    height: 0.80,
-                    letterSpacing: 0.40,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 31,
-                top: 118,
-                child: Text(
-                  'News',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.w700,
-                    height: 0.80,
-                    letterSpacing: 0.40,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 42,
-                top: 141,
-                child: Container(width: 24, height: 24, child: Stack()),
-              ),
-              Positioned(
-                left: 26,
-                top: 205,
-                child: SizedBox(
-                  width: 289,
-                  height: 108,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'NVIDIA (NVDA) Shares Surge 6% After AI Chip Announcement.\n\n',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'The company unveiled its next-gen "Blackwell" AI processors, with pre-orders exceeding \$2B. Competitors AMD and Intel dipped 2%.\n',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 45,
-                top: 512,
-                child: Text(
-                  '5h ago',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 45,
-                top: 338,
-                child: Text(
-                  '3h ago',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 42,
-                top: 624,
-                child: Text(
-                  '6h ago',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 31,
-                top: 362,
-                child: SizedBox(
-                  width: 363,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: 'U.S. Stock Futures: All major indices are trending lower after last weeks declines, influenced by tariff uncertainties and global trade tensions.\n\n',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Dow Jones Industrial Average: Futures down 1.1%\nNasdaq: Futures down 1.6%\nS&P 500: Futures down 1.3%',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
+                    const SizedBox(height: 8),
+                    Text(
+                      summary,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 14,
+                        fontFamily: 'Barlow',
+                        fontWeight: FontWeight.w400,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                  ),
+                  ],
                 ),
               ),
-              Positioned(
-                left: 46,
-                top: 145,
-                child: SizedBox(
-                  width: 338,
-                  child: Text(
-                    'Filter by keywords: "Stocks," "Crypto," "Fed Rates,"',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: const Color(0xFF606060),
-                      fontSize: 12,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w300,
-                      height: 1.33,
-                      letterSpacing: 0.40,
-                    ),
-                  ),
+              const SizedBox(width: 16),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  imageUrl,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
                 ),
-              ),
-              Positioned(
-                left: 31,
-                top: 534,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Commodities & Cryptocurrency.\n\n',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'Bitcoin (BTCUSD): Up 2%, trading around \$87,000.\nGold: Surged past \$3,400 an ounce.\nOil: Fell by 2%.',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '​',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w300,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 31,
-                top: 648,
-                child: SizedBox(
-                  width: 268,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: ' ',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Tesla (NASDAQ: TSLA) & Alphabet (NASDAQ: GOOG)\n\n',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        TextSpan(
-                          text: 'Upcoming Earnings: Both companies are scheduled to report earnings this week, and investors are closely watching for performance insights amid the current economic volatility.',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontFamily: 'Inter',
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 46,
-                top: 817,
-                child: Text(
-                  '9h ago',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 11,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 55,
-                top: 7,
-                child: Container(
-                  width: 375,
-                  height: 44,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(width: 375, height: 44),
-                      ),
-                      Positioned(
-                        left: 336,
-                        top: 17.33,
-                        child: Opacity(
-                          opacity: 0.35,
-                          child: Container(
-                            width: 22,
-                            height: 11.33,
-                            decoration: ShapeDecoration(
-                              color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.white),
-                                borderRadius: BorderRadius.circular(2.67),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 338,
-                        top: 19.33,
-                        child: Container(
-                          width: 18,
-                          height: 7.33,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(1.33),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 27,
-                top: 56,
-                child: Container(
-                  width: 22,
-                  height: 20,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(),
-                  child: Stack(),
-                ),
-              ),
-              Positioned(
-                left: 31,
-                top: 926,
-                child: Container(
-                  width: 375,
-                  height: 34,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 121,
-                        top: 21,
-                        child: Container(
-                          width: 134,
-                          height: 5,
-                          decoration: ShapeDecoration(
-                            color: const Color(0x7FB9C1D9),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(100),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 233,
-                top: 319,
-                child: Text(
-                  'see more',
-                  style: TextStyle(
-                    color: const Color(0xFF767676),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 233,
-                top: 319,
-                child: Text(
-                  'see more',
-                  style: TextStyle(
-                    color: const Color(0xFF767676),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 260,
-                top: 491,
-                child: Text(
-                  'see more',
-                  style: TextStyle(
-                    color: const Color(0xFF767676),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 311,
-                top: 494,
-                child: Container(width: 20, height: 17, child: Stack()),
-              ),
-              Positioned(
-                left: 154,
-                top: 609,
-                child: Text(
-                  'see more',
-                  style: TextStyle(
-                    color: const Color(0xFF767676),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 208,
-                top: 612,
-                child: Container(width: 20, height: 17, child: Stack()),
-              ),
-              Positioned(
-                left: 289,
-                top: 792,
-                child: Container(width: 20, height: 17, child: Stack()),
-              ),
-              Positioned(
-                left: 236,
-                top: 789,
-                child: Text(
-                  'see more',
-                  style: TextStyle(
-                    color: const Color(0xFF767676),
-                    fontSize: 12,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 286,
-                top: 322,
-                child: Container(width: 20, height: 17, child: Stack()),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                source,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontFamily: 'Barlow',
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                date,
+                style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 12,
+                  fontFamily: 'Barlow',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

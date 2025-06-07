@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:fl_chart/fl_chart.dart';
+import '../../providers/portfolio_provider.dart';
+import '../../providers/stock_provider.dart';
+import '../../services/portfolio_service.dart';
+import '../../services/stock_service.dart';
+import '../../screens/profile/profile.dart';
+import '../../screens/stocks/stock_detail_screen.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -14,1182 +22,453 @@ class FigmaToCodeApp extends StatelessWidget {
       theme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color.fromARGB(255, 18, 32, 47),
       ),
-      home: Scaffold(
-        body: ListView(children: [
-          Homepage(),
-        ]),
-      ),
+      home: Scaffold(body: ListView(children: [Homepage()])),
     );
   }
 }
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  final List<Map<String, dynamic>> stocks = [
+    {
+      'symbol': 'AAPL',
+      'name': 'Apple Inc.',
+      'price': 459.67,
+      'change': 2.4,
+      'isPositive': true,
+      'image': 'https://s3-symbol-logo.tradingview.com/apple.svg',
+      'chartData': [
+        FlSpot(0, 450),
+        FlSpot(1, 438),
+        FlSpot(2, 445),
+        FlSpot(3, 452),
+        FlSpot(4, 459.67),
+      ],
+    },
+    {
+      'symbol': 'GOOGL',
+      'name': 'Alphabet Inc.',
+      'price': 142.89,
+      'change': -1.2,
+      'isPositive': false,
+      'image': 'https://s3-symbol-logo.tradingview.com/alphabet.svg',
+      'chartData': [
+        FlSpot(0, 148),
+        FlSpot(1, 146),
+        FlSpot(2, 144),
+        FlSpot(3, 143),
+        FlSpot(4, 142.89),
+      ],
+    },
+    {
+      'symbol': 'TSLA',
+      'name': 'Tesla, Inc.',
+      'price': 238.45,
+      'change': 3.1,
+      'isPositive': true,
+      'image': 'https://s3-symbol-logo.tradingview.com/tesla.svg',
+      'chartData': [
+        FlSpot(0, 220),
+        FlSpot(1, 225),
+        FlSpot(2, 230),
+        FlSpot(3, 235),
+        FlSpot(4, 238.45),
+      ],
+    },
+    {
+      'symbol': 'META',
+      'name': 'Meta Platforms Inc.',
+      'price': 312.81,
+      'change': -0.8,
+      'isPositive': false,
+      'image': 'https://s3-symbol-logo.tradingview.com/meta.svg',
+      'chartData': [
+        FlSpot(0, 318),
+        FlSpot(1, 316),
+        FlSpot(2, 315),
+        FlSpot(3, 314),
+        FlSpot(4, 312.81),
+      ],
+    },
+  ];
+
+  final ScrollController _scrollController = ScrollController();
+  bool _showTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+    // Fetch data when the widget is initialized
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<PortfolioProvider>().fetchPortfolio();
+      context.read<StockProvider>().fetchStocks();
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.offset > 100 && !_showTitle) {
+      setState(() => _showTitle = true);
+    } else if (_scrollController.offset <= 100 && _showTitle) {
+      setState(() => _showTitle = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 440,
-          height: 952,
-          clipBehavior: Clip.antiAlias,
-          decoration: ShapeDecoration(
-            color: const Color(0xFF343434),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
             ),
           ),
-          child: Stack(
-            children: [
-              Positioned(
-                left: 26,
-                top: 17,
-                child: Text(
-                  '9:42',
-                  style: TextStyle(
-                    color: const Color(0xFFF5F5F5),
-                    fontSize: 15,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
+        ),
+        title: AnimatedOpacity(
+          opacity: _showTitle ? 1.0 : 0.0,
+          duration: const Duration(milliseconds: 300),
+          child: const Text(
+            'Portfolio Overview',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: 'Barlow',
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        centerTitle: true,
+      ),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Theme.of(context).colorScheme.primary,
+                  Theme.of(context).colorScheme.background,
+                  Theme.of(context).colorScheme.surface,
+                ],
+                stops: const [0.0, 0.5, 1.0],
               ),
-              Positioned(
-                left: 55,
-                top: 121,
-                child: Text(
-                  'Search',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w300,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 25,
-                top: 117,
-                child: Container(width: 24, height: 24, child: Stack()),
-              ),
-              Positioned(
-                left: 19,
-                top: 50,
-                child: Text(
-                  'Stocks',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 23,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 28,
-                top: 78,
-                child: Text(
-                  'April',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 23,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 25,
-                top: 149,
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Hey Omar Radwan\n',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w200,
-                        ),
-                      ),
-                      TextSpan(
-                        text: 'Welcome to TradeWise',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontFamily: 'Inter',
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 34,
-                top: 438,
-                child: SizedBox(
-                  width: 74.65,
-                  child: Text(
-                    'Portfolio',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      height: 1.50,
-                      letterSpacing: 0.10,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 340,
-                top: 440,
-                child: SizedBox(
-                  width: 60.58,
-                  child: Text(
-                    'View all',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: const Color(0xFF007AFF) /* Colors-Blue */,
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      height: 1.43,
-                      letterSpacing: 0.10,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 21,
-                top: 479,
+            ),
+          ),
+          CustomScrollView(
+            controller: _scrollController,
+            slivers: [
+              // Status Bar
+              const SliverToBoxAdapter(child: SizedBox(height: 20)),
+              // Main Content
+              SliverToBoxAdapter(
                 child: Container(
-                  width: 185,
-                  height: 108,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 185,
-                          height: 108,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFF0A2F58),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 16,
-                        top: 16,
-                        child: Container(
-                          width: 146,
-                          height: 80,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 135,
-                                  height: 44,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage("https://placehold.co/40x40"),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 56,
-                                        top: 0,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          spacing: 4,
-                                          children: [
-                                            Text(
-                                              'APPL',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: const Color(0xFFEBFFEE) /* Text-Positive-On-Positive */,
-                                                fontSize: 16,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.50,
-                                                letterSpacing: 0.10,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              spacing: 4,
-                                              children: [
-                                                Text(
-                                                  'Apple Inc.',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF757575),
-                                                    fontSize: 12,
-                                                    fontFamily: 'Roboto',
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 1.33,
-                                                    letterSpacing: 0.40,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 0,
-                                top: 56,
-                                child: Text(
-                                  '198.24',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFFEBFFEE) /* Text-Positive-On-Positive */,
-                                    fontSize: 16,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.50,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 106,
-                                top: 59,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 1,
-                                  children: [
-                                    Container(
-                                      width: 12,
-                                      height: 12,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(),
-                                      child: Stack(),
-                                    ),
-                                    Text(
-                                      '2.5%',
-                                      style: TextStyle(
-                                        color: const Color(0xFF039C6B),
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
-                                        height: 1.33,
-                                        letterSpacing: 0.40,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 230,
-                top: 479,
-                child: Container(
-                  width: 185,
-                  height: 108,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 185,
-                          height: 108,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFFE3F4E1),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 16,
-                        top: 16,
-                        child: Container(
-                          width: 146,
-                          height: 80,
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0,
-                                top: 0,
-                                child: Container(
-                                  width: 135,
-                                  height: 44,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 0,
-                                        top: 0,
-                                        child: Container(
-                                          width: 40,
-                                          height: 40,
-                                          decoration: ShapeDecoration(
-                                            image: DecorationImage(
-                                              image: NetworkImage("https://placehold.co/40x40"),
-                                              fit: BoxFit.cover,
-                                            ),
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: 56,
-                                        top: 0,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          spacing: 4,
-                                          children: [
-                                            Text(
-                                              'LYFT',
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                color: const Color(0xFF212121),
-                                                fontSize: 16,
-                                                fontFamily: 'Poppins',
-                                                fontWeight: FontWeight.w600,
-                                                height: 1.50,
-                                                letterSpacing: 0.10,
-                                              ),
-                                            ),
-                                            Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              spacing: 4,
-                                              children: [
-                                                Text(
-                                                  'Lyft Inc.',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: const Color(0xFF757575),
-                                                    fontSize: 12,
-                                                    fontFamily: 'Roboto',
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 1.33,
-                                                    letterSpacing: 0.40,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 1,
-                                top: 56,
-                                child: Text(
-                                  '410.01',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: const Color(0xFF212121),
-                                    fontSize: 16,
-                                    fontFamily: 'Poppins',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.50,
-                                    letterSpacing: 0.10,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 106,
-                                top: 59,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  spacing: 1,
-                                  children: [
-                                    Container(
-                                      width: 12,
-                                      height: 12,
-                                      clipBehavior: Clip.antiAlias,
-                                      decoration: BoxDecoration(),
-                                      child: Stack(),
-                                    ),
-                                    Text(
-                                      '2.5%',
-                                      style: TextStyle(
-                                        color: const Color(0xFF039C6B),
-                                        fontSize: 12,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w400,
-                                        height: 1.33,
-                                        letterSpacing: 0.40,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 204,
-                child: Container(
-                  width: 395,
-                  height: 217,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFE3EEFF),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 287.95,
-                top: 302.43,
-                child: Container(
-                  transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(1.57),
-                  width: 108.50,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        width: 2,
-                        strokeAlign: BorderSide.strokeAlignCenter,
-                        color: const Color(0xFF1573FE),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 278.71,
-                top: 320.33,
-                child: Container(
-                  width: 18.48,
-                  height: 17.90,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFF1573FE),
-                    shape: OvalBorder(
-                      side: BorderSide(
-                        width: 4,
-                        color: const Color(0xFFC7DDFF),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 38.57,
-                top: 231.23,
-                child: SizedBox(
-                  width: 89.14,
-                  height: 22.85,
-                  child: Text(
-                    'Stock Gains',
-                    style: TextStyle(
-                      color: const Color(0xFF616161),
-                      fontSize: 14,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.w400,
-                      height: 1.43,
-                      letterSpacing: 0.25,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 38.48,
-                top: 255.45,
-                child: SizedBox(
-                  width: 144.37,
-                  height: 31.32,
-                  child: Text.rich(
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: '\$25,901.0.',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 22,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.27,
-                          ),
-                        ),
-                        TextSpan(
-                          text: '41',
-                          style: TextStyle(
-                            color: const Color(0xFF616161),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.75,
-                          ),
-                        ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(context).colorScheme.background,
+                        Theme.of(context).colorScheme.surface,
                       ],
+                      stops: const [0.0, 0.5, 1.0],
                     ),
                   ),
                 ),
               ),
-              Positioned(
-                left: 253.30,
-                top: 226.37,
-                child: Opacity(
-                  opacity: 0.60,
-                  child: Container(
-                    width: 143.22,
-                    height: 40.27,
-                    decoration: ShapeDecoration(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 281.02,
-                top: 236.44,
-                child: SizedBox(
-                  width: 82,
-                  height: 22.37,
-                  child: Text(
-                    'This week',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: const Color(0xFF212121),
-                      fontSize: 14,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      height: 1.43,
-                      letterSpacing: 0.10,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 361.87,
-                top: 234.20,
-                child: Container(
-                  width: 27.72,
-                  height: 26.85,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(),
-                  child: Stack(),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 595,
-                child: SizedBox(
-                  width: 91.24,
-                  child: Text(
-                    'Watchlist',
-                    style: TextStyle(
-                      color: const Color(0xFFFEFEFE),
-                      fontSize: 16,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
-                      height: 1.50,
-                      letterSpacing: 0.10,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 387.28,
-                top: 595,
-                child: Container(
-                  width: 27.72,
-                  height: 24,
-                  clipBehavior: Clip.antiAlias,
-                  decoration: BoxDecoration(),
-                  child: Stack(),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 640,
-                child: Container(
-                  width: 395,
-                  height: 48,
-                  child: Stack(
+
+              // Profile Section
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 55.44,
-                          height: 48,
-                          decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage("https://placehold.co/55x48"),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: const Color(0xFF606060),
-                              ),
-                              borderRadius: BorderRadius.circular(24),
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Welcome,',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontFamily: 'Barlow',
                             ),
                           ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 3,
-                        child: Text(
-                          'MSFT',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.50,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 344.25,
-                        top: 3,
-                        child: Text(
-                          '\$213.10',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.43,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 351.32,
-                        top: 26,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 1,
-                          children: [
-                            Container(
-                              width: 12,
-                              height: 12,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(),
-                            ),
-                            Text(
-                              '2.5%',
-                              style: TextStyle(
-                                color: const Color(0xFF6BBDFF),
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                                height: 1.33,
-                                letterSpacing: 0.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 26,
-                        child: Text(
-                          'Microsoft Corp.',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 712,
-                child: Container(
-                  width: 395,
-                  height: 48,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 55.44,
-                          height: 48,
-                          decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage("https://placehold.co/55x48"),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: const Color(0xFF606060),
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 3,
-                        child: Text(
-                          'GOOGL',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.50,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 344.25,
-                        top: 3,
-                        child: Text(
-                          '\$213.10',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.43,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 351.32,
-                        top: 26,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 1,
-                          children: [
-                            Container(
-                              width: 12,
-                              height: 12,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(),
-                            ),
-                            Text(
-                              '1.1%',
-                              style: TextStyle(
-                                color: const Color(0xFF07F7B4),
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                                height: 1.33,
-                                letterSpacing: 0.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 26,
-                        child: Text(
-                          'Alphabet Inc.',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 20,
-                top: 784,
-                child: Container(
-                  width: 395,
-                  height: 48,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(
-                          width: 55.44,
-                          height: 48,
-                          decoration: ShapeDecoration(
-                            image: DecorationImage(
-                              image: NetworkImage("https://placehold.co/55x48"),
-                              fit: BoxFit.cover,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              side: BorderSide(
-                                width: 1,
-                                color: const Color(0xFFEEEEEE),
-                              ),
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 3,
-                        child: Text(
-                          'SPOT',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 16,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.50,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 344.25,
-                        top: 3,
-                        child: Text(
-                          '\$213.10',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 14,
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            height: 1.43,
-                            letterSpacing: 0.10,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 351.32,
-                        top: 26,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 1,
-                          children: [
-                            Container(
-                              width: 12,
-                              height: 12,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
-                              child: Stack(),
-                            ),
-                            Text(
-                              '2.5%',
-                              style: TextStyle(
-                                color: const Color(0xFFFFB129),
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w400,
-                                height: 1.33,
-                                letterSpacing: 0.40,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Positioned(
-                        left: 71.61,
-                        top: 26,
-                        child: Text(
-                          'Microsoft Corp.',
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 1,
-                top: 865,
-                child: Container(
-                  width: 439,
-                  height: 95,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 9.05,
-                        child: Container(
-                          width: 439,
-                          height: 85.95,
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF434343),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0x19000000),
-                                blurRadius: 1,
-                                offset: Offset(0, -1),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 189.11,
-                        top: 2.26,
-                        child: Container(
-                          width: 63.04,
-                          height: 63.33,
-                          decoration: ShapeDecoration(
-                            color: const Color(0xFF606060),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50),
-                            ),
-                            shadows: [
-                              BoxShadow(
-                                color: Color(0x3F000000),
-                                blurRadius: 8,
-                                offset: Offset(0, 2),
-                                spreadRadius: 0,
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 207.12,
-                        top: 20.36,
-                        child: Container(
-                          width: 27.02,
-                          height: 27.14,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(),
-                        ),
-                      ),
-                      Positioned(
-                        left: 293.79,
-                        top: 21.49,
-                        child: Container(
-                          width: 27.02,
-                          height: 27.14,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(),
-                        ),
-                      ),
-                      Positioned(
-                        left: 37.15,
-                        top: 21.49,
-                        child: Container(
-                          width: 27.02,
-                          height: 27.14,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(),
-                        ),
-                      ),
-                      Positioned(
-                        left: 33.52,
-                        top: 52.02,
-                        child: Text(
-                          'Home',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFF89B8FF),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 110.44,
-                        top: 52.02,
-                        child: Text(
-                          'Business\n news',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 287.79,
-                        top: 52.02,
-                        child: Text(
-                          'View\nMarket',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 373.46,
-                        top: 52.02,
-                        child: Text(
-                          'Profile',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: const Color(0xFFFEFEFE),
-                            fontSize: 12,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
-                            height: 1.33,
-                            letterSpacing: 0.40,
-                          ),
-                        ),
-                      ),
-                      Positioned(
-                        left: 122.69,
-                        top: 21.49,
-                        child: Container(
-                          width: 27.02,
-                          height: 27.14,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(),
-                        ),
-                      ),
-                      Positioned(
-                        left: 379.34,
-                        top: 21.49,
-                        child: Container(
-                          width: 27.02,
-                          height: 27.14,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 46,
-                top: 2,
-                child: Container(
-                  width: 375,
-                  height: 44,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: 0,
-                        top: 0,
-                        child: Container(width: 375, height: 44),
-                      ),
-                      Positioned(
-                        left: 336,
-                        top: 17.33,
-                        child: Opacity(
-                          opacity: 0.35,
-                          child: Container(
-                            width: 22,
-                            height: 11.33,
-                            decoration: ShapeDecoration(
+                          Text(
+                            'Ayzel',
+                            style: TextStyle(
                               color: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                side: BorderSide(width: 1, color: Colors.white),
-                                borderRadius: BorderRadius.circular(2.67),
+                              fontSize: 24,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              // Portfolio Value Section
+              SliverToBoxAdapter(
+                child: Consumer<PortfolioProvider>(
+                  builder: (context, provider, child) {
+                    final summary = provider.summary;
+                    if (provider.isLoading || summary == null) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(20.0),
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
+                      child: Column(
+                        children: [
+                          Text(
+                            'total amount',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.w600,
+                              height: 1.36,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            '\$${summary.total.toStringAsFixed(2)}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 48,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.w600,
+                              height: 1.36,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(8, 8),
+                                  blurRadius: 4,
+                                  color: Color(0xFF000000).withOpacity(0.25),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Text.rich(
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Profit:      ',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: 'Barlow',
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.36,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      '${summary.profitPercent >= 0 ? '+' : ''}${summary.profitPercent.toStringAsFixed(2)}%',
+                                  style: TextStyle(
+                                    color: Color(0xFF3DE85F),
+                                    fontSize: 12,
+                                    fontFamily: 'Barlow',
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.36,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Watchlist
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Most Active',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontFamily: 'Barlow',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        'See All',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                          fontSize: 16,
+                          fontFamily: 'Barlow',
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Consumer<StockProvider>(
+                builder: (context, stockProvider, child) {
+                  if (stockProvider.isLoading) {
+                    return const SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  if (stockProvider.errorMessage != null) {
+                    return SliverToBoxAdapter(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              stockProvider.errorMessage!,
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: () => stockProvider.fetchStocks(),
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  final activeStocks = stockProvider.mostActive;
+                  if (activeStocks.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Center(
+                        child: Text(
+                          'No stocks available',
+                          style: TextStyle(color: Colors.white70, fontSize: 16),
+                        ),
+                      ),
+                    );
+                  }
+
+                  return SliverList(
+                    delegate: SliverChildBuilderDelegate((context, index) {
+                      final stock = activeStocks[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 8,
+                        ),
+                        child: _buildStockItem(stock),
+                      );
+                    }, childCount: activeStocks.length),
+                  );
+                },
+              ),
+
+              // Action Buttons
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle withdraw action
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.surface,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: Colors.white.withOpacity(0.2),
+                                width: 1,
                               ),
                             ),
                           ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.account_balance_wallet, size: 24),
+                              SizedBox(width: 8),
+                              Text(
+                                'Withdraw',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Positioned(
-                        left: 338,
-                        top: 19.33,
-                        child: Container(
-                          width: 18,
-                          height: 7.33,
-                          decoration: ShapeDecoration(
-                            color: Colors.white,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            // Handle trade action
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(context).colorScheme.secondary,
+                            foregroundColor: Colors.black,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
-                              side: BorderSide(color: Colors.white),
-                              borderRadius: BorderRadius.circular(1.33),
+                              borderRadius: BorderRadius.circular(8),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.trending_up, size: 24),
+                              SizedBox(width: 8),
+                              Text(
+                                'Trade',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -1199,8 +478,104 @@ class Homepage extends StatelessWidget {
               ),
             ],
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildStockItem(Map<String, dynamic> stock) {
+    final double change =
+        (stock['changesPercentage'] as num?)?.toDouble() ?? 0.0;
+    final double price = (stock['price'] as num?)?.toDouble() ?? 0.0;
+    final String symbol = stock['symbol'] as String? ?? 'N/A';
+    final String name = stock['name'] as String? ?? 'Unknown';
+    final bool isPositive = change >= 0;
+    final chartColor = isPositive ? const Color(0xFF3DE85F) : Colors.red;
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder:
+                (context) => StockDetailScreen(
+                  symbol: symbol,
+                  name: name,
+                  price: price,
+                  change: change,
+                  imageUrl:
+                      'https://financialmodelingprep.com/image-stock/$symbol.png',
+                ),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(20),
         ),
-      ],
+        child: Row(
+          children: [
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                'https://financialmodelingprep.com/image-stock/$symbol.png',
+              ),
+              backgroundColor: Colors.black.withOpacity(0.2),
+              onBackgroundImageError: (_, __) => const Icon(Icons.business),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    symbol,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.7),
+                      fontSize: 14,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '\$${price.toStringAsFixed(2)}',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%',
+                    style: TextStyle(
+                      color: chartColor,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
