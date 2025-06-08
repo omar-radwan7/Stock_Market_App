@@ -7,6 +7,7 @@ import '../../services/portfolio_service.dart';
 import '../../services/stock_service.dart';
 import '../../screens/profile/profile.dart';
 import '../../screens/stocks/stock_detail_screen.dart';
+import '../../providers/auth_provider.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -35,69 +36,6 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  final List<Map<String, dynamic>> stocks = [
-    {
-      'symbol': 'AAPL',
-      'name': 'Apple Inc.',
-      'price': 459.67,
-      'change': 2.4,
-      'isPositive': true,
-      'image': 'https://s3-symbol-logo.tradingview.com/apple.svg',
-      'chartData': [
-        FlSpot(0, 450),
-        FlSpot(1, 438),
-        FlSpot(2, 445),
-        FlSpot(3, 452),
-        FlSpot(4, 459.67),
-      ],
-    },
-    {
-      'symbol': 'GOOGL',
-      'name': 'Alphabet Inc.',
-      'price': 142.89,
-      'change': -1.2,
-      'isPositive': false,
-      'image': 'https://s3-symbol-logo.tradingview.com/alphabet.svg',
-      'chartData': [
-        FlSpot(0, 148),
-        FlSpot(1, 146),
-        FlSpot(2, 144),
-        FlSpot(3, 143),
-        FlSpot(4, 142.89),
-      ],
-    },
-    {
-      'symbol': 'TSLA',
-      'name': 'Tesla, Inc.',
-      'price': 238.45,
-      'change': 3.1,
-      'isPositive': true,
-      'image': 'https://s3-symbol-logo.tradingview.com/tesla.svg',
-      'chartData': [
-        FlSpot(0, 220),
-        FlSpot(1, 225),
-        FlSpot(2, 230),
-        FlSpot(3, 235),
-        FlSpot(4, 238.45),
-      ],
-    },
-    {
-      'symbol': 'META',
-      'name': 'Meta Platforms Inc.',
-      'price': 312.81,
-      'change': -0.8,
-      'isPositive': false,
-      'image': 'https://s3-symbol-logo.tradingview.com/meta.svg',
-      'chartData': [
-        FlSpot(0, 318),
-        FlSpot(1, 316),
-        FlSpot(2, 315),
-        FlSpot(3, 314),
-        FlSpot(4, 312.81),
-      ],
-    },
-  ];
-
   final ScrollController _scrollController = ScrollController();
   bool _showTitle = false;
 
@@ -105,9 +43,8 @@ class _HomepageState extends State<Homepage> {
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Fetch data when the widget is initialized
+    // Fetch fresh data every time the homepage is initialized
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PortfolioProvider>().fetchPortfolio();
       context.read<StockProvider>().fetchStocks();
     });
   }
@@ -130,452 +67,512 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Theme.of(context).primaryColor,
+              Theme.of(context).colorScheme.background,
+            ],
           ),
         ),
-        title: AnimatedOpacity(
-          opacity: _showTitle ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 300),
-          child: const Text(
-            'Portfolio Overview',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: 'Barlow',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.background,
-                  Theme.of(context).colorScheme.surface,
-                ],
-                stops: const [0.0, 0.5, 1.0],
-              ),
-            ),
-          ),
-          CustomScrollView(
-            controller: _scrollController,
+        child: SafeArea(
+          child: CustomScrollView(
             slivers: [
-              // Status Bar
-              const SliverToBoxAdapter(child: SizedBox(height: 20)),
-              // Main Content
-              SliverToBoxAdapter(
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Theme.of(context).colorScheme.primary,
-                        Theme.of(context).colorScheme.background,
-                        Theme.of(context).colorScheme.surface,
-                      ],
-                      stops: const [0.0, 0.5, 1.0],
-                    ),
+              SliverAppBar(
+                floating: true,
+                pinned: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                expandedHeight: 60,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
                   ),
-                ),
-              ),
-
-              // Profile Section
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Welcome,',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 16,
-                              fontFamily: 'Barlow',
-                            ),
-                          ),
-                          Text(
-                            'Ayzel',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                              fontFamily: 'Barlow',
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Portfolio Value Section
-              SliverToBoxAdapter(
-                child: Consumer<PortfolioProvider>(
-                  builder: (context, provider, child) {
-                    final summary = provider.summary;
-                    if (provider.isLoading || summary == null) {
-                      return const Center(
-                        child: Padding(
-                          padding: EdgeInsets.all(20.0),
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    }
-
-                    return Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 30, 20, 20),
-                      child: Column(
-                        children: [
-                          Text(
-                            'total amount',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontFamily: 'Barlow',
-                              fontWeight: FontWeight.w600,
-                              height: 1.36,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            '\$${summary.total.toStringAsFixed(2)}',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 48,
-                              fontFamily: 'Barlow',
-                              fontWeight: FontWeight.w600,
-                              height: 1.36,
-                              shadows: [
-                                Shadow(
-                                  offset: Offset(8, 8),
-                                  blurRadius: 4,
-                                  color: Color(0xFF000000).withOpacity(0.25),
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Profit:      ',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: 'Barlow',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.36,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      '${summary.profitPercent >= 0 ? '+' : ''}${summary.profitPercent.toStringAsFixed(2)}%',
-                                  style: TextStyle(
-                                    color: Color(0xFF3DE85F),
-                                    fontSize: 12,
-                                    fontFamily: 'Barlow',
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.36,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
-              ),
-
-              // Watchlist
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  title: Row(
                     children: [
                       const Text(
-                        'Most Active',
+                        'Welcome to TradeWise',
                         style: TextStyle(
-                          color: Colors.white,
                           fontSize: 20,
-                          fontFamily: 'Barlow',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text(
-                        'See All',
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary,
-                          fontSize: 16,
-                          fontFamily: 'Barlow',
-                          fontWeight: FontWeight.w600,
+                      const Spacer(),
+                      IconButton(
+                        icon: const Icon(Icons.person_outline),
+                        color: Colors.white,
+                        iconSize: 28,
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/profile');
+                        },
+                        splashRadius: 24,
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(
+                          minWidth: 40,
+                          minHeight: 40,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              Consumer<StockProvider>(
-                builder: (context, stockProvider, child) {
-                  if (stockProvider.isLoading) {
-                    return const SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-
-                  if (stockProvider.errorMessage != null) {
-                    return SliverToBoxAdapter(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              stockProvider.errorMessage!,
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 16,
-                              ),
-                              textAlign: TextAlign.center,
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Portfolio Balance Card with reduced padding
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16), // Reduced padding
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue.withOpacity(0.7),
+                              Colors.purple.withOpacity(0.7),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.2),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
                             ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () => stockProvider.fetchStocks(),
-                              child: const Text('Retry'),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Portfolio Balance',
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withOpacity(0.2),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Row(
+                                    children: [
+                                      Icon(
+                                        Icons.arrow_upward,
+                                        color: Colors.green,
+                                        size: 14,
+                                      ),
+                                      SizedBox(width: 2),
+                                      Text(
+                                        '+2.4%',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            const Text(
+                              '\$12,256.00',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28, // Slightly reduced font size
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _buildBalanceDetail(
+                                  context,
+                                  'Today\'s Gain',
+                                  '+\$156.20',
+                                  Colors.green,
+                                ),
+                                _buildBalanceDetail(
+                                  context,
+                                  'Total Gain',
+                                  '+\$1,256.00',
+                                  Colors.green,
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-                    );
-                  }
+                      const SizedBox(height: 24),
+                      Consumer<StockProvider>(
+                        builder: (context, stockProvider, child) {
+                          if (stockProvider.isLoading &&
+                              !stockProvider.isInitialized) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
 
-                  final activeStocks = stockProvider.mostActive;
-                  if (activeStocks.isEmpty) {
-                    return const SliverToBoxAdapter(
-                      child: Center(
-                        child: Text(
-                          'No stocks available',
-                          style: TextStyle(color: Colors.white70, fontSize: 16),
-                        ),
+                          if (stockProvider.errorMessage != null) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    stockProvider.errorMessage!,
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => stockProvider.refreshData(),
+                                    child: const Text('Retry'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          // Combine all stocks into one list
+                          final allStocks = [
+                            ...stockProvider.topGainers,
+                            ...stockProvider.topLosers,
+                            ...stockProvider.mostActive,
+                          ];
+
+                          // Remove duplicates based on symbol
+                          final uniqueStocks = allStocks.fold<List<dynamic>>(
+                            [],
+                            (list, stock) {
+                              if (!list.any(
+                                (s) => s['symbol'] == stock['symbol'],
+                              )) {
+                                list.add(stock);
+                              }
+                              return list;
+                            },
+                          );
+
+                          // Shuffle the list to mix them up
+                          uniqueStocks.shuffle();
+
+                          if (uniqueStocks.isEmpty) {
+                            return Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Text(
+                                    'No stock data available at the moment.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  ElevatedButton(
+                                    onPressed:
+                                        () => stockProvider.refreshData(),
+                                    child: const Text('Refresh'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }
+
+                          return _buildStockList(uniqueStocks);
+                        },
                       ),
-                    );
-                  }
-
-                  return SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final stock = activeStocks[index];
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 8,
-                        ),
-                        child: _buildStockItem(stock),
-                      );
-                    }, childCount: activeStocks.length),
-                  );
-                },
+                    ],
+                  ),
+                ),
               ),
-
-              // Action Buttons
+              SliverAppBar(
+                floating: true,
+                pinned: false,
+                backgroundColor: Colors.transparent,
+                expandedHeight: 120,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Colors.black.withOpacity(0.7),
+                          Colors.transparent,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                title: AnimatedOpacity(
+                  opacity: _showTitle ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 300),
+                  child: const Text(
+                    'Market Overview',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+                centerTitle: true,
+              ),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Row(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle withdraw action
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.surface,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide(
-                                color: Colors.white.withOpacity(0.2),
-                                width: 1,
-                              ),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.account_balance_wallet, size: 24),
-                              SizedBox(width: 8),
-                              Text(
-                                'Withdraw',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
+                      const Text(
+                        'Market Overview',
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            // Handle trade action
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(context).colorScheme.secondary,
-                            foregroundColor: Colors.black,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.trending_up, size: 24),
-                              SizedBox(width: 8),
-                              Text(
-                                'Trade',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Explore the latest market movements',
+                        style: TextStyle(fontSize: 16, color: Colors.white70),
                       ),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildStockItem(Map<String, dynamic> stock) {
-    final double change =
-        (stock['changesPercentage'] as num?)?.toDouble() ?? 0.0;
-    final double price = (stock['price'] as num?)?.toDouble() ?? 0.0;
-    final String symbol = stock['symbol'] as String? ?? 'N/A';
-    final String name = stock['name'] as String? ?? 'Unknown';
-    final bool isPositive = change >= 0;
-    final chartColor = isPositive ? const Color(0xFF3DE85F) : Colors.red;
+  Widget _buildStockList(List<dynamic> stocks) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: stocks.length,
+      itemBuilder: (context, index) {
+        final stock = stocks[index];
+        final isPositive = (stock['change'] as double) >= 0;
+        final chartColor = isPositive ? const Color(0xFF3DE85F) : Colors.red;
 
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder:
-                (context) => StockDetailScreen(
-                  symbol: symbol,
-                  name: name,
-                  price: price,
-                  change: change,
-                  imageUrl:
-                      'https://financialmodelingprep.com/image-stock/$symbol.png',
+        // Generate some mock chart data based on the current price
+        final basePrice = (stock['price'] as double);
+        final List<FlSpot> chartData = [
+          FlSpot(0, basePrice * 0.98),
+          FlSpot(1, basePrice * 0.99),
+          FlSpot(2, basePrice * 0.97),
+          FlSpot(3, basePrice * 1.01),
+          FlSpot(4, basePrice),
+        ];
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder:
+                    (context) => StockDetailScreen(
+                      symbol: stock['symbol'] as String,
+                      name: stock['name'] as String,
+                      price: stock['price'] as double,
+                      change: stock['change'] as double,
+                      imageUrl:
+                          'https://financialmodelingprep.com/image-stock/${stock['symbol']}.png',
+                    ),
+              ),
+            );
+          },
+          child: Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.3),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: chartColor.withOpacity(0.2),
+                      ),
+                      child: ClipOval(
+                        child: Image.network(
+                          'https://financialmodelingprep.com/image-stock/${stock['symbol']}.png',
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            return Center(
+                              child: Text(
+                                stock['symbol'].toString().substring(0, 1),
+                                style: TextStyle(
+                                  color: chartColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            stock['symbol'] as String,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            stock['name'] as String,
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.6),
+                              fontSize: 12,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '\$${(stock['price'] as double).toStringAsFixed(2)}',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: chartColor.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Text(
+                            '${isPositive ? '+' : ''}${stock['change'].toStringAsFixed(2)}%',
+                            style: TextStyle(
+                              color: chartColor,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  height: 50,
+                  child: LineChart(
+                    LineChartData(
+                      gridData: const FlGridData(show: false),
+                      titlesData: const FlTitlesData(show: false),
+                      borderData: FlBorderData(show: false),
+                      minX: 0,
+                      maxX: 4,
+                      minY:
+                          chartData
+                              .map((spot) => spot.y)
+                              .reduce((a, b) => a < b ? a : b) *
+                          0.95,
+                      maxY:
+                          chartData
+                              .map((spot) => spot.y)
+                              .reduce((a, b) => a > b ? a : b) *
+                          1.05,
+                      lineBarsData: [
+                        LineChartBarData(
+                          spots: chartData,
+                          isCurved: true,
+                          color: chartColor,
+                          barWidth: 2,
+                          isStrokeCapRound: true,
+                          dotData: const FlDotData(show: false),
+                          belowBarData: BarAreaData(
+                            show: true,
+                            color: chartColor.withOpacity(0.1),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.2),
-          borderRadius: BorderRadius.circular(20),
+    );
+  }
+
+  Widget _buildBalanceDetail(
+    BuildContext context,
+    String label,
+    String value,
+    Color valueColor,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            color: Colors.white70,
+            fontSize: 12, // Slightly reduced font size
+          ),
         ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: NetworkImage(
-                'https://financialmodelingprep.com/image-stock/$symbol.png',
-              ),
-              backgroundColor: Colors.black.withOpacity(0.2),
-              onBackgroundImageError: (_, __) => const Icon(Icons.business),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    symbol,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    name,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
-                      fontSize: 14,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    '\$${price.toStringAsFixed(2)}',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    '${isPositive ? '+' : ''}${change.toStringAsFixed(2)}%',
-                    style: TextStyle(
-                      color: chartColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+        const SizedBox(height: 2),
+        Text(
+          value,
+          style: TextStyle(
+            color: valueColor,
+            fontSize: 14, // Slightly reduced font size
+            fontWeight: FontWeight.bold,
+          ),
         ),
-      ),
+      ],
     );
   }
 }

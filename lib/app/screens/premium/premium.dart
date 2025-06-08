@@ -55,16 +55,6 @@ class Premiumpage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Welcome to TradeWise Premium',
-                        style: TextStyle(
-                          color: Color(0xFF008CFF),
-                          fontSize: 24,
-                          fontFamily: 'Poppins',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(height: 40),
-                      Text(
                         'Choose your pricing plan',
                         style: TextStyle(
                           color: Colors.white,

@@ -10,8 +10,12 @@ import 'app/screens/premium/premium.dart';
 import 'app/providers/news_provider.dart';
 import 'app/providers/portfolio_provider.dart';
 import 'app/providers/stock_provider.dart';
+import 'auth/sign_in_page.dart';
+import 'auth/sign_up_page.dart';
+import 'auth/auth_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -53,10 +57,52 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
-      home: const MainNavigation(),
+      home: const SignInPage(),
       routes: {
+        '/home': (context) => const MainNavigation(),
+        '/sign-in': (context) => const SignInPage(),
+        '/sign-up': (context) => const SignUpPage(),
         '/profile': (context) => Profilepage(),
         '/premium': (context) => Premiumpage(),
+      },
+    );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  const AuthenticationWrapper({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    print("Building AuthenticationWrapper...");
+    return FutureBuilder<bool>(
+      future: AuthService().isSignedIn(),
+      builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+        print("Auth FutureBuilder state: ${snapshot.connectionState}");
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasError) {
+            print("Auth FutureBuilder error: ${snapshot.error}");
+            return Scaffold(
+              body: Center(child: Text("Error: ${snapshot.error}")),
+            );
+          }
+
+          final bool isSignedIn = snapshot.data ?? false;
+          print("Is user signed in? $isSignedIn");
+
+          if (isSignedIn) {
+            print("Redirecting to MainNavigation (Home)...");
+            return const MainNavigation();
+          } else {
+            print("Redirecting to SignInPage...");
+            return const SignInPage();
+          }
+        } else {
+          // While waiting for the future to complete, show a loading indicator.
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
       },
     );
   }

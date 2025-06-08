@@ -17,13 +17,20 @@ class StockApiService {
           );
 
       print('Test connection status code: ${response.statusCode}'); // Debug log
-      print(
-        'Test connection response: ${response.body.substring(0, min(100, response.body.length))}...',
-      ); // Debug log
 
-      return response.statusCode == 200;
-    } catch (e) {
-      print('Test connection error: $e'); // Debug log
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print('API connection successful. Response: ${json.encode(data)}');
+        return true;
+      } else {
+        print(
+          'API connection failed. Status: ${response.statusCode}, Body: ${response.body}',
+        );
+        return false;
+      }
+    } catch (e, stackTrace) {
+      print('Test connection error: $e');
+      print('Stack trace: $stackTrace');
       return false;
     }
   }
@@ -31,7 +38,7 @@ class StockApiService {
   Future<List<dynamic>> fetchTopGainers() async {
     try {
       final url = '$_baseUrl/stock_market/gainers?apikey=$_apiKey';
-      print('Fetching top gainers from: $url'); // Debug URL
+      print('Fetching top gainers from: $url');
 
       final response = await http
           .get(Uri.parse(url))
@@ -40,36 +47,28 @@ class StockApiService {
             onTimeout: () => throw Exception('Request timed out'),
           );
 
-      print(
-        'Top gainers response status: ${response.statusCode}',
-      ); // Debug status code
-      print('Top gainers response body: ${response.body}'); // Debug response
+      print('Top gainers response status: ${response.statusCode}');
+      print('Top gainers response headers: ${response.headers}');
+      print('Top gainers response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data is List) {
-          print(
-            'Successfully parsed ${data.length} top gainers',
-          ); // Debug data length
+          print('Successfully parsed ${data.length} top gainers');
           return data;
         } else {
           throw Exception(
             'Invalid response format: expected List but got ${data.runtimeType}',
           );
         }
-      } else if (response.statusCode == 401) {
-        throw Exception(
-          'Invalid API key - please check your API key configuration',
-        );
-      } else if (response.statusCode == 429) {
-        throw Exception('API rate limit exceeded - please try again later');
       } else {
         throw Exception(
-          'Failed to load top gainers: ${response.statusCode}\nResponse: ${response.body}',
+          'Failed to load top gainers. Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
-    } catch (e) {
-      print('Error in fetchTopGainers: $e'); // Debug log
+    } catch (e, stackTrace) {
+      print('Error in fetchTopGainers: $e');
+      print('Stack trace: $stackTrace');
       rethrow;
     }
   }
@@ -77,7 +76,7 @@ class StockApiService {
   Future<List<dynamic>> fetchTopLosers() async {
     try {
       final url = '$_baseUrl/stock_market/losers?apikey=$_apiKey';
-      print('Fetching top losers from: $url'); // Debug URL
+      print('Fetching top losers from: $url');
 
       final response = await http
           .get(Uri.parse(url))
@@ -86,36 +85,28 @@ class StockApiService {
             onTimeout: () => throw Exception('Request timed out'),
           );
 
-      print(
-        'Top losers response status: ${response.statusCode}',
-      ); // Debug status code
-      print('Top losers response body: ${response.body}'); // Debug response
+      print('Top losers response status: ${response.statusCode}');
+      print('Top losers response headers: ${response.headers}');
+      print('Top losers response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data is List) {
-          print(
-            'Successfully parsed ${data.length} top losers',
-          ); // Debug data length
+          print('Successfully parsed ${data.length} top losers');
           return data;
         } else {
           throw Exception(
             'Invalid response format: expected List but got ${data.runtimeType}',
           );
         }
-      } else if (response.statusCode == 401) {
-        throw Exception(
-          'Invalid API key - please check your API key configuration',
-        );
-      } else if (response.statusCode == 429) {
-        throw Exception('API rate limit exceeded - please try again later');
       } else {
         throw Exception(
-          'Failed to load top losers: ${response.statusCode}\nResponse: ${response.body}',
+          'Failed to load top losers. Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
-    } catch (e) {
-      print('Error in fetchTopLosers: $e'); // Debug log
+    } catch (e, stackTrace) {
+      print('Error in fetchTopLosers: $e');
+      print('Stack trace: $stackTrace');
       rethrow;
     }
   }
@@ -123,7 +114,7 @@ class StockApiService {
   Future<List<dynamic>> fetchMostActive() async {
     try {
       final url = '$_baseUrl/stock_market/actives?apikey=$_apiKey';
-      print('Fetching most active from: $url'); // Debug URL
+      print('Fetching most active from: $url');
 
       final response = await http
           .get(Uri.parse(url))
@@ -132,36 +123,28 @@ class StockApiService {
             onTimeout: () => throw Exception('Request timed out'),
           );
 
-      print(
-        'Most active response status: ${response.statusCode}',
-      ); // Debug status code
-      print('Most active response body: ${response.body}'); // Debug response
+      print('Most active response status: ${response.statusCode}');
+      print('Most active response headers: ${response.headers}');
+      print('Most active response body: ${response.body}');
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data is List) {
-          print(
-            'Successfully parsed ${data.length} most active stocks',
-          ); // Debug data length
+          print('Successfully parsed ${data.length} most active stocks');
           return data;
         } else {
           throw Exception(
             'Invalid response format: expected List but got ${data.runtimeType}',
           );
         }
-      } else if (response.statusCode == 401) {
-        throw Exception(
-          'Invalid API key - please check your API key configuration',
-        );
-      } else if (response.statusCode == 429) {
-        throw Exception('API rate limit exceeded - please try again later');
       } else {
         throw Exception(
-          'Failed to load most active stocks: ${response.statusCode}\nResponse: ${response.body}',
+          'Failed to load most active stocks. Status: ${response.statusCode}, Body: ${response.body}',
         );
       }
-    } catch (e) {
-      print('Error in fetchMostActive: $e'); // Debug log
+    } catch (e, stackTrace) {
+      print('Error in fetchMostActive: $e');
+      print('Stack trace: $stackTrace');
       rethrow;
     }
   }
@@ -204,6 +187,39 @@ class StockApiService {
       }
     } catch (e) {
       print('Error in fetchStockQuote: $e'); // Debug log
+      rethrow;
+    }
+  }
+
+  Future<List<dynamic>> fetchMarketNews() async {
+    try {
+      final url = '$_baseUrl/fmp/articles?page=0&size=50&apikey=$_apiKey';
+      print('Fetching market news from: $url');
+
+      final response = await http
+          .get(Uri.parse(url))
+          .timeout(
+            const Duration(seconds: 15),
+            onTimeout: () => throw Exception('Request timed out'),
+          );
+
+      print('Market news response status: ${response.statusCode}');
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is List) {
+          print('Successfully parsed ${data.length} news articles');
+          return data;
+        } else {
+          throw Exception('Invalid response format for news');
+        }
+      } else {
+        throw Exception(
+          'Failed to load market news. Status: ${response.statusCode}, Body: ${response.body}',
+        );
+      }
+    } catch (e, stackTrace) {
+      print('Error in fetchMarketNews: $e');
+      print('Stack trace: $stackTrace');
       rethrow;
     }
   }

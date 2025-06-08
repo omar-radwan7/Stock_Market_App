@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/news_provider.dart';
 
 void main() {
   runApp(const FigmaToCodeApp());
@@ -19,35 +21,148 @@ class FigmaToCodeApp extends StatelessWidget {
   }
 }
 
-class NewsPage extends StatefulWidget {
-  @override
-  State<NewsPage> createState() => _NewsPageState();
-}
+class NewsPage extends StatelessWidget {
+  final List<Map<String, dynamic>> curatedNews = [
+    {
+      'title': 'Fed Rate Decision: Market Impact Analysis for March 2024',
+      'summary':
+          'Federal Reserve expected to begin rate cuts in Q2 2024, potentially starting in June. Markets show increased volatility in anticipation.',
+      'fullContent': '''
+The Federal Reserve's upcoming decisions in 2024 are poised to significantly impact market dynamics. With inflation showing consistent signs of cooling, analysts are focusing on the timing of potential rate cuts.
 
-class _NewsPageState extends State<NewsPage> {
-  final ScrollController _scrollController = ScrollController();
-  bool _showTitle = false;
+Key Expectations:
+• First rate cut likely in June 2024
+• Total of 3-4 cuts expected throughout 2024
+• Target rate projected to reach 4.5% by year-end
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
+Market Implications:
+- Tech stocks expected to benefit from lower rates
+- Banking sector preparing for margin adjustments
+- Real estate market anticipating increased activity
 
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    super.dispose();
-  }
+Expert Analysis:
+"The Fed's transition from fighting inflation to supporting growth will be this year's key market driver," notes Sarah Chen, Chief Market Strategist at Global Markets Research. "Early indicators suggest a careful approach to rate reductions, with particular attention to employment data and core inflation metrics."
 
-  void _onScroll() {
-    if (_scrollController.offset > 100 && !_showTitle) {
-      setState(() => _showTitle = true);
-    } else if (_scrollController.offset <= 100 && _showTitle) {
-      setState(() => _showTitle = false);
-    }
-  }
+Investment Opportunities:
+• Growth stocks likely to outperform
+• Bond market repositioning expected
+• Real estate sector showing early momentum
+      ''',
+      'date': 'March 15, 2024',
+      'source': 'Market Strategy Weekly',
+      'category': 'Monetary Policy',
+    },
+    {
+      'title': 'AI Sector Outlook: Q2 2024 Growth Projections',
+      'summary':
+          'Major tech companies set to release new AI products in Q2, with significant implications for semiconductor and cloud computing stocks.',
+      'fullContent': '''
+The artificial intelligence sector is preparing for a transformative second quarter, with multiple major product launches and technological breakthroughs expected.
+
+Upcoming Catalysts:
+• New AI chip releases from leading manufacturers
+• Enterprise AI platform expansions
+• Major cloud providers upgrading AI infrastructure
+
+Market Impact Predictions:
+- Semiconductor stocks expected to see increased demand
+- Cloud computing providers likely to benefit
+- AI-focused startups attracting significant investment
+
+Key Companies to Watch:
+- NVIDIA: New AI chip architecture launch
+- AMD: Enhanced AI processing capabilities
+- Microsoft: Azure AI platform expansion
+- Google: Advanced language model deployment
+
+Industry Expert View:
+"Q2 2024 represents a critical phase in AI commercialization," explains Dr. James Wong, AI Industry Analyst. "We're seeing a shift from research to practical applications, which could drive significant market opportunities."
+
+Investment Considerations:
+• Semiconductor sector momentum
+• Cloud computing infrastructure plays
+• AI software and services expansion
+      ''',
+      'date': 'March 18, 2024',
+      'source': 'Tech Market Insights',
+      'category': 'Technology',
+    },
+    {
+      'title': 'Global Supply Chain Shift: Asian Markets in Focus',
+      'summary':
+          'Major manufacturing relocations and trade agreements expected to reshape Asian markets in Q2 2024, creating new investment opportunities.',
+      'fullContent': '''
+Asian markets are poised for significant transformation as global companies accelerate manufacturing diversification and new trade agreements take effect.
+
+Emerging Trends:
+• Manufacturing shift to Southeast Asia
+• New regional trade partnerships
+• Technology sector expansion in South Korea and Taiwan
+
+Market Opportunities:
+- Vietnamese manufacturing stocks
+- Indian technology sector
+- Singapore financial services
+- Indonesian consumer markets
+
+Economic Impact:
+"The redistribution of manufacturing capacity across Asia creates unique investment opportunities," states Michelle Lee, Asian Markets Analyst at Eastern Capital. "Countries with strong infrastructure and favorable policies are likely to see increased foreign investment and economic growth."
+
+Key Developments to Watch:
+• New trade agreement implementations
+• Infrastructure project announcements
+• Foreign investment policy changes
+• Technology sector expansions
+
+Investment Sectors:
+- Manufacturing and logistics
+- Technology and semiconductors
+- Financial services
+- Consumer markets
+      ''',
+      'date': 'March 20, 2024',
+      'source': 'Asian Markets Review',
+      'category': 'Global Markets',
+    },
+    {
+      'title': 'Energy Market Transformation: Q2 2024 Outlook',
+      'summary':
+          'Renewable energy sector expected to see major policy support and investment growth, while traditional energy adapts to changing market dynamics.',
+      'fullContent': '''
+The energy sector is approaching a critical transition period in Q2 2024, with both renewable and traditional energy markets facing significant changes.
+
+Key Trends:
+• Renewable energy policy initiatives
+• Traditional energy adaptation strategies
+• Energy storage technology advancement
+• Grid infrastructure modernization
+
+Market Projections:
+- Solar sector growth acceleration
+- Wind energy project expansions
+- Battery technology investments
+- Traditional energy transformation
+
+Expert Insight:
+"The energy sector is at an inflection point," notes Dr. Sarah Martinez, Energy Sector Analyst. "Policy support for renewables, combined with technological advances, is creating compelling investment opportunities while traditional energy companies are strategically repositioning."
+
+Investment Opportunities:
+• Solar technology companies
+• Grid infrastructure providers
+• Energy storage solutions
+• Traditional energy transition plays
+
+Regulatory Impact:
+- New clean energy incentives
+- Grid modernization funding
+- Carbon pricing initiatives
+- Energy efficiency standards
+      ''',
+      'date': 'March 21, 2024',
+      'source': 'Energy Market Report',
+      'category': 'Energy',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -56,27 +171,9 @@ class _NewsPageState extends State<NewsPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
-            ),
-          ),
-        ),
-        title: AnimatedOpacity(
-          opacity: _showTitle ? 1.0 : 0.0,
-          duration: const Duration(milliseconds: 300),
-          child: const Text(
-            'Market News',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontFamily: 'Barlow',
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        title: const Text(
+          'Market News',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
@@ -86,68 +183,26 @@ class _NewsPageState extends State<NewsPage> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Theme.of(context).colorScheme.primary,
+              Theme.of(context).primaryColor,
               Theme.of(context).colorScheme.background,
-              Theme.of(context).colorScheme.surface,
             ],
-            stops: const [0.0, 0.5, 1.0],
           ),
         ),
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 100),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Latest Market News',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.80,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ...List.generate(
-                      10,
-                      (index) => Padding(
-                        padding: const EdgeInsets.only(bottom: 16),
-                        child:
-                            index < 3
-                                ? ExpandableNewsCard(
-                                  title:
-                                      'Breaking: Tech Stocks Surge as Fed Signals Rate Cut',
-                                  summary:
-                                      'Major tech stocks including Apple, Google, and Microsoft saw significant gains today as the Federal Reserve hinted at potential rate cuts in the coming months.',
-                                  fullContent:
-                                      'Major tech stocks including Apple, Google, and Microsoft saw significant gains today as the Federal Reserve hinted at potential rate cuts in the coming months. The NASDAQ composite index jumped by 2.3%, marking its biggest single-day gain in three months. Investors responded positively to Fed Chair Jerome Powell\'s comments suggesting a more dovish monetary policy approach in response to cooling inflation data. Market analysts predict this could lead to increased investment in growth stocks, particularly in the technology sector. The rally was broad-based, with semiconductor stocks also posting strong gains.',
-                                  imageUrl: 'https://placehold.co/600x400',
-                                  date: '2h ago',
-                                  source: 'Financial Times',
-                                )
-                                : NewsCard(
-                                  title:
-                                      'Market Update: S&P 500 Reaches New All-Time High',
-                                  summary:
-                                      'The S&P 500 index reached a new record high today, driven by strong earnings reports and positive economic data.',
-                                  imageUrl: 'https://placehold.co/600x400',
-                                  date: '4h ago',
-                                  source: 'Bloomberg',
-                                ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
-            ],
+        child: SafeArea(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: curatedNews.length,
+            itemBuilder: (context, index) {
+              final article = curatedNews[index];
+              return NewsCard(
+                title: article['title']!,
+                summary: article['summary']!,
+                fullContent: article['fullContent']!,
+                date: article['date']!,
+                source: article['source']!,
+                category: article['category']!,
+              );
+            },
           ),
         ),
       ),
@@ -155,249 +210,118 @@ class _NewsPageState extends State<NewsPage> {
   }
 }
 
-class ExpandableNewsCard extends StatefulWidget {
+class NewsCard extends StatefulWidget {
   final String title;
   final String summary;
   final String fullContent;
-  final String imageUrl;
   final String date;
   final String source;
+  final String category;
 
-  const ExpandableNewsCard({
-    super.key,
+  const NewsCard({
+    Key? key,
     required this.title,
     required this.summary,
     required this.fullContent,
-    required this.imageUrl,
     required this.date,
     required this.source,
-  });
+    required this.category,
+  }) : super(key: key);
 
   @override
-  State<ExpandableNewsCard> createState() => _ExpandableNewsCardState();
+  State<NewsCard> createState() => _NewsCardState();
 }
 
-class _ExpandableNewsCardState extends State<ExpandableNewsCard> {
-  bool isExpanded = false;
+class _NewsCardState extends State<NewsCard> {
+  bool _isExpanded = false;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 300),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            setState(() {
-              isExpanded = !isExpanded;
-            });
-          },
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            widget.title,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Barlow',
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            isExpanded ? widget.fullContent : widget.summary,
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.8),
-                              fontSize: 14,
-                              fontFamily: 'Barlow',
-                              fontWeight: FontWeight.w400,
-                            ),
-                            maxLines: isExpanded ? null : 2,
-                            overflow: isExpanded ? null : TextOverflow.ellipsis,
-                          ),
-                        ],
-                      ),
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      color: Theme.of(context).primaryColor.withOpacity(0.3),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _isExpanded = !_isExpanded;
+          });
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
                     ),
-                    const SizedBox(width: 16),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        widget.imageUrl,
-                        width: 80,
-                        height: 80,
-                        fit: BoxFit.cover,
-                      ),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      widget.source,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      widget.date,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                  ],
-                ),
-                if (isExpanded) ...[
-                  const SizedBox(height: 16),
-                  Center(
                     child: Text(
-                      'Tap to collapse',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                      widget.category,
+                      style: const TextStyle(
+                        color: Colors.blue,
                         fontSize: 12,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ] else ...[
-                  const SizedBox(height: 8),
-                  Center(
-                    child: Text(
-                      'Tap to read more',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
-                        fontSize: 12,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w400,
-                      ),
+                  const Spacer(),
+                  Text(
+                    widget.date,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 12,
                     ),
                   ),
                 ],
-              ],
-            ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _isExpanded ? widget.fullContent : widget.summary,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white.withOpacity(0.8),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Text(
+                    widget.source,
+                    style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Spacer(),
+                  Icon(
+                    _isExpanded ? Icons.expand_less : Icons.expand_more,
+                    color: Colors.white.withOpacity(0.6),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class NewsCard extends StatelessWidget {
-  final String title;
-  final String summary;
-  final String imageUrl;
-  final String date;
-  final String source;
-
-  const NewsCard({
-    super.key,
-    required this.title,
-    required this.summary,
-    required this.imageUrl,
-    required this.date,
-    required this.source,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withOpacity(0.3),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      summary,
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 14,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.w400,
-                      ),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 16),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  imageUrl,
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                source,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontFamily: 'Barlow',
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              Text(
-                date,
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.6),
-                  fontSize: 12,
-                  fontFamily: 'Barlow',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

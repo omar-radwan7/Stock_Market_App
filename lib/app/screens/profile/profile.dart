@@ -70,7 +70,7 @@ class Profilepage extends StatelessWidget {
                     const SizedBox(height: 12),
                     // Name
                     const Text(
-                      'Ayzel Mussagy',
+                      'Omar Radwan',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
