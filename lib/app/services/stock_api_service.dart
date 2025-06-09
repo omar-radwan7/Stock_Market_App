@@ -12,7 +12,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse('$_baseUrl/stock/list?apikey=$_apiKey'))
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 
@@ -43,7 +43,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse(url))
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 
@@ -81,7 +81,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse(url))
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 
@@ -119,7 +119,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse(url))
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 
@@ -157,7 +157,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse(url))
           .timeout(
-            const Duration(seconds: 10),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 
@@ -199,7 +199,7 @@ class StockApiService {
       final response = await http
           .get(Uri.parse(url))
           .timeout(
-            const Duration(seconds: 15),
+            const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
           );
 

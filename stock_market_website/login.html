@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeWise - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-chart-line"></i>
+            <h1>TradeWise</h1>
+            <p>Your Smart Trading Companion</p>
+        </div>
+        
+        <div class="login-form">
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="password" placeholder="Password" required>
+            </div>
+            <button id="loginButton" class="login-button">Login</button>
+            
+            <div class="social-login">
+                <p>Or continue with</p>
+                <button id="googleLogin" class="social-button">
+                    <img src="https://www.google.com/favicon.ico" alt="Google">
+                    Sign in with Google
+                </button>
+            </div>
+            
+            <div class="login-footer">
+                <p>Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Create Account</h2>
+            <div class="form-group">
+                <input type="text" id="signupName" placeholder="Full Name" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="signupEmail" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="signupPassword" placeholder="Password" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <button id="signupButton" class="login-button">Sign Up</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html> 

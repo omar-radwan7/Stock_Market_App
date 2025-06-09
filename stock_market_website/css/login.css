@@ -1,0 +1,206 @@
+.login-body {
+    background: linear-gradient(135deg, var(--background-dark), var(--primary-color));
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-container {
+    background-color: var(--background-light);
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    margin: 1rem;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-header i {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.login-header h1 {
+    color: var(--text-primary);
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+
+.login-header p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--card-background);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.login-button {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
+}
+
+.social-login {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.social-login p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.social-login p::before,
+.social-login p::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: var(--text-secondary);
+}
+
+.social-login p::before {
+    left: 0;
+}
+
+.social-login p::after {
+    right: 0;
+}
+
+.social-button {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--text-secondary);
+    border-radius: 10px;
+    background-color: transparent;
+    color: var(--text-primary);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.social-button img {
+    width: 20px;
+    height: 20px;
+}
+
+.social-button:hover {
+    background-color: var(--card-background);
+}
+
+.login-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.login-footer p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.login-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--background-light);
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 1.5rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.modal-content h2 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+    .login-container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .login-header i {
+        font-size: 2.5rem;
+    }
+
+    .login-header h1 {
+        font-size: 1.8rem;
+    }
+} 

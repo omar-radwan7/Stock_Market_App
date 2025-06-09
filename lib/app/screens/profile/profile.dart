@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import '../premium/premium.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profilepage extends StatelessWidget {
   const Profilepage({super.key});
+
+  Future<void> _launchWebVersion() async {
+    final Uri url = Uri.parse('http://192.168.0.3:5500/stock_market_website/index.html');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,6 +129,41 @@ class Profilepage extends StatelessWidget {
                         child: const Center(
                           child: Text(
                             'Premium',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontFamily: 'Barlow',
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    // Web Version Button
+                    GestureDetector(
+                      onTap: _launchWebVersion,
+                      child: Container(
+                        width: 294,
+                        height: 46,
+                        decoration: ShapeDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment(0.50, -0.00),
+                            end: Alignment(0.50, 1.00),
+                            colors: [
+                              Color(0xFF336F4C),
+                              Color(0xFF278345),
+                              Color(0xFF1E590C),
+                              Color(0xFF153115),
+                            ],
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Open Web Version',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 18,
