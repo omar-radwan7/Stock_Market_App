@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 
 class StockApiService {
-  final String _apiKey = 'PnYR369Zox71sMMwscIKClom3f1a9jTn';
+  final String _apiKey = 'j6Xtk992vMRUsyPxm1LV4VYndTXRh29s';
   final String _baseUrl = 'https://financialmodelingprep.com/api/v3';
 
   Future<bool> testConnection() async {

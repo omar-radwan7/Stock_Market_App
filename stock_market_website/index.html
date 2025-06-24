@@ -3,105 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeWise - Stock Market Dashboard</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/dashboard.css">
+    <title>TradeWise Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo">
-            <i class="fas fa-chart-line"></i>
-            <span>TradeWise</span>
-        </div>
-        <div class="nav-links">
-            <a href="#" class="active">Dashboard</a>
-            <a href="#watchlist">Watchlist</a>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#news">Market News</a>
-        </div>
-        <div class="user-section">
-            <span id="userName"></span>
-            <button id="logoutBtn">Logout</button>
-        </div>
-    </nav>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">T</div>
+                <span>TradeWise Platform</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="portfolio">
+                        <i class="fas fa-chart-pie"></i>
+                        Portfolio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-section="trade">
+                        <i class="fas fa-exchange-alt"></i>
+                        Trade
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="research">
+                        <i class="fas fa-search"></i>
+                        Research
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-section="profile">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+            </ul>
+        </aside>
 
-    <main>
-        <section class="hero">
-            <h1>Welcome to TradeWise</h1>
-            <p>Track, analyze, and manage your investments in real-time</p>
-        </section>
-
-        <section class="market-overview">
-            <h2>Market Overview</h2>
-            <div class="market-cards">
-                <div class="market-card">
-                    <h3>S&P 500</h3>
-                    <div class="price" id="sp500">Loading...</div>
-                    <div class="change up">+0.00%</div>
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="welcome-section">
+                    <h1>Welcome to <span class="highlight">TradeWise Platform</span></h1>
+                    <p class="subtitle">Good Morning, <span id="userName">Trader</span></p>
                 </div>
-                <div class="market-card">
-                    <h3>NASDAQ</h3>
-                    <div class="price" id="nasdaq">Loading...</div>
-                    <div class="change down">-0.00%</div>
+                
+                <div class="header-actions">
+                    <input type="text" class="search-box" placeholder="Search stocks..." id="globalSearch">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-download"></i> Export
+                    </button>
+                    <div class="user-avatar">TW</div>
                 </div>
-                <div class="market-card">
-                    <h3>DOW</h3>
-                    <div class="price" id="dow">Loading...</div>
-                    <div class="change up">+0.00%</div>
+            </header>
+
+            <!-- Trade Section (Default) -->
+            <div id="trade-section" class="content-section active">
+                <!-- Tab Navigation -->
+                <nav class="tab-navigation">
+                    <div class="tab-item">Portfolio</div>
+                    <div class="tab-item active">Trade</div>
+                    <div class="tab-item">Research</div>
+                    <div class="tab-item" id="stockSymbolTab">AAPL</div>
+                </nav>
+
+                <div class="tab-sub-nav">
+                    <div class="tab-sub-item active">Stocks</div>
+                    <div class="tab-sub-item">Options</div>
+                    <div class="tab-sub-item">Order Status</div>
                 </div>
-            </div>
-        </section>
 
-        <section class="stock-search">
-            <div class="search-container">
-                <input type="text" id="stockSearch" placeholder="Search for stocks...">
-                <button id="searchBtn"><i class="fas fa-search"></i></button>
-            </div>
-        </section>
+                <!-- Trending Stocks -->
+                <section class="trending-stocks">
+                    <h2 class="section-title">Trending Stocks</h2>
+                    <div class="stocks-grid" id="trendingStocks">
+                        <div class="loading">Loading trending stocks...</div>
+                    </div>
+                </section>
 
-        <section class="watchlist">
-            <h2>Your Watchlist</h2>
-            <div class="stock-grid" id="watchlistGrid">
-                <!-- Stock cards will be dynamically added here -->
-            </div>
-        </section>
+                <!-- Portfolio Section -->
+                <section class="portfolio-section">
+                    <div class="chart-container">
+                        <div class="portfolio-header">
+                            <div>
+                                <h3>Total Investments: <span class="portfolio-value" id="portfolioValue">$88,720</span></h3>
+                            </div>
+                            <div class="time-filters">
+                                <button class="time-filter">Day</button>
+                                <button class="time-filter">Week</button>
+                                <button class="time-filter active">Month</button>
+                                <button class="time-filter">Year</button>
+                                <button class="time-filter">All Time</button>
+                            </div>
+                        </div>
+                        <div class="chart-wrapper">
+                            <canvas id="portfolioChart"></canvas>
+                        </div>
+                    </div>
 
-        <section class="portfolio">
-            <h2>Portfolio Performance</h2>
-            <div class="chart-container">
-                <canvas id="portfolioChart"></canvas>
-            </div>
-        </section>
-    </main>
+                    <div class="portfolio-stats">
+                        <h3 class="stats-title">Portfolio Statistics</h3>
+                        <div class="donut-chart">
+                            <canvas id="donutChart"></canvas>
+                            <div class="stats-total">
+                                <div class="amount">$23,994</div>
+                                <div class="label">Total</div>
+                            </div>
+                        </div>
+                        <div class="stats-legend">
+                            <div class="legend-item">
+                                <div class="legend-info">
+                                    <div class="legend-color" style="background: #4f46e5;"></div>
+                                    Tech Stock
+                                </div>
+                                <span>68%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-info">
+                                    <div class="legend-color" style="background: #06b6d4;"></div>
+                                    Stock Value
+                                </div>
+                                <span>22%</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-info">
+                                    <div class="legend-color" style="background: #8b5cf6;"></div>
+                                    Holiday
+                                </div>
+                                <span>10%</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3>About TradeWise</h3>
-                <p>Your comprehensive stock market tracking solution</p>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <a href="#dashboard">Dashboard</a>
-                <a href="#watchlist">Watchlist</a>
-                <a href="#portfolio">Portfolio</a>
-            </div>
-            <div class="footer-section">
-                <h3>Contact</h3>
-                <p>Email: support@tradewise.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2024 TradeWise. All rights reserved.</p>
-        </div>
-    </footer>
+                <!-- Biggest Movers -->
+                <section class="movers-section">
+                    <div class="movers-card">
+                        <div class="movers-header">
+                            <h3>Today's Biggest Movers</h3>
+                            <a href="#" class="view-all">View All</a>
+                        </div>
+                        <div id="biggestMovers">
+                            <div class="loading">Loading market movers...</div>
+                        </div>
+                    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/main.js"></script>
+                    <div class="movers-card">
+                        <div class="movers-header">
+                            <h3>Your Watchlist</h3>
+                            <a href="#" class="view-all">Manage</a>
+                        </div>
+                        <div id="watchlistMovers">
+                            <div class="loading">Loading watchlist...</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Other Sections (kept collapsed for brevity) -->
+            <div id="portfolio-section" class="content-section"><!-- Content --></div>
+            <div id="research-section" class="content-section"><!-- Content --></div>
+            <div id="analytics-section" class="content-section"><!-- Content --></div>
+            <div id="settings-section" class="content-section"><!-- Content --></div>
+            <div id="profile-section" class="content-section"><!-- Content --></div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
 </body>
-</html> 
+</html>

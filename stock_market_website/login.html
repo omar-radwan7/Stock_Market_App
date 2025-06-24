@@ -3,66 +3,766 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TradeWise - Login</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/login.css">
+    <title>TradeWise - Trading Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Background Pattern */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 500px;
+            height: 300px;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 2px,
+                rgba(255, 255, 255, 0.05) 2px,
+                rgba(255, 255, 255, 0.05) 4px
+            );
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 28px;
+            color: #4ade80;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            color: white;
+        }
+
+        /* Main Layout */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            height: fit-content;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .stock-list {
+            margin-bottom: 30px;
+        }
+
+        .stock-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stock-item:last-child {
+            border-bottom: none;
+        }
+
+        .stock-info {
+            flex: 1;
+        }
+
+        .stock-symbol {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .stock-price {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .stock-change {
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .positive {
+            color: #4ade80;
+        }
+
+        .negative {
+            color: #ef4444;
+        }
+
+        .watchlist {
+            margin-top: 30px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .watchlist-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .watchlist-item:last-child {
+            border-bottom: none;
+        }
+
+        .company-info {
+            flex: 1;
+        }
+
+        .company-name {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        /* Main Content */
+        .main-content {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .stock-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stock-title h2 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .company-subtitle {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 16px;
+        }
+
+        .stock-price-main {
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .stock-change-main {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .buy-button {
+            background: #4ade80;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .buy-button:hover {
+            background: #22c55e;
+        }
+
+        /* Chart Area */
+        .chart-container {
+            height: 400px;
+            margin-bottom: 30px;
+            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        #chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .time-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .time-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.7);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-btn.active,
+        .time-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .chart-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-btn {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .chart-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Trading Data */
+        .trading-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .data-section h4 {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+        }
+
+        .data-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .data-value {
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        /* Order Book */
+        .order-book {
+            margin-top: 20px;
+        }
+
+        .order-book-header {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .order-book-header span {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .order-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            padding: 5px 0;
+            font-size: 12px;
+        }
+
+        .bid {
+            color: #ef4444;
+        }
+
+        .ask {
+            color: #4ade80;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .nav {
+                gap: 20px;
+            }
+
+            .stock-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .trading-data {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
-<body class="login-body">
-    <div class="login-container">
-        <div class="login-header">
-            <i class="fas fa-chart-line"></i>
-            <h1>TradeWise</h1>
-            <p>Your Smart Trading Companion</p>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <h1>TradeWise</h1>
+            </div>
+            <nav class="nav">
+                <a href="#" class="active">Home</a>
+                <a href="#">Portfolio</a>
+                <a href="#">Transaction</a>
+                <a href="#">News</a>
+                <a href="#">Community</a>
+                <a href="#">Profile</a>
+            </nav>
+        </header>
+
+        <div class="main-layout">
+            <aside class="sidebar">
+                <div class="stock-list">
+                    <h3>Saham Teraktif</h3>
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <div class="stock-symbol">BUKA</div>
+                            <div class="stock-price">1,288 • Rp. 500</div>
+                        </div>
+                        <div class="stock-change positive">+76(+17%)</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <div class="stock-symbol">BIPI</div>
+                            <div class="stock-price">1,228 • Rp. 50</div>
+                        </div>
+                        <div class="stock-change positive">+18(+98%)</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <div class="stock-symbol">KBAG</div>
+                            <div class="stock-price">980M • Rp. 116</div>
+                        </div>
+                        <div class="stock-change negative">-5(-27%)</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <div class="stock-symbol">REAL</div>
+                            <div class="stock-price">882M • Rp. 87</div>
+                        </div>
+                        <div class="stock-change negative">-6(-45%)</div>
+                    </div>
+                    <div class="stock-item">
+                        <div class="stock-info">
+                            <div class="stock-symbol">BRMS</div>
+                            <div class="stock-price">1,288 • Rp. 90</div>
+                        </div>
+                        <div class="stock-change positive">+9(+21%)</div>
+                    </div>
+                </div>
+
+                <div class="watchlist">
+                    <h3>My Watchlist</h3>
+                    <input type="text" class="search-box" placeholder="Search">
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBCA</div>
+                            <div class="company-name">Bank Central Asia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 7800</div>
+                            <div class="stock-change positive">+5(1.2%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBRI</div>
+                            <div class="company-name">Bank Rakyat Indonesia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 800</div>
+                            <div class="stock-change negative">-3(-0.24%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBCA</div>
+                            <div class="company-name">Bank Central Asia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 930</div>
+                            <div class="stock-change positive">+5(0.62%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBCA</div>
+                            <div class="company-name">Bank Central Asia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 720</div>
+                            <div class="stock-change negative">-20(-0.4%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBCA</div>
+                            <div class="company-name">Bank Central Asia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 2100</div>
+                            <div class="stock-change positive">+20(0.8%)</div>
+                        </div>
+                    </div>
+                    
+                    <div class="watchlist-item">
+                        <div class="company-info">
+                            <div class="stock-symbol">BBCA</div>
+                            <div class="company-name">Bank Central Asia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price">Rp. 1290</div>
+                            <div class="stock-change negative">-3(-0.3%)</div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="main-content">
+                <div class="stock-header">
+                    <div class="stock-title">
+                        <div>
+                            <h2>BRIS</h2>
+                            <div class="company-subtitle">Bank Syariah Indonesia</div>
+                        </div>
+                        <div>
+                            <div class="stock-price-main">Rp. 2800</div>
+                            <div class="stock-change-main">
+                                <i class="fas fa-arrow-up positive"></i>
+                                <span class="positive">Rp.45.00 (0.63%)</span>
+                                <span style="margin-left: 10px; color: rgba(255,255,255,0.7);">Hari ini</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="buy-button">Buy</button>
+                </div>
+
+                <div class="chart-controls">
+                    <div class="time-controls">
+                        <button class="time-btn">1D</button>
+                        <button class="time-btn">1W</button>
+                        <button class="time-btn active">1M</button>
+                        <button class="time-btn">3M</button>
+                        <button class="time-btn">1Y</button>
+                        <button class="time-btn">5Y</button>
+                        <button class="time-btn">All</button>
+                    </div>
+                    <div class="chart-actions">
+                        <button class="chart-btn"><i class="fas fa-chart-line"></i></button>
+                        <button class="chart-btn"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="chart"></canvas>
+                </div>
+
+                <div class="trading-data">
+                    <div class="data-section">
+                        <h4>BRIS - Bank Syariah Indonesia</h4>
+                        <div class="stock-change-main">
+                            <i class="fas fa-arrow-up positive"></i>
+                            <span class="positive">Rp.45.00 (0.63%)</span>
+                        </div>
+                        <div class="data-grid" style="margin-top: 20px;">
+                            <div class="data-item">
+                                <span class="data-label">Open</span>
+                                <span class="data-value">1.790</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Vol (Share)</span>
+                                <span class="data-value">6 M</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">High</span>
+                                <span class="data-value positive">1.805</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Mkt Cap</span>
+                                <span class="data-value">72 T</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Low</span>
+                                <span class="data-value negative">1.780</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Foreign Buy</span>
+                                <span class="data-value">791.59 M</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Close</span>
+                                <span class="data-value">1.780</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Foreign Sell</span>
+                                <span class="data-value">272.73 M</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">52 WK High</span>
+                                <span class="data-value">3.980</span>
+                            </div>
+                            <div class="data-item">
+                                <span class="data-label">Turnover%</span>
+                                <span class="data-value">0.01%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="order-book">
+                        <div class="order-book-header">
+                            <span>B.Lot</span>
+                            <span>Bid</span>
+                            <span>Ask</span>
+                            <span>A.Lot</span>
+                        </div>
+                        <div class="order-row">
+                            <span>5.632</span>
+                            <span class="bid">1.780</span>
+                            <span class="ask">1.785</span>
+                            <span>1.185</span>
+                        </div>
+                        <div class="order-row">
+                            <span>7.831</span>
+                            <span class="bid">1.775</span>
+                            <span class="ask">1.790</span>
+                            <span>3.675</span>
+                        </div>
+                        <div class="order-row">
+                            <span>3.882</span>
+                            <span class="bid">1.770</span>
+                            <span class="ask">1.795</span>
+                            <span>2.186</span>
+                        </div>
+                        <div class="order-row">
+                            <span>6.645</span>
+                            <span class="bid">1.765</span>
+                            <span class="ask">1.800</span>
+                            <span>5.177</span>
+                        </div>
+                        <div class="order-row">
+                            <span>6.551</span>
+                            <span class="bid">1.760</span>
+                            <span class="ask">1.805</span>
+                            <span>2.888</span>
+                        </div>
+                        <div class="order-row">
+                            <span>2.436</span>
+                            <span class="bid">1.755</span>
+                            <span class="ask">1.810</span>
+                            <span>1.632</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
         </div>
+    </div>
+
+    <script>
+        // Simple chart simulation
+        const canvas = document.getElementById('chart');
+        const ctx = canvas.getContext('2d');
         
-        <div class="login-form">
-            <div class="form-group">
-                <input type="email" id="email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="password" placeholder="Password" required>
-            </div>
-            <button id="loginButton" class="login-button">Login</button>
+        function resizeCanvas() {
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            drawChart();
+        }
+        
+        function drawChart() {
+            const width = canvas.width;
+            const height = canvas.height;
             
-            <div class="social-login">
-                <p>Or continue with</p>
-                <button id="googleLogin" class="social-button">
-                    <img src="https://www.google.com/favicon.ico" alt="Google">
-                    Sign in with Google
-                </button>
-            </div>
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
             
-            <div class="login-footer">
-                <p>Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Sign Up Modal -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Create Account</h2>
-            <div class="form-group">
-                <input type="text" id="signupName" placeholder="Full Name" required>
-            </div>
-            <div class="form-group">
-                <input type="email" id="signupEmail" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="signupPassword" placeholder="Password" required>
-            </div>
-            <div class="form-group">
-                <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
-            </div>
-            <button id="signupButton" class="login-button">Sign Up</button>
-        </div>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-    <script src="js/auth.js"></script>
+            // Generate sample data points
+            const points = [];
+            const numPoints = 100;
+            
+            for (let i = 0; i < numPoints; i++) {
+                const x = (i / (numPoints - 1)) * width;
+                const baseY = height * 0.6;
+                const noise = Math.sin(i * 0.1) * 50 + Math.sin(i * 0.05) * 30 + Math.random() * 20;
+                const y = baseY + noise;
+                points.push({x, y});
+            }
+            
+            // Draw the line
+            ctx.strokeStyle = '#4ade80';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            points.forEach((point, index) => {
+                if (index === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            });
+            
+            ctx.stroke();
+            
+            // Create gradient fill
+            const gradient = ctx.createLinearGradient(0, 0, 0, height);
+            gradient.addColorStop(0, 'rgba(74, 222, 128, 0.3)');
+            gradient.addColorStop(1, 'rgba(74, 222, 128, 0.05)');
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(0, height);
+            points.forEach((point, index) => {
+                if (index === 0) {
+                    ctx.lineTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                }
+            });
+            ctx.lineTo(width, height);
+            ctx.closePath();
+            ctx.fill();
+        }
+        
+        // Time control buttons
+        document.querySelectorAll('.time-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.time-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                drawChart(); // Redraw with new timeframe
+            });
+        });
+        
+        // Initialize chart
+        window.addEventListener('resize', resizeCanvas);
+        setTimeout(resizeCanvas, 100); // Give time for CSS to load
+    </script>
 </body>
-</html> 
+</html>

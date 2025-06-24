@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #1a1333 0%, #4B326F 50%, #0C1531 100%);
+            min-height: 100vh;
+            margin: 0;
+            font-family: 'Barlow', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+        .navbar {
+            background: rgba(12, 21, 49, 0.95);
+            padding: 18px 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .navbar h1 {
+            color: #fff;
+            font-size: 2.2rem;
+            font-family: 'Barlow', Arial, sans-serif;
+            font-weight: 700;
+            margin: 0;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 16px #3DE85F33;
+        }
+        .stock-details-outer {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .stock-details-container {
+            max-width: 480px;
+            width: 100%;
+            background: rgba(44, 36, 72, 0.85);
+            color: #fff;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            padding: 44px 32px 36px 32px;
+            position: relative;
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(61,232,95,0.18);
+            overflow: hidden;
+        }
+        .stock-details-container::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 28px;
+            pointer-events: none;
+            background: linear-gradient(120deg, #3DE85F 0%, #4B326F 100%);
+            opacity: 0.18;
+            z-index: 0;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 32px;
+            color: #3DE85F;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            z-index: 1;
+            position: relative;
+        }
+        .back-link:hover {
+            color: #fff;
+        }
+        .stock-details-header {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+        .stock-symbol {
+            font-size: 2.6rem;
+            font-weight: bold;
+            color: #3DE85F;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 12px #3DE85F44;
+        }
+        .stock-price {
+            font-size: 2.4rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg, #3DE85F 60%, #4B326F 100%);
+            border-radius: 12px;
+            padding: 10px 28px;
+            margin-left: 18px;
+            box-shadow: 0 2px 16px #3DE85F22;
+        }
+        .meta-label {
+            color: #b3b3b3;
+            font-size: 1rem;
+        }
+        .meta-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }
+        .stock-meta {
+            margin-top: 32px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px 16px;
+        }
+        .change-up { color: #3DE85F; }
+        .change-down { color: #e53e3e; }
+        .change-bar {
+            margin-top: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+        .change-bar i {
+            margin-right: 8px;
+        }
+        .loading {
+            text-align: center;
+            margin-top: 60px;
+            font-size: 1.3rem;
+            color: #3DE85F;
+        }
+        .error-message {
+            color: #e53e3e;
+            text-align: center;
+            margin-top: 32px;
+            font-size: 1.1rem;
+        }
+        .debug-toggle {
+            display: inline-block;
+            margin-top: 32px;
+            color: #b3b3b3;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-decoration: underline;
+            background: none;
+            border: none;
+        }
+        .debug-raw {
+            display: none;
+            background: #181c2f;
+            color: #3DE85F;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            margin-top: 18px;
+            padding: 16px;
+            word-break: break-all;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        @media (max-width: 600px) {
+            .stock-details-container {
+                padding: 18px 6vw 18px 6vw;
+            }
+            .stock-details-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .stock-symbol {
+                font-size: 2rem;
+            }
+            .stock-price {
+                font-size: 1.5rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>TradeWise</h1>
+    </nav>
+    <div class="stock-details-outer">
+        <div class="stock-details-container">
+            <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <div id="loading" class="loading">Loading stock data...</div>
+            <div id="stockDetails" style="display:none;"></div>
+            <div id="errorMessage" class="error-message" style="display:none;"></div>
+            <button class="debug-toggle" id="debugToggle" style="display:none;">Show Raw API Response</button>
+            <pre class="debug-raw" id="debugRaw"></pre>
+        </div>
+    </div>
+    <script src="js/stock.js"></script>
+</body>
+</html> 
