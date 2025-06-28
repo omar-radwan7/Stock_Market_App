@@ -1,3 +1,46 @@
+const express = require('express');
+const fetch = require('node-fetch');
+const app = express();
+const PORT = process.env.PORT || 3000;
+const FMP_API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
+const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
+
+app.use(express.static(__dirname));
+app.use(express.json());
+
+// Proxy for stock quote
+app.get('/api/quote/:symbol', async (req, res) => {
+    const { symbol } = req.params;
+    try {
+        const response = await fetch(`${FMP_BASE_URL}/quote/${symbol}?apikey=${FMP_API_KEY}`);
+        const data = await response.json();
+        res.json(data[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch quote' });
+    }
+});
+
+// Proxy for company profile
+app.get('/api/profile/:symbol', async (req, res) => {
+    const { symbol } = req.params;
+    try {
+        const response = await fetch(`${FMP_BASE_URL}/profile/${symbol}?apikey=${FMP_API_KEY}`);
+        const data = await response.json();
+        res.json(data[0] || {});
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch profile' });
+    }
+});
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok' });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
+
 // Updated API Configuration to use local proxy endpoints
 const API_BASE_URL = ''; // Use relative URLs for same-origin requests
 

@@ -1,6 +1,6 @@
-// Finnhub API key and base URL (reuse from main.js if needed)
-const API_KEY = 'd1c53khr01qre5ajoma0d1c53khr01qre5ajomag';
-const BASE_URL = 'https://finnhub.io/api/v1';
+// Financial Modeling Prep API key and base URL
+const API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
+const BASE_URL = 'https://financialmodelingprep.com/api/v3';
 
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -8,11 +8,12 @@ function getQueryParam(param) {
 }
 
 async function fetchStockData(symbol) {
-    const response = await fetch(`${BASE_URL}/quote?symbol=${encodeURIComponent(symbol)}&token=${API_KEY}`);
+    const response = await fetch(`${BASE_URL}/quote/${encodeURIComponent(symbol)}?apikey=${API_KEY}`);
     let raw = await response.clone().text();
     if (!response.ok) throw new Error('Failed to fetch data');
-    const data = await response.json();
-    if (!data || typeof data.c !== 'number' || typeof data.pc !== 'number') throw new Error('No data found');
+    const dataArr = await response.json();
+    if (!Array.isArray(dataArr) || !dataArr[0]) throw new Error('No data found');
+    const data = dataArr[0];
     return { data, raw };
 }
 

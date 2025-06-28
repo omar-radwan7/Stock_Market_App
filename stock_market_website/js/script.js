@@ -1,6 +1,6 @@
 // Configuration
-const API_KEY = 'd1ctgnpr01qic6lfsojgd1ctgnpr01qic6lfsok0';
-const API_BASE_URL = 'https://finnhub.io/api/v1';
+const API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
+const API_BASE_URL = 'https://financialmodelingprep.com/api/v3';
 
 // Global state
 let currentStock = 'AAPL';
@@ -63,15 +63,15 @@ async function loadTrendingStocks() {
                 return;
             }
             
-            const change = data.c - data.pc;
-            const changePercent = (change / data.pc) * 100;
+            const change = data.price - data.previousClose;
+            const changePercent = (change / data.previousClose) * 100;
             const isPositive = change >= 0;
             
             const stockCard = document.createElement('div');
             stockCard.className = 'stock-card';
             stockCard.innerHTML = `
                 <div class="stock-symbol">${symbol}</div>
-                <div class="stock-price">${formatCurrency(data.c)}</div>
+                <div class="stock-price">${formatCurrency(data.price)}</div>
                 <div class="stock-change ${isPositive ? 'positive' : 'negative'}">
                     ${formatPercent(changePercent)}
                     <i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i>
@@ -106,8 +106,8 @@ async function loadBiggestMovers() {
                 return;
             }
             
-            const change = data.c - data.pc;
-            const changePercent = (change / data.pc) * 100;
+            const change = data.price - data.previousClose;
+            const changePercent = (change / data.previousClose) * 100;
             const isPositive = change >= 0;
             
             const moverItem = document.createElement('div');
@@ -119,7 +119,7 @@ async function loadBiggestMovers() {
                     <div class="mover-company">${symbol} Inc.</div>
                 </div>
                 <div class="mover-price">
-                    <div class="mover-amount">${formatCurrency(data.c)}</div>
+                    <div class="mover-amount">${formatCurrency(data.price)}</div>
                     <div class="mover-change ${isPositive ? 'positive' : 'negative'}">
                         ${formatPercent(changePercent)}
                     </div>
@@ -153,8 +153,8 @@ async function loadWatchlistMovers() {
                 return;
             }
             
-            const change = data.c - data.pc;
-            const changePercent = (change / data.pc) * 100;
+            const change = data.price - data.previousClose;
+            const changePercent = (change / data.previousClose) * 100;
             const isPositive = change >= 0;
             
             const watchlistItem = document.createElement('div');
@@ -166,7 +166,7 @@ async function loadWatchlistMovers() {
                     <div class="mover-company">${symbol} Inc.</div>
                 </div>
                 <div class="mover-price">
-                    <div class="mover-amount">${formatCurrency(data.c)}</div>
+                    <div class="mover-amount">${formatCurrency(data.price)}</div>
                     <div class="mover-change ${isPositive ? 'positive' : 'negative'}">
                         ${formatPercent(changePercent)}
                     </div>
@@ -201,20 +201,17 @@ async function fetchStockData(symbol) {
     if (stockDataCache[symbol] && Date.now() - stockDataCache[symbol].timestamp < 30000) {
         return stockDataCache[symbol].data;
     }
-    
     try {
-        const response = await fetch(`${API_BASE_URL}/quote?symbol=${symbol}&token=${API_KEY}`);
+        const response = await fetch(`${API_BASE_URL}/quote/${symbol}?apikey=${API_KEY}`);
         if (!response.ok) throw new Error(`API error: ${response.status}`);
-        
-        const data = await response.json();
-        if (!data.c) throw new Error('Invalid data received');
-        
+        const dataArr = await response.json();
+        if (!Array.isArray(dataArr) || !dataArr[0]) throw new Error('Invalid data received');
+        const data = dataArr[0];
         // Cache the data
         stockDataCache[symbol] = {
             data: data,
             timestamp: Date.now()
         };
-        
         return data;
     } catch (error) {
         console.error(`Error fetching data for ${symbol}:`, error);
@@ -224,9 +221,10 @@ async function fetchStockData(symbol) {
 
 async function fetchCompanyProfile(symbol) {
     try {
-        const response = await fetch(`${API_BASE_URL}/stock/profile2?symbol=${symbol}&token=${API_KEY}`);
+        const response = await fetch(`${API_BASE_URL}/profile/${symbol}?apikey=${API_KEY}`);
         if (!response.ok) throw new Error(`API error: ${response.status}`);
-        return await response.json();
+        const dataArr = await response.json();
+        return Array.isArray(dataArr) && dataArr[0] ? dataArr[0] : null;
     } catch (error) {
         console.error(`Error fetching profile for ${symbol}:`, error);
         return null;

@@ -22,10 +22,11 @@ body {
 
 /* Sidebar */
 .sidebar {
-    background: rgba(15, 20, 25, 0.95);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 20px 0;
-    backdrop-filter: blur(10px);
+    background: rgba(15, 20, 25, 0.98);
+    border-right: 1.5px solid rgba(79, 70, 229, 0.15);
+    padding: 24px 0;
+    min-height: 100vh;
+    box-shadow: 2px 0 16px 0 rgba(79,70,229,0.04);
 }
 
 .logo {
@@ -50,7 +51,7 @@ body {
 
 .nav-menu {
     list-style: none;
-    padding: 0 10px;
+    padding: 0 8px;
 }
 
 .nav-item {
@@ -60,20 +61,34 @@ body {
 .nav-link {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    color: rgba(255, 255, 255, 0.7);
+    gap: 14px;
+    padding: 14px 18px;
+    color: rgba(255,255,255,0.8);
     text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.3s ease;
-    font-size: 14px;
-    cursor: pointer;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    position: relative;
 }
 
 .nav-link:hover,
 .nav-link.active {
-    background: rgba(79, 70, 229, 0.2);
-    color: #ffffff;
+    background: linear-gradient(90deg, #4f46e5 0%, #7c3aed 100%);
+    color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(79,70,229,0.10);
+}
+
+.nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 4px;
+    border-radius: 4px;
+    background: #4f46e5;
 }
 
 .nav-link i {
@@ -574,4 +589,196 @@ body {
 
 .negative {
     color: #ef4444;
+}
+
+/* --- Card Styles --- */
+.settings-card, .trade-form-card, .recent-trades-card, .profile-info, .portfolio-summary, .portfolio-charts, .holdings-list, .research-tools, .tool-card, .analytics-charts, .chart-placeholder {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px 0 rgba(79,70,229,0.04);
+}
+
+.settings-card.danger {
+    border-color: #ef4444;
+    background: rgba(239,68,68,0.08);
+}
+
+/* --- Form Styles --- */
+.settings-form, .trade-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 16px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-group label {
+    font-size: 13px;
+    color: #bdbdfc;
+    font-weight: 500;
+}
+
+.settings-form input, .trade-form input, .trade-form select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(79,70,229,0.18);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.settings-form input:focus, .trade-form input:focus, .trade-form select:focus {
+    border-color: #4f46e5;
+}
+
+.btn-danger {
+    background: linear-gradient(90deg, #ef4444 0%, #f59e0b 100%);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: box-shadow 0.2s;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 4px 20px rgba(239,68,68,0.18);
+}
+
+/* --- Profile Styles --- */
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 24px;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    box-shadow: 0 2px 12px 0 rgba(79,70,229,0.10);
+}
+
+.profile-details h3 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.profile-details p {
+    color: #bdbdfc;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+/* --- Table Styles --- */
+.holdings-table, .recent-trades-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    background: transparent;
+}
+
+.holdings-table th, .holdings-table td, .recent-trades-table th, .recent-trades-table td {
+    padding: 10px 8px;
+    text-align: left;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.holdings-table th, .recent-trades-table th {
+    color: #7c3aed;
+    font-weight: 600;
+    background: rgba(124, 58, 237, 0.08);
+}
+
+.holdings-table tr:last-child td, .recent-trades-table tr:last-child td {
+    border-bottom: none;
+}
+
+.positive {
+    color: #10b981 !important;
+}
+
+.negative {
+    color: #ef4444 !important;
+}
+
+/* --- Research & Analytics --- */
+.research-tools, .analytics-charts {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.tool-card, .chart-placeholder {
+    flex: 1 1 220px;
+    min-width: 220px;
+    text-align: center;
+    background: rgba(79,70,229,0.08);
+    border: 1px solid rgba(79,70,229,0.12);
+    border-radius: 14px;
+    padding: 32px 18px;
+    color: #bdbdfc;
+    box-shadow: 0 2px 12px 0 rgba(79,70,229,0.04);
+    margin-bottom: 0;
+}
+
+.tool-card h4, .chart-placeholder p {
+    margin-top: 16px;
+    font-size: 17px;
+    color: #fff;
+    font-weight: 600;
+}
+
+.tool-card p, .chart-placeholder p {
+    font-size: 14px;
+    color: #bdbdfc;
+    margin-top: 8px;
+}
+
+/* --- Responsive Sidebar --- */
+@media (max-width: 900px) {
+    .dashboard {
+        grid-template-columns: 70px 1fr;
+    }
+    .sidebar {
+        padding: 12px 0;
+    }
+    .logo span {
+        display: none;
+    }
+    .nav-link {
+        justify-content: center;
+        padding: 12px 0;
+        font-size: 0;
+    }
+    .nav-link i {
+        font-size: 20px;
+        margin: 0;
+    }
 }
