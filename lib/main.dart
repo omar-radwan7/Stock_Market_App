@@ -13,6 +13,7 @@ import 'app/providers/stock_provider.dart';
 import 'auth/sign_in_page.dart';
 import 'auth/sign_up_page.dart';
 import 'auth/auth_service.dart';
+import 'app/providers/theme_provider.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,6 +29,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => NewsProvider()),
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
         ChangeNotifierProvider(create: (_) => StockProvider()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: const MyApp(),
     ),
@@ -39,10 +41,36 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
     return MaterialApp(
       title: 'Stock Market App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.white,
+        primaryColor: const Color(0xFF4C336F),
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFF4C336F),
+          secondary: Color(0xFF3DE85F),
+          background: Colors.white,
+        ),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          titleTextStyle: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(color: Colors.black),
+          bodyMedium: TextStyle(color: Colors.black),
+        ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
         scaffoldBackgroundColor: const Color(0xFF0D1531),
         primaryColor: const Color(0xFF4C336F),
         colorScheme: const ColorScheme.dark(
@@ -57,6 +85,7 @@ class MyApp extends StatelessWidget {
           },
         ),
       ),
+      themeMode: themeProvider.themeMode,
       home: const SignInPage(),
       routes: {
         '/home': (context) => const MainNavigation(),
@@ -143,32 +172,14 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+    final isDark = themeProvider.themeMode == ThemeMode.dark;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         body: Stack(
           children: [
             _screens[_selectedIndex],
-            Positioned(
-              top: 40,
-              right: 16,
-              child: IconButton(
-                icon: Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor.withOpacity(0.3),
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    color: Colors.white,
-                    size: 24,
-                  ),
-                ),
-                onPressed: () => Navigator.pushNamed(context, '/profile'),
-              ),
-            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(

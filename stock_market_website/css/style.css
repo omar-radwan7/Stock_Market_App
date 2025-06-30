@@ -782,3 +782,46 @@ body {
         margin: 0;
     }
 }
+
+.wallet-balance {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #4f46e5;
+    background: #f3f4f6;
+    padding: 0.7rem 1.2rem;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.holdings-section {
+    margin-top: 2rem;
+}
+
+.holding-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.07);
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.toast {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    background: #4f46e5;
+    color: #fff;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    z-index: 9999;
+    opacity: 0.95;
+    transition: opacity 0.3s;
+}
+.toast.error {
+    background: #dc2626;
+}

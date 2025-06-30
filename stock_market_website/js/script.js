@@ -1,11 +1,9 @@
-// Configuration
-const API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
-const API_BASE_URL = 'https://financialmodelingprep.com/api/v3';
-
 // Global state
 let currentStock = 'AAPL';
 let watchlist = JSON.parse(localStorage.getItem('watchlist')) || ['AAPL', 'MSFT', 'GOOGL'];
 let stockDataCache = {};
+let wallet = parseFloat(localStorage.getItem('wallet')) || 10000;
+let holdings = JSON.parse(localStorage.getItem('holdings')) || {};
 
 // DOM Elements
 const elements = {
@@ -25,6 +23,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Set up event listeners
     setupEventListeners();
     
+    // Set the correct active navigation item
+    setActiveNavigation();
+    
     // Load initial data
     try {
         await Promise.all([
@@ -36,6 +37,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Update portfolio value
         updatePortfolioValue();
+        
+        updateWalletUI();
+        updateHoldingsUI();
         
         console.log('Initialization complete');
     } catch (error) {
@@ -82,6 +86,14 @@ async function loadTrendingStocks() {
                 </div>
             `;
             stockCard.addEventListener('click', () => selectStock(symbol));
+            // Attach buy event directly
+            const buyBtn = stockCard.querySelector('.buy');
+            if (buyBtn) {
+                buyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    buyStock(symbol, data.price);
+                });
+            }
             elements.trendingStocks.appendChild(stockCard);
         });
     } catch (error) {
@@ -94,7 +106,6 @@ async function loadBiggestMovers() {
     showLoading(elements.biggestMovers);
     
     try {
-        // In a real app, you would fetch actual market movers from the API
         const movers = ['GME', 'AMC', 'BB', 'TSLA', 'NVDA'];
         const moversData = await fetchMultipleStocks(movers);
         
@@ -124,8 +135,19 @@ async function loadBiggestMovers() {
                         ${formatPercent(changePercent)}
                     </div>
                 </div>
+                <div class="stock-actions">
+                    <button class="action-btn buy">Buy</button>
+                </div>
             `;
             moverItem.addEventListener('click', () => selectStock(symbol));
+            // Attach buy event directly
+            const buyBtn = moverItem.querySelector('.buy');
+            if (buyBtn) {
+                buyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    buyStock(symbol, data.price);
+                });
+            }
             elements.biggestMovers.appendChild(moverItem);
         });
     } catch (error) {
@@ -174,6 +196,9 @@ async function loadWatchlistMovers() {
                 <button class="remove-btn" data-symbol="${symbol}">
                     <i class="fas fa-times"></i>
                 </button>
+                <div class="stock-actions">
+                    <button class="action-btn buy">Buy</button>
+                </div>
             `;
             watchlistItem.addEventListener('click', (e) => {
                 if (!e.target.closest('.remove-btn')) {
@@ -186,6 +211,15 @@ async function loadWatchlistMovers() {
                 e.stopPropagation();
                 removeFromWatchlist(symbol);
             });
+            
+            // Attach buy event directly
+            const buyBtn = watchlistItem.querySelector('.buy');
+            if (buyBtn) {
+                buyBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    buyStock(symbol, data.price);
+                });
+            }
             
             elements.watchlistMovers.appendChild(watchlistItem);
         });
@@ -202,11 +236,9 @@ async function fetchStockData(symbol) {
         return stockDataCache[symbol].data;
     }
     try {
-        const response = await fetch(`${API_BASE_URL}/quote/${symbol}?apikey=${API_KEY}`);
+        const response = await fetch(`/api/quote/${symbol}`);
         if (!response.ok) throw new Error(`API error: ${response.status}`);
-        const dataArr = await response.json();
-        if (!Array.isArray(dataArr) || !dataArr[0]) throw new Error('Invalid data received');
-        const data = dataArr[0];
+        const data = await response.json();
         // Cache the data
         stockDataCache[symbol] = {
             data: data,
@@ -221,10 +253,10 @@ async function fetchStockData(symbol) {
 
 async function fetchCompanyProfile(symbol) {
     try {
-        const response = await fetch(`${API_BASE_URL}/profile/${symbol}?apikey=${API_KEY}`);
+        const response = await fetch(`/api/profile/${symbol}`);
         if (!response.ok) throw new Error(`API error: ${response.status}`);
-        const dataArr = await response.json();
-        return Array.isArray(dataArr) && dataArr[0] ? dataArr[0] : null;
+        const data = await response.json();
+        return data || null;
     } catch (error) {
         console.error(`Error fetching profile for ${symbol}:`, error);
         return null;
@@ -292,12 +324,12 @@ function formatPercent(value) {
 
 // Event Handlers
 function setupEventListeners() {
-    // Navigation
+    // Navigation - Updated to navigate to different HTML files
     document.querySelectorAll('.nav-link').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const section = link.dataset.section;
-            showSection(section);
+            navigateToPage(section);
         });
     });
     
@@ -325,22 +357,52 @@ function setupEventListeners() {
     });
 }
 
-function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.content-section').forEach(section => {
-        section.classList.remove('active');
-    });
+// New function to handle navigation to different HTML files
+function navigateToPage(pageName) {
+    const pageMap = {
+        'portfolio': 'portfolio.html',
+        'trade': 'trade.html',
+        'research': 'research.html',
+        'analytics': 'analytics.html',
+        'settings': 'settings.html',
+        'profile': 'profile.html'
+    };
     
-    // Show selected section
-    const targetSection = document.getElementById(`${sectionId}-section`);
-    if (targetSection) {
-        targetSection.classList.add('active');
+    const targetPage = pageMap[pageName];
+    if (targetPage) {
+        // Update the current page's navigation to show active state
+        updateNavigationState(pageName);
+        
+        // Navigate to the target page
+        window.location.href = targetPage;
     }
+}
+
+// Function to update navigation state based on current page
+function updateNavigationState(activePage) {
+    // Store the active page in localStorage so other pages can read it
+    localStorage.setItem('activePage', activePage);
+}
+
+// Function to set the correct active navigation item when page loads
+function setActiveNavigation() {
+    const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+    const pageToSectionMap = {
+        'index': 'trade',
+        'portfolio': 'portfolio',
+        'trade': 'trade',
+        'research': 'research',
+        'analytics': 'analytics',
+        'settings': 'settings',
+        'profile': 'profile'
+    };
+    
+    const activeSection = pageToSectionMap[currentPage] || 'trade';
     
     // Update nav links
     document.querySelectorAll('.nav-link').forEach(link => {
         link.classList.remove('active');
-        if (link.dataset.section === sectionId) {
+        if (link.dataset.section === activeSection) {
             link.classList.add('active');
         }
     });
@@ -425,4 +487,55 @@ async function refreshData() {
     } catch (error) {
         console.error('Error refreshing data:', error);
     }
+}
+
+function updateWalletUI() {
+    document.getElementById('walletBalance').textContent = `Wallet: $${wallet.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+}
+
+function updateHoldingsUI() {
+    const holdingsDiv = document.getElementById('myHoldings');
+    holdingsDiv.innerHTML = '';
+    const symbols = Object.keys(holdings);
+    if (symbols.length === 0) {
+        holdingsDiv.innerHTML = '<div class="empty-holdings">No stocks purchased yet.</div>';
+        return;
+    }
+    symbols.forEach(symbol => {
+        const { quantity, total } = holdings[symbol];
+        const holdingCard = document.createElement('div');
+        holdingCard.className = 'holding-card';
+        holdingCard.innerHTML = `
+            <div class="holding-symbol">${symbol}</div>
+            <div class="holding-qty">Qty: ${quantity}</div>
+            <div class="holding-total">Total: $${total.toLocaleString(undefined, {minimumFractionDigits: 2})}</div>
+        `;
+        holdingsDiv.appendChild(holdingCard);
+    });
+}
+
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 2000);
+}
+
+function buyStock(symbol, price) {
+    if (wallet < price) {
+        showToast('Insufficient funds!', 'error');
+        return;
+    }
+    wallet -= price;
+    if (!holdings[symbol]) {
+        holdings[symbol] = { quantity: 0, total: 0 };
+    }
+    holdings[symbol].quantity += 1;
+    holdings[symbol].total += price;
+    localStorage.setItem('wallet', wallet);
+    localStorage.setItem('holdings', JSON.stringify(holdings));
+    updateWalletUI();
+    updateHoldingsUI();
+    showToast(`Bought 1 share of ${symbol} for $${price.toLocaleString(undefined, {minimumFractionDigits: 2})}`);
 }

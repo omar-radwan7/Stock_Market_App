@@ -27,29 +27,12 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     final bool isPositive = widget.change >= 0;
-    final Color changeColor = isPositive ? const Color(0xFF3DE85F) : Colors.red;
+    final Color changeColor = isPositive ? Colors.green : Colors.red;
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          widget.symbol,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 22,
-            fontFamily: 'Barlow',
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: Container(
         width: double.infinity,
         height: double.infinity,
@@ -57,116 +40,378 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Theme.of(context).primaryColor,
-              Theme.of(context).colorScheme.background,
-              Theme.of(context).colorScheme.surface,
-            ],
-            stops: const [0.0, 0.4, 1.0],
+            colors: isDark 
+              ? [
+                  const Color(0xFF1A1A2E),
+                  const Color(0xFF16213E),
+                  const Color(0xFF0F3460),
+                ]
+              : [
+                  const Color(0xFF667EEA),
+                  const Color(0xFF764BA2),
+                  Colors.white,
+                ],
           ),
         ),
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 20),
-                Text(
-                  widget.name,
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 18,
-                    fontFamily: 'Barlow',
+          child: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                floating: true,
+                pinned: true,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                expandedHeight: 70,
+                automaticallyImplyLeading: false,
+                flexibleSpace: FlexibleSpaceBar(
+                  titlePadding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  title: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: isDark 
+                              ? Colors.white.withOpacity(0.1)
+                              : Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(18),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Text(
+                              '←',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Text(
+                          widget.symbol,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Text(
-                      '\$${widget.price.toStringAsFixed(2)}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 48,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.bold,
+              ),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Stock Header Section
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isDark
+                              ? [
+                                  const Color(0xFF2D3748),
+                                  const Color(0xFF1A202C),
+                                ]
+                              : [
+                                  Colors.white,
+                                  Colors.white.withOpacity(0.9),
+                                ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDark 
+                                ? Colors.black.withOpacity(0.3) 
+                                : Colors.grey.withOpacity(0.15),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                          border: isDark 
+                            ? Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                                width: 1,
+                              )
+                            : null,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.name,
+                              style: TextStyle(
+                                color: isDark 
+                                  ? Colors.white.withOpacity(0.8)
+                                  : Colors.grey[600],
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '\$${widget.price.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(width: 16),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: changeColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: Text(
+                                    '${isPositive ? '+' : ''}${widget.change.toStringAsFixed(2)}%',
+                                    style: TextStyle(
+                                      color: changeColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      '${isPositive ? '+' : ''}${widget.change.toStringAsFixed(2)}%',
-                      style: TextStyle(
-                        color: changeColor,
-                        fontSize: 20,
-                        fontFamily: 'Barlow',
-                        fontWeight: FontWeight.bold,
+                      const SizedBox(height: 24),
+                      
+                      // Chart Section
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isDark
+                              ? [
+                                  const Color(0xFF2D3748),
+                                  const Color(0xFF1A202C),
+                                ]
+                              : [
+                                  Colors.white,
+                                  Colors.white.withOpacity(0.9),
+                                ],
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDark 
+                                ? Colors.black.withOpacity(0.3) 
+                                : Colors.grey.withOpacity(0.15),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                          border: isDark 
+                            ? Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                                width: 1,
+                              )
+                            : null,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  'Price Chart',
+                                  style: TextStyle(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const Spacer(),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: changeColor.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Text(
+                                    'Live',
+                                    style: TextStyle(
+                                      color: changeColor,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 200,
+                              child: LineChart(_mainChart(isPositive, isDark)),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildTimeRangeSelector(isDark),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 30),
-                SizedBox(height: 250, child: LineChart(_mainChart(isPositive))),
-                const SizedBox(height: 20),
-                _buildTimeRangeSelector(),
-                const SizedBox(height: 40),
-                Text(
-                  'Key Stats',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontFamily: 'Barlow',
-                    fontWeight: FontWeight.bold,
+                      const SizedBox(height: 24),
+                      
+                      // Key Stats Section
+                      Text(
+                        'Key Statistics',
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _buildKeyStatsGrid(isDark),
+                      const SizedBox(height: 24),
+                      
+                      // Range Indicators Section
+                      Text(
+                        'Price Ranges',
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: isDark
+                              ? [
+                                  const Color(0xFF2D3748),
+                                  const Color(0xFF1A202C),
+                                ]
+                              : [
+                                  Colors.white,
+                                  Colors.white.withOpacity(0.9),
+                                ],
+                          ),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isDark 
+                                ? Colors.black.withOpacity(0.2)
+                                : Colors.grey.withOpacity(0.1),
+                              blurRadius: 15,
+                              offset: const Offset(0, 5),
+                            ),
+                          ],
+                          border: isDark 
+                            ? Border.all(
+                                color: Colors.white.withOpacity(0.1),
+                                width: 1,
+                              )
+                            : null,
+                        ),
+                        child: Column(
+                          children: [
+                            _buildRangeIndicator('Day\'s Range', '123.85', '126.16', 0.6, isDark),
+                            const SizedBox(height: 24),
+                            _buildRangeIndicator('52wk Range', '75.05', '145.02', 0.8, isDark),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 20),
-                _buildKeyStatsGrid(),
-                const SizedBox(height: 40),
-                _buildRangeIndicator('Day\'s Range', '123.85', '126.16', 0.6),
-                const SizedBox(height: 30),
-                _buildRangeIndicator('52wk Range', '75.05', '145.02', 0.8),
-                const SizedBox(height: 40),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildTimeRangeSelector() {
+  Widget _buildTimeRangeSelector(bool isDark) {
     final timeRanges = ['1D', '1W', '1M', '6M', '1Y', 'All'];
     return Center(
-      child: CupertinoSlidingSegmentedControl<int>(
-        backgroundColor: Colors.black.withOpacity(0.2),
-        thumbColor: Theme.of(context).primaryColor,
-        groupValue: _selectedTimeRange,
-        onValueChanged: (int? value) {
-          if (value != null) {
-            setState(() {
-              _selectedTimeRange = value;
-            });
-          }
-        },
-        children: {
-          for (var i = 0; i < timeRanges.length; i++)
-            i: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              child: Text(
-                timeRanges[i],
-                style: TextStyle(
-                  color:
-                      _selectedTimeRange == i ? Colors.white : Colors.white70,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
+      child: Container(
+        decoration: BoxDecoration(
+          color: isDark 
+            ? Colors.white.withOpacity(0.1)
+            : Colors.grey.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(25),
+        ),
+        child: CupertinoSlidingSegmentedControl<int>(
+          backgroundColor: Colors.transparent,
+          thumbColor: isDark 
+            ? Colors.white.withOpacity(0.2)
+            : Colors.white,
+          groupValue: _selectedTimeRange,
+          onValueChanged: (int? value) {
+            if (value != null) {
+              setState(() {
+                _selectedTimeRange = value;
+              });
+            }
+          },
+          children: {
+            for (var i = 0; i < timeRanges.length; i++)
+              i: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: Text(
+                  timeRanges[i],
+                  style: TextStyle(
+                    color: _selectedTimeRange == i 
+                      ? (isDark ? Colors.white : Colors.black87)
+                      : (isDark ? Colors.white.withOpacity(0.6) : Colors.grey[600]),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-            ),
-        },
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildKeyStatsGrid() {
+  Widget _buildKeyStatsGrid(bool isDark) {
     final stats = {
       'Volume': '75.16M',
       'Avg. Volume': '71.52M',
@@ -184,16 +429,24 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 2.5,
+        childAspectRatio: 2.2,
       ),
       itemBuilder: (context, index) {
         final key = stats.keys.elementAt(index);
         final value = stats.values.elementAt(index);
         return Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.2),
+            color: isDark 
+              ? Colors.white.withOpacity(0.05)
+              : Colors.grey.withOpacity(0.05),
             borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark 
+                ? Colors.white.withOpacity(0.1)
+                : Colors.grey.withOpacity(0.2),
+              width: 1,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -202,16 +455,19 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
               Text(
                 key,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
-                  fontSize: 14,
+                  color: isDark 
+                    ? Colors.white.withOpacity(0.7)
+                    : Colors.grey[600],
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
               const SizedBox(height: 4),
               Text(
                 value,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black87,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -227,29 +483,62 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
     String start,
     String end,
     double value,
+    bool isDark,
   ) {
     return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(start, style: TextStyle(color: Colors.white70, fontSize: 14)),
             Text(
-              label,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+              start,
+              style: TextStyle(
+                color: isDark 
+                  ? Colors.white.withOpacity(0.6)
+                  : Colors.grey[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
             ),
-            Text(end, style: TextStyle(color: Colors.white70, fontSize: 14)),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: isDark 
+                  ? Colors.white.withOpacity(0.1)
+                  : Colors.grey.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black87,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Text(
+              end,
+              style: TextStyle(
+                color: isDark 
+                  ? Colors.white.withOpacity(0.6)
+                  : Colors.grey[600],
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 12),
         Container(
           height: 8,
           decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.3),
+            color: isDark 
+              ? Colors.white.withOpacity(0.1)
+              : Colors.grey.withOpacity(0.2),
             borderRadius: BorderRadius.circular(4),
           ),
           child: ClipRRect(
@@ -257,9 +546,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             child: LinearProgressIndicator(
               value: value,
               backgroundColor: Colors.transparent,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                Theme.of(context).colorScheme.secondary,
-              ),
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
             ),
           ),
         ),
@@ -267,8 +554,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
     );
   }
 
-  LineChartData _mainChart(bool isPositive) {
-    final Color chartColor = isPositive ? const Color(0xFF3DE85F) : Colors.red;
+  LineChartData _mainChart(bool isPositive, bool isDark) {
+    final Color chartColor = isPositive ? Colors.green : Colors.red;
 
     List<FlSpot> spots = const [
       FlSpot(0, 3),
@@ -284,8 +571,8 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
     ];
 
     return LineChartData(
-      gridData: FlGridData(show: false),
-      titlesData: FlTitlesData(show: false),
+      gridData: const FlGridData(show: false),
+      titlesData: const FlTitlesData(show: false),
       borderData: FlBorderData(show: false),
       minX: 0,
       maxX: 9,
@@ -298,7 +585,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           color: chartColor,
           barWidth: 3,
           isStrokeCapRound: true,
-          dotData: FlDotData(show: false),
+          dotData: const FlDotData(show: false),
           belowBarData: BarAreaData(
             show: true,
             gradient: LinearGradient(
