@@ -1,4 +1,3 @@
-
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -13,7 +12,7 @@ async function fetchStockData(symbol) {
     return { data, raw };
 }
 
-function renderStockDetails(symbol, data) {
+function renderStockDetails(symbol, data) { 
     const change = data.c - data.pc;
     const changePercent = ((change / data.pc) * 100).toFixed(2);
     const changeClass = change >= 0 ? 'change-up' : 'change-down';
@@ -81,6 +80,20 @@ async function showStockDetails() {
         debugRaw.style.display = 'none';
     }
 }
+
+async function fetchCompanyProfile(symbol) {
+    try {
+        const response = await fetch(`/api/profile/${symbol}`);
+        if (!response.ok) throw new Error('API error: ' + response.status);
+        const data = await response.json();
+        return data || null;
+    } catch (error) {
+        console.error(`Error fetching profile for ${symbol}:`, error);
+        return null;
+    }
+}
+
+window.fetchCompanyProfile = fetchCompanyProfile;
 
 // Close modal handler (if you want to add a close button)
 document.addEventListener('DOMContentLoaded', showStockDetails); 

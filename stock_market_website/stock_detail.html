@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Details - TradeWise Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 2rem;
+        }
+
+        .stock-details-container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: grid;
+            gap: 2rem;
+        }
+
+        /* Header Section */
+        .header-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-2px);
+        }
+
+        .header-title {
+            flex: 1;
+            text-align: center;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stock-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .stock-info {
+            flex: 1;
+        }
+
+        .stock-symbol {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .stock-name {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 1rem;
+        }
+
+        .price-info {
+            text-align: right;
+        }
+
+        .stock-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+
+        .change-container {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .change-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .change-up {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .change-down {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .live-badge {
+            padding: 0.25rem 0.75rem;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #10b981;
+        }
+
+        .stock-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .meta-item {
+            text-align: center;
+        }
+
+        .meta-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .meta-value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+        }
+
+        /* Chart Section */
+        .chart-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .time-filters {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem;
+            border-radius: 12px;
+        }
+
+        .time-filter {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .time-filter.active,
+        .time-filter:hover {
+            background: rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+
+        .chart-wrapper {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Stats and Ranges Grid */
+        .stats-ranges-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .stats-card,
+        .ranges-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .key-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .stat-item {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        /* Range Indicators */
+        .range-indicator {
+            margin-bottom: 2rem;
+        }
+
+        .range-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .range-label {
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .range-current {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .range-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            position: relative;
+            margin-bottom: 0.75rem;
+        }
+
+        .range-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+
+        .range-values {
+            display: flex;
+            justify-content: space-between;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+        }
+
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 1rem;
+            color: #ef4444;
+            text-align: center;
+            margin: 1rem 0;
+        }
+
+        /* Debug Section */
+        .debug-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        .debug-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .debug-content {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.8);
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .stats-ranges-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stock-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .price-info {
+                text-align: left;
+            }
+
+            .stock-meta {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .key-stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stock-price {
+                font-size: 2.5rem;
+            }
+
+            .stock-symbol {
+                font-size: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-section,
+            .chart-section,
+            .stats-card,
+            .ranges-card {
+                padding: 1.5rem;
+            }
+
+            .time-filters {
+                flex-wrap: wrap;
+            }
+
+            .stock-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="stock-details-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-top">
+                <button class="back-btn" onclick="window.history.back()">
+                    ←
+                </button>
+                <div class="header-title">
+                    <div class="page-title">Stock Details</div>
+                </div>
+                <div style="width: 40px;"></div> <!-- Balance layout -->
+            </div>
+
+            <div id="stockDetails">
+                <div id="loading" class="loading">Loading stock information...</div>
+                <div id="errorMessage" class="error-message" style="display:none;"></div>
+                
+                <!-- Stock Information (populated by JavaScript) -->
+                <div id="stockInfo" style="display:none;">
+                    <div class="stock-header">
+                        <div class="stock-info">
+                            <div class="stock-symbol" id="symbolDisplay">AAPL</div>
+                            <div class="stock-name" id="nameDisplay">Apple Inc.</div>
+                        </div>
+                        <div class="price-info">
+                            <div class="stock-price" id="priceDisplay">$150.25</div>
+                            <div class="change-container">
+                                <div class="change-badge change-up" id="changeDisplay">+2.45%</div>
+                                <div class="live-badge">LIVE</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stock-meta">
+                        <div class="meta-item">
+                            <div class="meta-label">Open</div>
+                            <div class="meta-value" id="openPrice">$148.50</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">High</div>
+                            <div class="meta-value" id="highPrice">$151.20</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Low</div>
+                            <div class="meta-value" id="lowPrice">$147.80</div>
+                        </div>
+                        <div class="meta-item">
+                            <div class="meta-label">Volume</div>
+                            <div class="meta-value" id="volume">89.2M</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-header">
+                <div class="chart-title">Price Chart</div>
+                <div class="time-filters">
+                    <button class="time-filter" data-period="1">1D</button>
+                    <button class="time-filter" data-period="5">1W</button>
+                    <button class="time-filter active" data-period="30">1M</button>
+                    <button class="time-filter" data-period="180">6M</button>
+                    <button class="time-filter" data-period="365">1Y</button>
+                </div>
+            </div>
+            <div class="chart-wrapper">
+                <canvas id="priceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Stats and Ranges Grid -->
+        <div class="stats-ranges-grid">
+            <!-- Key Statistics -->
+            <div class="stats-card">
+                <div class="card-title">Key Statistics</div>
+                <div class="key-stats-grid" id="keyStatsGrid">
+                    <div class="stat-item">
+                        <div class="stat-label">Market Cap</div>
+                        <div class="stat-value" id="marketCap">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">P/E Ratio</div>
+                        <div class="stat-value" id="peRatio">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">EPS</div>
+                        <div class="stat-value" id="eps">-</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Beta</div>
+                        <div class="stat-value" id="beta">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Price Ranges -->
+            <div class="ranges-card">
+                <div class="card-title">Price Ranges</div>
+                <div class="range-indicator" id="dayRange">
+                    <div class="range-header">
+                        <div class="range-label">Day's Range</div>
+                        <div class="range-current" id="dayRangeCurrent">$150.25</div>
+                    </div>
+                    <div class="range-bar">
+                        <div class="range-bar-fill" id="dayRangeFill" style="width: 65%;"></div>
+                    </div>
+                    <div class="range-values">
+                        <span id="dayLow">$147.80</span>
+                        <span id="dayHigh">$151.20</span>
+                    </div>
+                </div>
+
+                <div class="range-indicator" id="yearRange">
+                    <div class="range-header">
+                        <div class="range-label">52-Week Range</div>
+                        <div class="range-current" id="yearRangeCurrent">$150.25</div>
+                    </div>
+                    <div class="range-bar">
+                        <div class="range-bar-fill" id="yearRangeFill" style="width: 80%;"></div>
+                    </div>
+                    <div class="range-values">
+                        <span id="yearLow">$89.47</span>
+                        <span id="yearHigh">$182.94</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Section -->
+        <div class="debug-section">
+            <button id="debugToggle" class="debug-toggle">Show Raw API Response</button>
+            <div id="debugContent" class="debug-content" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration - Change this if your server runs on a different port
+        const API_BASE_URL = 'http://localhost:3000/api';
+
+        let currentChart = null;
+        let currentSymbol = '';
+        let stockData = {};
+
+        // Helper function to format numbers
+        function formatNumber(num) {
+            if (num === undefined || num === null || isNaN(num)) return '-';
+            if (Math.abs(num) >= 1e12) return (num / 1e12).toFixed(2) + 'T';
+            if (Math.abs(num) >= 1e9) return (num / 1e9).toFixed(2) + 'B';
+            if (Math.abs(num) >= 1e6) return (num / 1e6).toFixed(2) + 'M';
+            if (Math.abs(num) >= 1e3) return (num / 1e3).toFixed(1) + 'K';
+            return num.toLocaleString();
+        }
+
+        // Format currency
+        function formatCurrency(num) {
+            if (num === undefined || num === null || isNaN(num)) return '-';
+            return '$' + num.toFixed(2);
+        }
+
+        // Format percentage
+        function formatPercentage(num) {
+            if (num === undefined || num === null || isNaN(num)) return '-';
+            return num.toFixed(2) + '%';
+        }
+
+        // Fetch stock quote from local API
+        async function fetchStockQuote(symbol) {
+            console.log(`Fetching quote for ${symbol} from local API...`);
+            const response = await fetch(`${API_BASE_URL}/quote/${symbol}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch quote`);
+            }
+            
+            const data = await response.json();
+            console.log('Quote data received:', data);
+            return data;
+        }
+
+        // Fetch company profile from local API
+        async function fetchCompanyProfile(symbol) {
+            console.log(`Fetching profile for ${symbol} from local API...`);
+            const response = await fetch(`${API_BASE_URL}/profile/${symbol}`);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                throw new Error(errorData.error || `HTTP ${response.status}: Failed to fetch profile`);
+            }
+            
+            const data = await response.json();
+            console.log('Profile data received:', data);
+            return data;
+        }
+
+        // Generate mock historical data (since your API doesn't have historical endpoint yet)
+        function generateMockHistoricalData(currentPrice, days = 30) {
+            const data = [];
+            let price = currentPrice;
+            
+            for (let i = days; i >= 0; i--) {
+                const date = new Date();
+                date.setDate(date.getDate() - i);
+                
+                // Add some random variation (-3% to +3%)
+                const variation = (Math.random() - 0.5) * 0.06;
+                price = price * (1 + variation);
+                
+                data.push({
+                    date: date.toISOString().split('T')[0],
+                    close: price
+                });
+            }
+            
+            return data;
+        }
+
+        // Update stock information in UI
+        function updateStockInfo(quote, profile) {
+            // Basic info
+            document.getElementById('symbolDisplay').textContent = quote.symbol || currentSymbol;
+            document.getElementById('nameDisplay').textContent = profile?.companyName || quote.name || currentSymbol;
+            document.getElementById('priceDisplay').textContent = formatCurrency(quote.price);
+
+            // Change calculation and display
+            const change = quote.change || 0;
+            const changePercent = quote.changesPercentage || 0;
+            const changeEl = document.getElementById('changeDisplay');
+            const changeText = `${change >= 0 ? '+' : ''}${change.toFixed(2)} (${changePercent.toFixed(2)}%)`;
+            changeEl.textContent = changeText;
+            changeEl.className = 'change-badge ' + (change >= 0 ? 'change-up' : 'change-down');
+
+            // Meta data
+            document.getElementById('openPrice').textContent = formatCurrency(quote.open);
+            document.getElementById('highPrice').textContent = formatCurrency(quote.dayHigh);
+            document.getElementById('lowPrice').textContent = formatCurrency(quote.dayLow);
+            document.getElementById('volume').textContent = formatNumber(quote.volume);
+
+            // Key statistics
+            document.getElementById('marketCap').textContent = formatNumber(quote.marketCap);
+            document.getElementById('peRatio').textContent = quote.pe ? quote.pe.toFixed(2) : '-';
+            document.getElementById('eps').textContent = quote.eps ? formatCurrency(quote.eps) : '-';
+            document.getElementById('beta').textContent = profile?.beta ? profile.beta.toFixed(2) : '-';
+
+            // Day's range
+            const dayMin = quote.dayLow || 0;
+            const dayMax = quote.dayHigh || 0;
+            const dayPrice = quote.price || 0;
+            const dayPercent = dayMax > dayMin ? ((dayPrice - dayMin) / (dayMax - dayMin)) * 100 : 0;
+            
+            document.getElementById('dayRangeCurrent').textContent = formatCurrency(dayPrice);
+            document.getElementById('dayRangeFill').style.width = Math.max(0, Math.min(100, dayPercent)) + '%';
+            document.getElementById('dayLow').textContent = formatCurrency(dayMin);
+            document.getElementById('dayHigh').textContent = formatCurrency(dayMax);
+
+            // 52-week range
+            const yearMin = quote.yearLow || 0;
+            const yearMax = quote.yearHigh || 0;
+            const yearPercent = yearMax > yearMin ? ((dayPrice - yearMin) / (yearMax - yearMin)) * 100 : 0;
+            
+            document.getElementById('yearRangeCurrent').textContent = formatCurrency(dayPrice);
+            document.getElementById('yearRangeFill').style.width = Math.max(0, Math.min(100, yearPercent)) + '%';
+            document.getElementById('yearLow').textContent = formatCurrency(yearMin);
+            document.getElementById('yearHigh').textContent = formatCurrency(yearMax);
+
+            stockData = { quote, profile };
+        }
+
+        // Create price chart
+        function createChart(historicalData, symbol) {
+            const ctx = document.getElementById('priceChart').getContext('2d');
+            
+            // Destroy existing chart
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            // Prepare data
+            const labels = historicalData.map(item => {
+                const date = new Date(item.date);
+                return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            });
+            const prices = historicalData.map(item => item.close);
+
+            // Determine color based on performance
+            const firstPrice = prices[0];
+            const lastPrice = prices[prices.length - 1];
+            const isPositive = lastPrice >= firstPrice;
+            const lineColor = isPositive ? '#10b981' : '#ef4444';
+
+            currentChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: prices,
+                        borderColor: lineColor,
+                        backgroundColor: isPositive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointHoverBackgroundColor: lineColor,
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                            borderColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 1,
+                            callbacks: {
+                                label: function(context) {
+                                    return `${symbol}: $${context.parsed.y.toFixed(2)}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            grid: { display: false },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.6)',
+                                maxTicksLimit: 6
+                            }
+                        },
+                        y: {
+                            display: true,
+                            grid: { 
+                                color: 'rgba(255, 255, 255, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.6)',
+                                callback: function(value) {
+                                    return '$' + value.toFixed(2);
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+        }
+
+        // Load chart data for selected time period
+        function loadChartData(days) {
+            try {
+                // For now, we'll use mock data since historical endpoint isn't implemented
+                const currentPrice = stockData.quote?.price || 150;
+                const historicalData = generateMockHistoricalData(currentPrice, days);
+                createChart(historicalData, currentSymbol);
+            } catch (error) {
+                console.error('Error loading chart data:', error);
+            }
+        }
+
+        // Main function to load stock details
+        async function loadStockDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            currentSymbol = urlParams.get('symbol') || 'AAPL';
+
+            try {
+                console.log(`Loading details for ${currentSymbol}...`);
+                
+                // Test API connection first
+                try {
+                    const healthResponse = await fetch('http://localhost:3000/health');
+                    if (!healthResponse.ok) {
+                        throw new Error('API server not responding');
+                    }
+                } catch (healthError) {
+                    throw new Error('Cannot connect to API server. Make sure your Node.js server is running on port 3000.');
+                }
+
+                // Fetch stock data
+                const quote = await fetchStockQuote(currentSymbol);
+                
+                // Try to fetch profile (it's okay if this fails)
+                let profile = null;
+                try {
+                    profile = await fetchCompanyProfile(currentSymbol);
+                } catch (profileError) {
+                    console.log('Profile fetch failed (this is okay):', profileError.message);
+                }
+
+                // Update UI
+                updateStockInfo(quote, profile);
+                
+                // Load initial chart (30 days)
+                loadChartData(30);
+
+                // Show content, hide loading
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stockInfo').style.display = 'block';
+
+                console.log('Stock details loaded successfully!');
+
+            } catch (error) {
+                console.error('Error loading stock details:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('stockInfo').style.display = 'none';
+                // Optionally, show an error message to the user
+                const errorDiv = document.getElementById('errorMessage');
+                if (errorDiv) {
+                    errorDiv.textContent = error.message || 'Failed to load stock details.';
+                    errorDiv.style.display = 'block';
+                }
+            }
+        }
+
+        window.onload = loadStockDetails;
+    </script>
+</body>
+</html>
