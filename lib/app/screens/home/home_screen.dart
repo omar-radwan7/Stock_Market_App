@@ -90,7 +90,7 @@ class _HomepageState extends State<Homepage> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Welcome to TradeWise',
+                          'Welcome to WiseTrade',
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
                             color: Colors.white,
@@ -259,13 +259,17 @@ class _HomepageState extends State<Homepage> {
                               ],
                             ),
                             const SizedBox(height: 12),
-                            Text(
-                              '\$12,256.00',
-                              style: theme.textTheme.headlineLarge?.copyWith(
-                                color: isDark ? Colors.white : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 32,
-                              ),
+                            Consumer<PortfolioProvider>(
+                              builder: (context, provider, _) {
+                                return Text(
+                                  '\$${provider.balance.toStringAsFixed(2)}',
+                                  style: theme.textTheme.headlineLarge?.copyWith(
+                                    color: isDark ? Colors.white : Colors.black87,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 32,
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 20),
                             Row(

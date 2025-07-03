@@ -61,6 +61,19 @@ class PortfolioScreen extends StatelessWidget {
                           fontSize: 16,
                         ),
                       ),
+                      const SizedBox(height: 16),
+                      Consumer<PortfolioProvider>(
+                        builder: (context, provider, _) {
+                          return Text(
+                            'Balance: \$${provider.balance.toStringAsFixed(2)}',
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -105,13 +118,17 @@ class PortfolioScreen extends StatelessWidget {
                                 width: 1,
                               ),
                         ),
-                        child: const PortfolioSummary(
-                          totalValue: 992.85, 
-                          percentageGain: 2.4,
+                        child: Consumer<PortfolioProvider>(
+                          builder: (context, provider, child) {
+                            return PortfolioSummary(
+                              totalValue: provider.balance,
+                              percentageGain: 0, // Or calculate based on initial balance if you want
+                            );
+                          },
                         ),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       // Holdings Section Header
                       Row(
                         children: [
@@ -141,15 +158,19 @@ class PortfolioScreen extends StatelessWidget {
                                 width: 1,
                               ),
                             ),
-                            child: Text(
-                              '3 Stocks',
-                              style: TextStyle(
-                                color: isDark 
-                                  ? Colors.white.withOpacity(0.8)
-                                  : const Color(0xFF667EEA),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                              ),
+                            child: Consumer<PortfolioProvider>(
+                              builder: (context, provider, _) {
+                                return Text(
+                                  '${provider.stocks.length} Stocks',
+                                  style: TextStyle(
+                                    color: isDark 
+                                      ? Colors.white.withOpacity(0.8)
+                                      : const Color(0xFF667EEA),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
