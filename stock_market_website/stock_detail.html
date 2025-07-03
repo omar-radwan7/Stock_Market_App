@@ -6,424 +6,8 @@
     <title>Stock Details - TradeWise Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-            min-height: 100vh;
-            color: #ffffff;
-            padding: 2rem;
-        }
-
-        .stock-details-container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: grid;
-            gap: 2rem;
-        }
-
-        /* Header Section */
-        .header-section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .header-top {
-            display: flex;
-            align-items: center;
-            margin-bottom: 2rem;
-            gap: 1rem;
-        }
-
-        .back-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-decoration: none;
-        }
-
-        .back-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: translateX(-2px);
-        }
-
-        .header-title {
-            flex: 1;
-            text-align: center;
-        }
-
-        .page-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .stock-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 1.5rem;
-        }
-
-        .stock-info {
-            flex: 1;
-        }
-
-        .stock-symbol {
-            font-size: 2.5rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .stock-name {
-            font-size: 1.2rem;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 1rem;
-        }
-
-        .price-info {
-            text-align: right;
-        }
-
-        .stock-price {
-            font-size: 3rem;
-            font-weight: 800;
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        .change-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 0.5rem;
-        }
-
-        .change-badge {
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .change-up {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-        }
-
-        .change-down {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .live-badge {
-            padding: 0.25rem 0.75rem;
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #10b981;
-        }
-
-        .stock-meta {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .meta-item {
-            text-align: center;
-        }
-
-        .meta-label {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .meta-value {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: white;
-        }
-
-        /* Chart Section */
-        .chart-section {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .chart-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-        }
-
-        .time-filters {
-            display: flex;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.25rem;
-            border-radius: 12px;
-        }
-
-        .time-filter {
-            padding: 0.5rem 1rem;
-            border: none;
-            background: transparent;
-            color: rgba(255, 255, 255, 0.7);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .time-filter.active,
-        .time-filter:hover {
-            background: rgba(102, 126, 234, 0.3);
-            color: white;
-        }
-
-        .chart-wrapper {
-            height: 300px;
-            position: relative;
-        }
-
-        /* Stats and Ranges Grid */
-        .stats-ranges-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .stats-card,
-        .ranges-card {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 2rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-
-        .key-stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-
-        .stat-item {
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-label {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .stat-value {
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        /* Range Indicators */
-        .range-indicator {
-            margin-bottom: 2rem;
-        }
-
-        .range-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .range-label {
-            color: white;
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        .range-current {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
-        }
-
-        .range-bar {
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            position: relative;
-            margin-bottom: 0.75rem;
-        }
-
-        .range-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            position: absolute;
-            left: 0;
-            top: 0;
-        }
-
-        .range-values {
-            display: flex;
-            justify-content: space-between;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 3rem;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1.1rem;
-        }
-
-        .error-message {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            color: #ef4444;
-            text-align: center;
-            margin: 1rem 0;
-        }
-
-        /* Debug Section */
-        .debug-section {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 2rem;
-        }
-
-        .debug-toggle {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            color: white;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .debug-content {
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.8);
-            white-space: pre-wrap;
-            overflow-x: auto;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            body {
-                padding: 1rem;
-            }
-
-            .stats-ranges-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stock-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .price-info {
-                text-align: left;
-            }
-
-            .stock-meta {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .key-stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stock-price {
-                font-size: 2.5rem;
-            }
-
-            .stock-symbol {
-                font-size: 2rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .header-section,
-            .chart-section,
-            .stats-card,
-            .ranges-card {
-                padding: 1.5rem;
-            }
-
-            .time-filters {
-                flex-wrap: wrap;
-            }
-
-            .stock-meta {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/script.js"></script>
 </head>
 <body>
     <div class="stock-details-container">
@@ -431,50 +15,77 @@
         <div class="header-section">
             <div class="header-top">
                 <button class="back-btn" onclick="window.history.back()">
-                    ←
+                    <i class="fas fa-arrow-left"></i>
                 </button>
                 <div class="header-title">
                     <div class="page-title">Stock Details</div>
                 </div>
-                <div style="width: 40px;"></div> <!-- Balance layout -->
+                <div style="width: 40px;"></div>
+            </div>
+
+            <!-- Portfolio Balance Card -->
+            <div class="balance-card">
+                <div class="balance-label">Portfolio Balance</div>
+                <div class="balance-value" id="balanceValue">$12,567.00</div>
             </div>
 
             <div id="stockDetails">
-                <div id="loading" class="loading">Loading stock information...</div>
+                <div id="loading" class="loading" style="display:none;"></div>
                 <div id="errorMessage" class="error-message" style="display:none;"></div>
                 
-                <!-- Stock Information (populated by JavaScript) -->
-                <div id="stockInfo" style="display:none;">
+                <!-- Stock Information -->
+                <div id="stockInfo" style="display:block;">
                     <div class="stock-header">
                         <div class="stock-info">
-                            <div class="stock-symbol" id="symbolDisplay">AAPL</div>
-                            <div class="stock-name" id="nameDisplay">Apple Inc.</div>
+                            <div class="stock-symbol" id="symbolDisplay">MSFT</div>
+                            <div class="stock-name" id="nameDisplay">Microsoft Corporation</div>
                         </div>
                         <div class="price-info">
-                            <div class="stock-price" id="priceDisplay">$150.25</div>
+                            <div class="stock-price" id="priceDisplay">$498.62</div>
                             <div class="change-container">
-                                <div class="change-badge change-up" id="changeDisplay">+2.45%</div>
+                                <div class="change-badge change-up" id="changeDisplay">
+                                    <i class="fas fa-arrow-up"></i>
+                                    +7.53 (1.53%)
+                                </div>
                                 <div class="live-badge">LIVE</div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Buy/Sell Buttons -->
+                    <div class="trade-actions">
+                        <button id="buyBtn" class="trade-btn buy-btn">
+                            <i class="fas fa-plus"></i>
+                            Buy
+                        </button>
+                        <button id="sellBtn" class="trade-btn sell-btn">
+                            <i class="fas fa-minus"></i>
+                            Sell
+                        </button>
+                    </div>
+
+                    <!-- Holdings Info -->
+                    <div class="holdings-info" id="holdingsInfo" style="display:none;">
+                        You own 0 shares
+                    </div>
+
+                    <!-- Stock Meta Data -->
                     <div class="stock-meta">
                         <div class="meta-item">
                             <div class="meta-label">Open</div>
-                            <div class="meta-value" id="openPrice">$148.50</div>
+                            <div class="meta-value" id="openPrice">$491.05</div>
                         </div>
                         <div class="meta-item">
                             <div class="meta-label">High</div>
-                            <div class="meta-value" id="highPrice">$151.20</div>
+                            <div class="meta-value" id="highPrice">$500.11</div>
                         </div>
                         <div class="meta-item">
                             <div class="meta-label">Low</div>
-                            <div class="meta-value" id="lowPrice">$147.80</div>
+                            <div class="meta-value" id="lowPrice">$490.96</div>
                         </div>
                         <div class="meta-item">
                             <div class="meta-label">Volume</div>
-                            <div class="meta-value" id="volume">89.2M</div>
+                            <div class="meta-value" id="volume">13.87M</div>
                         </div>
                     </div>
                 </div>
@@ -503,22 +114,22 @@
             <!-- Key Statistics -->
             <div class="stats-card">
                 <div class="card-title">Key Statistics</div>
-                <div class="key-stats-grid" id="keyStatsGrid">
+                <div class="key-stats-grid">
                     <div class="stat-item">
                         <div class="stat-label">Market Cap</div>
-                        <div class="stat-value" id="marketCap">-</div>
+                        <div class="stat-value" id="marketCap">3.71T</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">P/E Ratio</div>
-                        <div class="stat-value" id="peRatio">-</div>
+                        <div class="stat-value" id="peRatio">38.53</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">EPS</div>
-                        <div class="stat-value" id="eps">-</div>
+                        <div class="stat-value" id="eps">$12.94</div>
                     </div>
                     <div class="stat-item">
                         <div class="stat-label">Beta</div>
-                        <div class="stat-value" id="beta">-</div>
+                        <div class="stat-value" id="beta">1.03</div>
                     </div>
                 </div>
             </div>
@@ -526,52 +137,129 @@
             <!-- Price Ranges -->
             <div class="ranges-card">
                 <div class="card-title">Price Ranges</div>
-                <div class="range-indicator" id="dayRange">
+                <div class="range-indicator">
                     <div class="range-header">
                         <div class="range-label">Day's Range</div>
-                        <div class="range-current" id="dayRangeCurrent">$150.25</div>
+                        <div class="range-current" id="dayRangeCurrent">$498.62</div>
                     </div>
                     <div class="range-bar">
-                        <div class="range-bar-fill" id="dayRangeFill" style="width: 65%;"></div>
+                        <div class="range-bar-fill" id="dayRangeFill" style="width: 85%;"></div>
                     </div>
                     <div class="range-values">
-                        <span id="dayLow">$147.80</span>
-                        <span id="dayHigh">$151.20</span>
+                        <span id="dayLow">$490.96</span>
+                        <span id="dayHigh">$500.11</span>
                     </div>
                 </div>
 
-                <div class="range-indicator" id="yearRange">
+                <div class="range-indicator">
                     <div class="range-header">
                         <div class="range-label">52-Week Range</div>
-                        <div class="range-current" id="yearRangeCurrent">$150.25</div>
+                        <div class="range-current" id="yearRangeCurrent">$498.62</div>
                     </div>
                     <div class="range-bar">
-                        <div class="range-bar-fill" id="yearRangeFill" style="width: 80%;"></div>
+                        <div class="range-bar-fill" id="yearRangeFill" style="width: 92%;"></div>
                     </div>
                     <div class="range-values">
-                        <span id="yearLow">$89.47</span>
-                        <span id="yearHigh">$182.94</span>
+                        <span id="yearLow">$309.45</span>
+                        <span id="yearHigh">$520.53</span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Debug Section -->
-        <div class="debug-section">
-            <button id="debugToggle" class="debug-toggle">Show Raw API Response</button>
-            <div id="debugContent" class="debug-content" style="display:none;"></div>
+    <!-- Trade Modal -->
+    <div id="tradeModal" class="trade-modal">
+        <div class="trade-modal-content">
+            <div class="trade-modal-header">
+                <div class="trade-modal-icon" id="tradeModalIcon">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <div>
+                    <div class="trade-modal-title" id="tradeModalTitle">Buy Stock</div>
+                    <div class="trade-modal-subtitle" id="tradeModalSubtitle">Confirm your purchase</div>
+                </div>
+            </div>
+
+            <div class="trade-form">
+                <div class="trade-info-card">
+                    <div class="trade-info-row">
+                        <div class="trade-info-label">Stock</div>
+                        <div class="trade-info-value" id="tradeModalStock">MSFT</div>
+                    </div>
+                    <div class="trade-info-row">
+                        <div class="trade-info-label">Current Price</div>
+                        <div class="trade-info-value" id="tradeModalPrice">$498.62</div>
+                    </div>
+                    <div class="trade-info-row">
+                        <div class="trade-info-label">Available Balance</div>
+                        <div class="trade-info-value" id="tradeModalBalance">$12,567.00</div>
+                    </div>
+                </div>
+
+                <div class="shares-input-group">
+                    <div class="shares-input-label">Number of Shares</div>
+                    <div class="shares-input-container">
+                        <button class="shares-btn" id="decreaseShares">-</button>
+                        <input type="number" id="sharesInput" class="shares-input" value="1" min="1">
+                        <button class="shares-btn" id="increaseShares">+</button>
+                    </div>
+                </div>
+
+                <div class="total-cost">
+                    <div class="total-cost-label">Total Cost</div>
+                    <div class="total-cost-value" id="totalCostValue">$498.62</div>
+                </div>
+
+                <div class="trade-modal-actions">
+                    <button class="trade-modal-btn trade-modal-btn-cancel" id="cancelTradeBtn">Cancel</button>
+                    <button class="trade-modal-btn trade-modal-btn-confirm" id="confirmTradeBtn">Confirm Buy</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
-        // API Configuration - Change this if your server runs on a different port
+        // Portfolio Management Functions
+        const BALANCE_KEY = 'portfolio_balance';
+        const HOLDINGS_KEY = 'portfolio_holdings';
+        const STARTING_BALANCE = 12567.00;
+
+        function getBalance() {
+            const val = localStorage.getItem(BALANCE_KEY);
+            return val ? parseFloat(val) : STARTING_BALANCE;
+        }
+
+        function setBalance(val) {
+            localStorage.setItem(BALANCE_KEY, val.toFixed(2));
+        }
+
+        function getHoldings(symbol) {
+            const holdings = JSON.parse(localStorage.getItem(HOLDINGS_KEY) || '{}');
+            return holdings[symbol] || 0;
+        }
+
+        function setHoldings(symbol, shares) {
+            const holdings = JSON.parse(localStorage.getItem(HOLDINGS_KEY) || '{}');
+            if (shares > 0) {
+                holdings[symbol] = shares;
+            } else {
+                delete holdings[symbol];
+            }
+            localStorage.setItem(HOLDINGS_KEY, JSON.stringify(holdings));
+        }
+
+        // API Configuration
         const API_BASE_URL = 'http://localhost:3000/api';
 
         let currentChart = null;
         let currentSymbol = '';
         let stockData = {};
+        let currentTradeType = 'buy';
+        let currentPrice = 0;
+        let currentBalance = getBalance();
 
-        // Helper function to format numbers
+        // Helper functions
         function formatNumber(num) {
             if (num === undefined || num === null || isNaN(num)) return '-';
             if (Math.abs(num) >= 1e12) return (num / 1e12).toFixed(2) + 'T';
@@ -581,19 +269,129 @@
             return num.toLocaleString();
         }
 
-        // Format currency
         function formatCurrency(num) {
             if (num === undefined || num === null || isNaN(num)) return '-';
             return '$' + num.toFixed(2);
         }
 
-        // Format percentage
         function formatPercentage(num) {
             if (num === undefined || num === null || isNaN(num)) return '-';
             return num.toFixed(2) + '%';
         }
 
-        // Fetch stock quote from local API
+        // Show trade modal
+        function showTradeModal(tradeType) {
+            currentTradeType = tradeType;
+            const modal = document.getElementById('tradeModal');
+            const icon = document.getElementById('tradeModalIcon');
+            const title = document.getElementById('tradeModalTitle');
+            const subtitle = document.getElementById('tradeModalSubtitle');
+            const confirmBtn = document.getElementById('confirmTradeBtn');
+            const sharesInput = document.getElementById('sharesInput');
+            
+            sharesInput.value = '1';
+            
+            if (tradeType === 'buy') {
+                icon.innerHTML = '<i class="fas fa-plus"></i>';
+                icon.className = 'trade-modal-icon buy';
+                title.textContent = 'Buy Stock';
+                subtitle.textContent = 'Confirm your purchase';
+                confirmBtn.textContent = 'Confirm Buy';
+                confirmBtn.className = 'trade-modal-btn trade-modal-btn-confirm buy';
+            } else {
+                icon.innerHTML = '<i class="fas fa-minus"></i>';
+                icon.className = 'trade-modal-icon sell';
+                title.textContent = 'Sell Stock';
+                subtitle.textContent = 'Confirm your sale';
+                confirmBtn.textContent = 'Confirm Sell';
+                confirmBtn.className = 'trade-modal-btn trade-modal-btn-confirm sell';
+            }
+            
+            document.getElementById('tradeModalStock').textContent = currentSymbol;
+            document.getElementById('tradeModalPrice').textContent = formatCurrency(currentPrice);
+            document.getElementById('tradeModalBalance').textContent = formatCurrency(currentBalance);
+            
+            updateTotalCost();
+            modal.classList.add('active');
+        }
+
+        function hideTradeModal() {
+            document.getElementById('tradeModal').classList.remove('active');
+        }
+
+        function updateTotalCost() {
+            const shares = parseInt(document.getElementById('sharesInput').value) || 1;
+            const totalCost = shares * currentPrice;
+            document.getElementById('totalCostValue').textContent = formatCurrency(totalCost);
+        }
+
+        function executeTrade() {
+            const shares = parseInt(document.getElementById('sharesInput').value) || 1;
+            const totalCost = shares * currentPrice;
+            
+            if (currentTradeType === 'buy' && totalCost > currentBalance) {
+                alert('Insufficient balance for this purchase.');
+                return;
+            }
+            
+            if (shares <= 0) {
+                alert('Please enter a valid number of shares.');
+                return;
+            }
+            
+            const currentHoldings = getHoldings(currentSymbol);
+            
+            if (currentTradeType === 'buy') {
+                currentBalance -= totalCost;
+                setBalance(currentBalance);
+                
+                const newHoldings = currentHoldings + shares;
+                setHoldings(currentSymbol, newHoldings);
+                
+                alert(`Successfully bought ${shares} shares of ${currentSymbol} for ${formatCurrency(totalCost)}`);
+            } else {
+                if (currentHoldings < shares) {
+                    alert(`You don't have enough shares of ${currentSymbol} to sell. You own ${currentHoldings} shares.`);
+                    return;
+                }
+                
+                currentBalance += totalCost;
+                setBalance(currentBalance);
+                
+                const newHoldings = currentHoldings - shares;
+                setHoldings(currentSymbol, newHoldings);
+                
+                alert(`Successfully sold ${shares} shares of ${currentSymbol} for ${formatCurrency(totalCost)}`);
+            }
+            
+            document.getElementById('balanceValue').textContent = formatCurrency(currentBalance);
+            updateHoldingsDisplay();
+            hideTradeModal();
+        }
+
+        function updateHoldingsDisplay() {
+            const holdings = getHoldings(currentSymbol);
+            const holdingsInfo = document.getElementById('holdingsInfo');
+            
+            if (holdings > 0) {
+                holdingsInfo.textContent = `You own ${holdings} shares`;
+                holdingsInfo.style.display = 'block';
+                
+                const sellBtn = document.getElementById('sellBtn');
+                if (sellBtn) {
+                    sellBtn.style.display = 'flex';
+                }
+            } else {
+                holdingsInfo.style.display = 'none';
+                
+                const sellBtn = document.getElementById('sellBtn');
+                if (sellBtn) {
+                    sellBtn.style.display = 'none';
+                }
+            }
+        }
+
+        // API Functions
         async function fetchStockQuote(symbol) {
             console.log(`Fetching quote for ${symbol} from local API...`);
             const response = await fetch(`${API_BASE_URL}/quote/${symbol}`);
@@ -608,7 +406,6 @@
             return data;
         }
 
-        // Fetch company profile from local API
         async function fetchCompanyProfile(symbol) {
             console.log(`Fetching profile for ${symbol} from local API...`);
             const response = await fetch(`${API_BASE_URL}/profile/${symbol}`);
@@ -623,7 +420,6 @@
             return data;
         }
 
-        // Generate mock historical data (since your API doesn't have historical endpoint yet)
         function generateMockHistoricalData(currentPrice, days = 30) {
             const data = [];
             let price = currentPrice;
@@ -632,7 +428,6 @@
                 const date = new Date();
                 date.setDate(date.getDate() - i);
                 
-                // Add some random variation (-3% to +3%)
                 const variation = (Math.random() - 0.5) * 0.06;
                 price = price * (1 + variation);
                 
@@ -645,28 +440,29 @@
             return data;
         }
 
-        // Update stock information in UI
         function updateStockInfo(quote, profile) {
-            // Basic info
+            currentPrice = quote.price || 0;
+            
             document.getElementById('symbolDisplay').textContent = quote.symbol || currentSymbol;
             document.getElementById('nameDisplay').textContent = profile?.companyName || quote.name || currentSymbol;
             document.getElementById('priceDisplay').textContent = formatCurrency(quote.price);
 
-            // Change calculation and display
             const change = quote.change || 0;
             const changePercent = quote.changesPercentage || 0;
             const changeEl = document.getElementById('changeDisplay');
-            const changeText = `${change >= 0 ? '+' : ''}${change.toFixed(2)} (${changePercent.toFixed(2)}%)`;
-            changeEl.textContent = changeText;
-            changeEl.className = 'change-badge ' + (change >= 0 ? 'change-up' : 'change-down');
+            const isPositive = change >= 0;
+            
+            changeEl.innerHTML = `
+                <i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i>
+                ${isPositive ? '+' : ''}${change.toFixed(2)} (${changePercent.toFixed(2)}%)
+            `;
+            changeEl.className = 'change-badge ' + (isPositive ? 'change-up' : 'change-down');
 
-            // Meta data
             document.getElementById('openPrice').textContent = formatCurrency(quote.open);
             document.getElementById('highPrice').textContent = formatCurrency(quote.dayHigh);
             document.getElementById('lowPrice').textContent = formatCurrency(quote.dayLow);
             document.getElementById('volume').textContent = formatNumber(quote.volume);
 
-            // Key statistics
             document.getElementById('marketCap').textContent = formatNumber(quote.marketCap);
             document.getElementById('peRatio').textContent = quote.pe ? quote.pe.toFixed(2) : '-';
             document.getElementById('eps').textContent = quote.eps ? formatCurrency(quote.eps) : '-';
@@ -693,26 +489,23 @@
             document.getElementById('yearLow').textContent = formatCurrency(yearMin);
             document.getElementById('yearHigh').textContent = formatCurrency(yearMax);
 
+            updateHoldingsDisplay();
             stockData = { quote, profile };
         }
 
-        // Create price chart
         function createChart(historicalData, symbol) {
             const ctx = document.getElementById('priceChart').getContext('2d');
             
-            // Destroy existing chart
             if (currentChart) {
                 currentChart.destroy();
             }
 
-            // Prepare data
             const labels = historicalData.map(item => {
                 const date = new Date(item.date);
                 return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
             });
             const prices = historicalData.map(item => item.close);
 
-            // Determine color based on performance
             const firstPrice = prices[0];
             const lastPrice = prices[prices.length - 1];
             const isPositive = lastPrice >= firstPrice;
@@ -730,7 +523,7 @@
                         fill: true,
                         tension: 0.4,
                         pointRadius: 0,
-                        pointHoverRadius: 6,
+                        pointHoverRadius: 8,
                         pointHoverBackgroundColor: lineColor,
                         pointHoverBorderColor: '#ffffff',
                         pointHoverBorderWidth: 2
@@ -751,7 +544,7 @@
                             borderWidth: 1,
                             callbacks: {
                                 label: function(context) {
-                                    return `${symbol}: $${context.parsed.y.toFixed(2)}`;
+                                    return `${symbol}: ${formatCurrency(context.parsed.y)}`;
                                 }
                             }
                         }
@@ -759,10 +552,13 @@
                     scales: {
                         x: {
                             display: true,
-                            grid: { display: false },
+                            grid: { 
+                                display: false,
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            },
                             ticks: { 
                                 color: 'rgba(255, 255, 255, 0.6)',
-                                maxTicksLimit: 6
+                                maxTicksLimit: 8
                             }
                         },
                         y: {
@@ -774,7 +570,7 @@
                             ticks: { 
                                 color: 'rgba(255, 255, 255, 0.6)',
                                 callback: function(value) {
-                                    return '$' + value.toFixed(2);
+                                    return formatCurrency(value);
                                 }
                             }
                         }
@@ -787,10 +583,8 @@
             });
         }
 
-        // Load chart data for selected time period
         function loadChartData(days) {
             try {
-                // For now, we'll use mock data since historical endpoint isn't implemented
                 const currentPrice = stockData.quote?.price || 150;
                 const historicalData = generateMockHistoricalData(currentPrice, days);
                 createChart(historicalData, currentSymbol);
@@ -799,15 +593,17 @@
             }
         }
 
-        // Main function to load stock details
         async function loadStockDetails() {
             const urlParams = new URLSearchParams(window.location.search);
             currentSymbol = urlParams.get('symbol') || 'AAPL';
+            
+            currentBalance = getBalance();
+            document.getElementById('balanceValue').textContent = formatCurrency(currentBalance);
 
             try {
                 console.log(`Loading details for ${currentSymbol}...`);
                 
-                // Test API connection first
+                // Test API connection
                 try {
                     const healthResponse = await fetch('http://localhost:3000/health');
                     if (!healthResponse.ok) {
@@ -817,10 +613,8 @@
                     throw new Error('Cannot connect to API server. Make sure your Node.js server is running on port 3000.');
                 }
 
-                // Fetch stock data
                 const quote = await fetchStockQuote(currentSymbol);
                 
-                // Try to fetch profile (it's okay if this fails)
                 let profile = null;
                 try {
                     profile = await fetchCompanyProfile(currentSymbol);
@@ -828,13 +622,9 @@
                     console.log('Profile fetch failed (this is okay):', profileError.message);
                 }
 
-                // Update UI
                 updateStockInfo(quote, profile);
-                
-                // Load initial chart (30 days)
                 loadChartData(30);
 
-                // Show content, hide loading
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('stockInfo').style.display = 'block';
 
@@ -844,13 +634,71 @@
                 console.error('Error loading stock details:', error);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('stockInfo').style.display = 'none';
-                // Optionally, show an error message to the user
+                
                 const errorDiv = document.getElementById('errorMessage');
                 if (errorDiv) {
                     errorDiv.textContent = error.message || 'Failed to load stock details.';
                     errorDiv.style.display = 'block';
                 }
             }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('buyBtn').addEventListener('click', function() {
+                showTradeModal('buy');
+            });
+
+            document.getElementById('sellBtn').addEventListener('click', function() {
+                showTradeModal('sell');
+            });
+
+            document.getElementById('cancelTradeBtn').addEventListener('click', hideTradeModal);
+            document.getElementById('confirmTradeBtn').addEventListener('click', executeTrade);
+
+            document.getElementById('tradeModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideTradeModal();
+                }
+            });
+
+            document.getElementById('decreaseShares').addEventListener('click', function() {
+                const input = document.getElementById('sharesInput');
+                const currentValue = parseInt(input.value) || 1;
+                if (currentValue > 1) {
+                    input.value = currentValue - 1;
+                    updateTotalCost();
+                }
+            });
+
+            document.getElementById('increaseShares').addEventListener('click', function() {
+                const input = document.getElementById('sharesInput');
+                const currentValue = parseInt(input.value) || 1;
+                input.value = currentValue + 1;
+                updateTotalCost();
+            });
+
+            document.getElementById('sharesInput').addEventListener('input', function() {
+                const value = parseInt(this.value) || 1;
+                if (value < 1) {
+                    this.value = 1;
+                }
+                updateTotalCost();
+            });
+
+            document.querySelectorAll('.time-filter').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.time-filter').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const days = parseInt(this.dataset.period);
+                    loadChartData(days);
+                });
+            });
+        });
+
+        // Initialize
+        if (!localStorage.getItem(BALANCE_KEY)) {
+            setBalance(STARTING_BALANCE);
         }
 
         window.onload = loadStockDetails;

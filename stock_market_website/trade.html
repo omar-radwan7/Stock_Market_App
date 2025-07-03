@@ -18,13 +18,7 @@
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="portfolio">
-                        <i class="fas fa-chart-pie"></i>
-                        Portfolio
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-section="trade">
+                    <a href="#" class="nav-link active" data-section="trade">
                         <i class="fas fa-exchange-alt"></i>
                         Trade
                     </a>
@@ -74,10 +68,9 @@
             <div id="trade-section" class="content-section active">
                 <!-- Tab Navigation -->
                 <nav class="tab-navigation">
-                    <div class="tab-item">Portfolio</div>
                     <div class="tab-item active">Trade</div>
                     <div class="tab-item">Research</div>
-                    <div class="tab-item" id="stockSymbolTab">AAPL</div>
+                    <div class="tab-item" id="stockSymbolTab">Portfolio</div>
                 </nav>
                 <div class="tab-sub-nav">
                     <div class="tab-sub-item active">Stocks</div>
@@ -96,7 +89,7 @@
                     <div class="chart-container">
                         <div class="portfolio-header">
                             <div>
-                                <h3>Total Investments: <span class="portfolio-value" id="portfolioValue">$88,720</span></h3>
+                                <h3>Total Investments: <span class="portfolio-value" id="portfolioValue">$12,567</span></h3>
                             </div>
                             <div class="time-filters">
                                 <button class="time-filter">Day</button>
@@ -115,34 +108,17 @@
                         <div class="donut-chart">
                             <canvas id="donutChart"></canvas>
                             <div class="stats-total">
-                                <div class="amount">$23,994</div>
+                                <div class="amount">$12,567</div>
                                 <div class="label">Total</div>
                             </div>
                         </div>
                         <div class="stats-legend">
                             <div class="legend-item">
                                 <div class="legend-info">
-                                    <div class="legend-color" style="background: 
-#4f46e5;"></div>
-                                    Tech Stock
+                                    <div class="legend-color" style="background: #4f46e5;"></div>
+                                    Cash
                                 </div>
-                                <span>68%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-info">
-                                    <div class="legend-color" style="background: 
-#06b6d4;"></div>
-                                    Stock Value
-                                </div>
-                                <span>22%</span>
-                            </div>
-                            <div class="legend-item">
-                                <div class="legend-info">
-                                    <div class="legend-color" style="background: 
-#8b5cf6;"></div>
-                                    Holiday
-                                </div>
-                                <span>10%</span>
+                                <span>100%</span>
                             </div>
                         </div>
                     </div>
@@ -173,4 +149,4 @@
     </div>
     <script src="js/script.js"></script>
 </body>
-</html> 
+</html>

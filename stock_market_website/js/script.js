@@ -3,6 +3,43 @@ let currentStock = 'AAPL';
 let watchlist = JSON.parse(localStorage.getItem('watchlist')) || ['AAPL', 'MSFT', 'GOOGL'];
 let stockDataCache = {};
 
+// --- Portfolio Balance State ---
+const STARTING_BALANCE = 12567.00;
+const BALANCE_KEY = 'portfolio_balance';
+const HOLDINGS_KEY = 'portfolio_holdings';
+
+function getBalance() {
+    const val = localStorage.getItem(BALANCE_KEY);
+    return val ? parseFloat(val) : STARTING_BALANCE;
+}
+
+function setBalance(val) {
+    localStorage.setItem(BALANCE_KEY, val.toFixed(2));
+    updatePortfolioValue();
+    updateDonutChart();
+}
+
+function getHoldings(symbol) {
+    const holdings = JSON.parse(localStorage.getItem(HOLDINGS_KEY) || '{}');
+    return holdings[symbol] || 0;
+}
+
+function setHoldings(symbol, shares) {
+    const holdings = JSON.parse(localStorage.getItem(HOLDINGS_KEY) || '{}');
+    if (shares > 0) {
+        holdings[symbol] = shares;
+    } else {
+        delete holdings[symbol];
+    }
+    localStorage.setItem(HOLDINGS_KEY, JSON.stringify(holdings));
+    updatePortfolioValue();
+    updateDonutChart();
+}
+
+function getAllHoldings() {
+    return JSON.parse(localStorage.getItem(HOLDINGS_KEY) || '{}');
+}
+
 // DOM Elements
 const elements = {
     trendingStocks: document.getElementById('trendingStocks'),
@@ -14,9 +51,18 @@ const elements = {
     userName: document.getElementById('userName')
 };
 
+// Chart variables
+let portfolioChart = null;
+let donutChart = null;
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('TradeWise Platform Initializing...');
+    
+    // Initialize balance if not set
+    if (!localStorage.getItem(BALANCE_KEY)) {
+        setBalance(STARTING_BALANCE);
+    }
     
     // Set up event listeners
     setupEventListeners();
@@ -65,6 +111,7 @@ async function loadTrendingStocks() {
             const change = data.price - data.previousClose;
             const changePercent = (change / data.previousClose) * 100;
             const isPositive = change >= 0;
+            const holdings = getHoldings(symbol);
             
             const stockCard = document.createElement('div');
             stockCard.className = 'stock-card';
@@ -75,8 +122,17 @@ async function loadTrendingStocks() {
                     ${formatPercent(changePercent)}
                     <i class="fas fa-arrow-${isPositive ? 'up' : 'down'}"></i>
                 </div>
+                ${holdings > 0 ? `<div class="holdings-info">Owned: ${holdings} shares</div>` : ''}
+                <div class="stock-actions">
+                    ${holdings > 0 ? `<button class="stock-btn sell" onclick="sellStock('${symbol}', ${data.price})">Sell</button>` : ''}
+                </div>
             `;
-            stockCard.addEventListener('click', () => window.location.href = `stock_detail.html?symbol=${symbol}`);
+            stockCard.addEventListener('click', (e) => {
+                // Don't navigate if clicking on buttons
+                if (!e.target.closest('.stock-btn')) {
+                    window.location.href = `stock_detail.html?symbol=${symbol}`;
+                }
+            });
             elements.trendingStocks.appendChild(stockCard);
         });
     } catch (error) {
@@ -130,63 +186,129 @@ async function loadBiggestMovers() {
 
 async function loadWatchlistMovers() {
     showLoading(elements.watchlistMovers);
-    
     try {
-        if (watchlist.length === 0) {
-            elements.watchlistMovers.innerHTML = '<div class="empty-watchlist">Add stocks to your watchlist</div>';
+        const holdings = getAllHoldings();
+        const symbols = Object.keys(holdings).filter(s => holdings[s] > 0);
+        
+        if (symbols.length === 0) {
+            elements.watchlistMovers.innerHTML = '<div class="empty-watchlist">Buy stocks to add them to your watchlist</div>';
             return;
         }
         
-        const watchlistData = await fetchMultipleStocks(watchlist);
-        
+        const watchlistData = await fetchMultipleStocks(symbols);
         elements.watchlistMovers.innerHTML = '';
         
+        // Create a map for quick lookup
+        const dataMap = {};
         watchlistData.forEach(({symbol, data, error}) => {
-            if (error || !data) {
-                console.error(`Error loading ${symbol}:`, error);
-                return;
-            }
+            dataMap[symbol] = {data, error};
+        });
+        
+        symbols.forEach(symbol => {
+            const entry = dataMap[symbol];
+            const holdingCount = holdings[symbol];
             
-            const change = data.price - data.previousClose;
-            const changePercent = (change / data.previousClose) * 100;
-            const isPositive = change >= 0;
-            
-            const watchlistItem = document.createElement('div');
-            watchlistItem.className = 'mover-item';
-            watchlistItem.innerHTML = `
-                <div class="mover-icon">${symbol.substring(0, 2)}</div>
-                <div class="mover-info">
-                    <div class="mover-symbol">${symbol}</div>
-                    <div class="mover-company">${symbol} Inc.</div>
-                </div>
-                <div class="mover-price">
-                    <div class="mover-amount">${formatCurrency(data.price)}</div>
-                    <div class="mover-change ${isPositive ? 'positive' : 'negative'}">
-                        ${formatPercent(changePercent)}
+            if (!entry || entry.error || !entry.data) {
+                // Show placeholder for missing data
+                const watchlistItem = document.createElement('div');
+                watchlistItem.className = 'mover-item';
+                watchlistItem.innerHTML = `
+                    <div class="mover-icon">${symbol.substring(0, 2)}</div>
+                    <div class="mover-info">
+                        <div class="mover-symbol">${symbol}</div>
+                        <div class="mover-company">No data</div>
+                        <div class="holdings-info">Owned: ${holdingCount} shares</div>
                     </div>
-                </div>
-                <button class="remove-btn" data-symbol="${symbol}">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            watchlistItem.addEventListener('click', (e) => {
-                if (!e.target.closest('.remove-btn')) {
+                    <div class="mover-price">
+                        <div class="mover-amount">-</div>
+                        <div class="mover-change negative">N/A</div>
+                    </div>
+                `;
+                watchlistItem.addEventListener('click', (e) => {
                     window.location.href = `stock_detail.html?symbol=${symbol}`;
-                }
-            });
-            
-            const removeBtn = watchlistItem.querySelector('.remove-btn');
-            removeBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                removeFromWatchlist(symbol);
-            });
-            
-            elements.watchlistMovers.appendChild(watchlistItem);
+                });
+                elements.watchlistMovers.appendChild(watchlistItem);
+            } else {
+                const data = entry.data;
+                const change = data.price - data.previousClose;
+                const changePercent = (change / data.previousClose) * 100;
+                const isPositive = change >= 0;
+                
+                const watchlistItem = document.createElement('div');
+                watchlistItem.className = 'mover-item';
+                watchlistItem.innerHTML = `
+                    <div class="mover-icon">${symbol.substring(0, 2)}</div>
+                    <div class="mover-info">
+                        <div class="mover-symbol">${symbol}</div>
+                        <div class="mover-company">${symbol} Inc.</div>
+                        <div class="holdings-info">Owned: ${holdingCount} shares</div>
+                    </div>
+                    <div class="mover-price">
+                        <div class="mover-amount">${formatCurrency(data.price)}</div>
+                        <div class="mover-change ${isPositive ? 'positive' : 'negative'}">
+                            ${formatPercent(changePercent)}
+                        </div>
+                    </div>
+                `;
+                watchlistItem.addEventListener('click', (e) => {
+                    window.location.href = `stock_detail.html?symbol=${symbol}`;
+                });
+                elements.watchlistMovers.appendChild(watchlistItem);
+            }
         });
     } catch (error) {
         console.error('Error loading watchlist:', error);
         showError(elements.watchlistMovers, 'Failed to load watchlist');
     }
+}
+
+// Trade Functions
+function buyStock(symbol, price) {
+    const shares = 1; // Default to 1 share for quick buy
+    const totalCost = shares * price;
+    const currentBalance = getBalance();
+    
+    if (totalCost > currentBalance) {
+        alert('Insufficient balance for this purchase.');
+        return;
+    }
+    
+    // Execute trade
+    const newBalance = currentBalance - totalCost;
+    setBalance(newBalance);
+    
+    const currentHoldings = getHoldings(symbol);
+    setHoldings(symbol, currentHoldings + shares);
+    
+    alert(`Successfully bought ${shares} shares of ${symbol} for ${formatCurrency(totalCost)}`);
+    
+    // Refresh displays
+    loadTrendingStocks();
+    loadWatchlistMovers();
+}
+
+function sellStock(symbol, price) {
+    const shares = 1; // Default to 1 share for quick sell
+    const totalValue = shares * price;
+    const currentHoldings = getHoldings(symbol);
+    
+    if (currentHoldings < shares) {
+        alert(`You don't have enough shares of ${symbol} to sell.`);
+        return;
+    }
+    
+    // Execute trade
+    const currentBalance = getBalance();
+    const newBalance = currentBalance + totalValue;
+    setBalance(newBalance);
+    
+    setHoldings(symbol, currentHoldings - shares);
+    
+    alert(`Successfully sold ${shares} shares of ${symbol} for ${formatCurrency(totalValue)}`);
+    
+    // Refresh displays
+    loadTrendingStocks();
+    loadWatchlistMovers();
 }
 
 // API Functions
@@ -244,17 +366,96 @@ function selectStock(symbol) {
     if (elements.stockSymbolTab) {
         elements.stockSymbolTab.textContent = symbol;
     }
-    // In a full implementation, you would update the stock details view here
     console.log(`Selected stock: ${symbol}`);
 }
 
 function updatePortfolioValue() {
-    // In a real app, this would calculate based on actual holdings
-    const randomChange = (Math.random() * 2000) - 1000;
-    const newValue = 88720 + randomChange;
+    const balance = getBalance();
+    const holdings = getAllHoldings();
+    
+    // Calculate total portfolio value (balance + holdings value)
+    let totalValue = balance;
+    
+    // For simplicity, we'll just show the current balance
+    // In a real app, you'd multiply holdings by current prices
     if (elements.portfolioValue) {
-        elements.portfolioValue.textContent = formatCurrency(newValue);
+        elements.portfolioValue.textContent = formatCurrency(balance);
     }
+    
+    // Update donut chart center value
+    const statsTotal = document.querySelector('.stats-total .amount');
+    if (statsTotal) {
+        statsTotal.textContent = formatCurrency(balance);
+    }
+}
+
+function updateDonutChart() {
+    if (!donutChart) return;
+    
+    const holdings = getAllHoldings();
+    const balance = getBalance();
+    
+    // Calculate portfolio allocation
+    const holdingSymbols = Object.keys(holdings);
+    
+    if (holdingSymbols.length === 0) {
+        // Only cash
+        donutChart.data.labels = ['Cash'];
+        donutChart.data.datasets[0].data = [100];
+        donutChart.data.datasets[0].backgroundColor = ['#4f46e5'];
+        updateLegend([{name: 'Cash', percentage: 100, color: '#4f46e5'}]);
+    } else {
+        // Mix of cash and stocks
+        const colors = ['#4f46e5', '#06b6d4', '#8b5cf6', '#10b981', '#f59e0b', '#ef4444'];
+        const labels = [];
+        const data = [];
+        const backgroundColors = [];
+        
+        // Add cash
+        labels.push('Cash');
+        data.push(68); // Placeholder percentage
+        backgroundColors.push('#4f46e5');
+        
+        // Add holdings (simplified)
+        holdingSymbols.slice(0, 2).forEach((symbol, index) => {
+            labels.push(symbol);
+            data.push(index === 0 ? 22 : 10); // Placeholder percentages
+            backgroundColors.push(colors[index + 1]);
+        });
+        
+        donutChart.data.labels = labels;
+        donutChart.data.datasets[0].data = data;
+        donutChart.data.datasets[0].backgroundColor = backgroundColors;
+        
+        const legendData = labels.map((label, index) => ({
+            name: label,
+            percentage: data[index],
+            color: backgroundColors[index]
+        }));
+        updateLegend(legendData);
+    }
+    
+    donutChart.update('none');
+}
+
+function updateLegend(legendData) {
+    const legendContainer = document.querySelector('.stats-legend');
+    if (!legendContainer) return;
+    
+    legendContainer.innerHTML = '';
+    
+    legendData.forEach(item => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+            <div class="legend-info">
+                <div class="legend-color" style="background: ${item.color};"></div>
+                ${item.name}
+            </div>
+            <span>${item.percentage}%</span>
+        `;
+        legendContainer.appendChild(legendItem);
+    });
 }
 
 function showLoading(element, message = 'Loading...') {
@@ -299,7 +500,7 @@ function setupEventListeners() {
             if (e.key === 'Enter') {
                 const symbol = elements.globalSearch.value.trim().toUpperCase();
                 if (symbol) {
-                    selectStock(symbol);
+                    window.location.href = `stock_detail.html?symbol=${symbol}`;
                     elements.globalSearch.value = '';
                 }
             }
@@ -320,27 +521,21 @@ function setupEventListeners() {
 // New function to handle navigation to different HTML files
 function navigateToPage(pageName) {
     const pageMap = {
-        'portfolio': 'portfolio.html',
         'trade': 'trade.html',
         'research': 'research.html',
         'analytics': 'analytics.html',
         'settings': 'settings.html',
         'profile': 'profile.html'
     };
-    
     const targetPage = pageMap[pageName];
     if (targetPage) {
-        // Update the current page's navigation to show active state
         updateNavigationState(pageName);
-        
-        // Navigate to the target page
         window.location.href = targetPage;
     }
 }
 
 // Function to update navigation state based on current page
 function updateNavigationState(activePage) {
-    // Store the active page in localStorage so other pages can read it
     localStorage.setItem('activePage', activePage);
 }
 
@@ -387,7 +582,7 @@ function initializeCharts() {
     // Portfolio Chart
     const portfolioCtx = document.getElementById('portfolioChart');
     if (portfolioCtx) {
-        new Chart(portfolioCtx.getContext('2d'), {
+        portfolioChart = new Chart(portfolioCtx.getContext('2d'), {
             type: 'line',
             data: {
                 labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -405,8 +600,14 @@ function initializeCharts() {
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    x: { grid: { color: 'rgba(255, 255, 255, 0.1)' } },
-                    y: { grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    x: { 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                    },
+                    y: { 
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        ticks: { color: 'rgba(255, 255, 255, 0.7)' }
+                    }
                 }
             }
         });
@@ -415,9 +616,10 @@ function initializeCharts() {
     // Donut Chart
     const donutCtx = document.getElementById('donutChart');
     if (donutCtx) {
-        new Chart(donutCtx.getContext('2d'), {
+        donutChart = new Chart(donutCtx.getContext('2d'), {
             type: 'doughnut',
             data: {
+                labels: ['Tech Stock', 'Stock Value', 'Holiday'],
                 datasets: [{
                     data: [68, 22, 10],
                     backgroundColor: ['#4f46e5', '#06b6d4', '#8b5cf6'],
@@ -432,6 +634,9 @@ function initializeCharts() {
             }
         });
     }
+    
+    // Update charts with current data
+    updateDonutChart();
 }
 
 // Data Refresh
@@ -441,10 +646,31 @@ async function refreshData() {
         await Promise.all([
             loadTrendingStocks(),
             loadBiggestMovers(),
-            loadWatchlistMovers(),
-            updatePortfolioValue()
+            loadWatchlistMovers()
         ]);
+        updatePortfolioValue();
     } catch (error) {
         console.error('Error refreshing data:', error);
     }
 }
+
+// Live update: listen for localStorage changes (buy/sell in another tab or page)
+window.addEventListener('storage', function(event) {
+    if (event.key === BALANCE_KEY) {
+        updatePortfolioValue();
+        updateDonutChart();
+    }
+    if (event.key === HOLDINGS_KEY) {
+        loadWatchlistMovers();
+        loadTrendingStocks();
+        updateDonutChart();
+    }
+});
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', () => {
+    if (!localStorage.getItem(BALANCE_KEY)) {
+        localStorage.setItem(BALANCE_KEY, STARTING_BALANCE.toFixed(2));
+    }
+    updatePortfolioValue();
+});
