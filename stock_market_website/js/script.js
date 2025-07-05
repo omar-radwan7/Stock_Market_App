@@ -269,22 +269,35 @@ function buyStock(symbol, price) {
     const currentBalance = getBalance();
     
     if (totalCost > currentBalance) {
-        alert('Insufficient balance for this purchase.');
+        showToast('Insufficient balance for this purchase!', 'linear-gradient(90deg,#ef4444,#f87171)');
         return;
     }
     
-    // Execute trade
-    const newBalance = currentBalance - totalCost;
-    setBalance(newBalance);
-    
-    const currentHoldings = getHoldings(symbol);
-    setHoldings(symbol, currentHoldings + shares);
-    
-    alert(`Successfully bought ${shares} shares of ${symbol} for ${formatCurrency(totalCost)}`);
-    
-    // Refresh displays
-    loadTrendingStocks();
-    loadWatchlistMovers();
+    showConfirmDialog(
+        `Are you sure you want to buy ${shares} share of ${symbol} for ${formatCurrency(totalCost)}?`,
+        function() {
+            // Execute trade
+            const newBalance = currentBalance - totalCost;
+            setBalance(newBalance);
+            
+            const currentHoldings = getHoldings(symbol);
+            setHoldings(symbol, currentHoldings + shares);
+            
+            // Add to watchlist
+            addToWatchlist(symbol);
+            
+            showToast('Stock purchased successfully!', 'linear-gradient(90deg,#3de85f,#23b26d)');
+            
+            // Update UI
+            updatePortfolioValue();
+            updateDonutChart();
+            updateBalanceCard();
+            
+            // Refresh displays
+            loadTrendingStocks();
+            loadWatchlistMovers();
+        }
+    );
 }
 
 function sellStock(symbol, price) {
@@ -293,22 +306,37 @@ function sellStock(symbol, price) {
     const currentHoldings = getHoldings(symbol);
     
     if (currentHoldings < shares) {
-        alert(`You don't have enough shares of ${symbol} to sell.`);
+        showToast(`You don't have enough shares of ${symbol} to sell!`, 'linear-gradient(90deg,#ef4444,#f87171)');
         return;
     }
     
-    // Execute trade
-    const currentBalance = getBalance();
-    const newBalance = currentBalance + totalValue;
-    setBalance(newBalance);
-    
-    setHoldings(symbol, currentHoldings - shares);
-    
-    alert(`Successfully sold ${shares} shares of ${symbol} for ${formatCurrency(totalValue)}`);
-    
-    // Refresh displays
-    loadTrendingStocks();
-    loadWatchlistMovers();
+    showConfirmDialog(
+        `Are you sure you want to sell ${shares} share of ${symbol} for ${formatCurrency(totalValue)}?`,
+        function() {
+            // Execute trade
+            const currentBalance = getBalance();
+            const newBalance = currentBalance + totalValue;
+            setBalance(newBalance);
+            
+            setHoldings(symbol, currentHoldings - shares);
+            
+            // Remove from watchlist if no more shares
+            if (currentHoldings - shares <= 0) {
+                removeFromWatchlist(symbol);
+            }
+            
+            showToast('Stock sold successfully!', 'linear-gradient(90deg,#ef4444,#f87171)');
+            
+            // Update UI
+            updatePortfolioValue();
+            updateDonutChart();
+            updateBalanceCard();
+            
+            // Refresh displays
+            loadTrendingStocks();
+            loadWatchlistMovers();
+        }
+    );
 }
 
 // API Functions
