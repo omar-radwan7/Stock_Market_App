@@ -6,6 +6,457 @@
     <title>Profile - TradeWise Platform</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.1;
+        }
+
+        .profile-header-content {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profile-avatar-large {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-avatar-large::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            border-radius: 50%;
+            z-index: -1;
+            animation: borderRotate 3s linear infinite;
+        }
+
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .profile-title {
+            font-size: 18px;
+            opacity: 0.9;
+            margin: 0 0 20px 0;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .profile-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #4f46e5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: white;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border: none;
+            border-radius: 10px;
+            padding: 8px 16px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.4);
+        }
+
+        .preferences-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4f46e5;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(26px);
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border: none;
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 24px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+
+        body.light-mode .dashboard {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body.light-mode .sidebar {
+            background: rgba(255, 255, 255, 0.95);
+            border-right: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .nav-link {
+            color: #666;
+        }
+
+        body.light-mode .nav-link:hover,
+        body.light-mode .nav-link.active {
+            color: #4f46e5;
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        body.light-mode .main-content {
+            background: transparent;
+        }
+
+        body.light-mode .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .header h1,
+        body.light-mode .header .subtitle {
+            color: #333;
+        }
+
+        body.light-mode .profile-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        body.light-mode .profile-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        body.light-mode .card-title {
+            color: #4f46e5;
+        }
+
+        body.light-mode .info-label {
+            color: #666;
+        }
+
+        body.light-mode .info-value {
+            color: #333;
+        }
+
+        body.light-mode .activity-title {
+            color: #333;
+        }
+
+        body.light-mode .activity-time {
+            color: #666;
+        }
+
+        body.light-mode .info-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .preference-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .activity-item {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .toggle-switch {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .btn-secondary {
+            border-color: rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        body.light-mode .btn-secondary:hover {
+            background: rgba(0, 0, 0, 0.1);
+            border-color: rgba(0, 0, 0, 0.3);
+        }
+
+        body.light-mode .user-avatar {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+        }
+
+        body.light-mode .logo {
+            color: #333;
+        }
+
+        body.light-mode .search-box {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        body.light-mode .search-box::placeholder {
+            color: #666;
+        }
+
+        body.light-mode .location-select {
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 1px solid rgba(0, 0, 0, 0.2) !important;
+            color: #333 !important;
+        }
+
+        body.light-mode .location-select option {
+            background: #ffffff !important;
+            color: #333 !important;
+        }
+
+        .theme-label {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        body.light-mode .theme-label {
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .profile-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .profile-stats {
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="dashboard">
@@ -15,36 +466,280 @@
                 <span>TradeWise Platform</span>
             </div>
             <ul class="nav-menu">
-                <li class="nav-item"><a href="#" class="nav-link" data-section="portfolio"><i class="fas fa-chart-pie"></i>Portfolio</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="trade"><i class="fas fa-exchange-alt"></i>Trade</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="research"><i class="fas fa-search"></i>Research</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="analytics"><i class="fas fa-chart-line"></i>Analytics</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="settings"><i class="fas fa-cog"></i>Settings</a></li>
-                <li class="nav-item"><a href="#" class="nav-link" data-section="profile"><i class="fas fa-user"></i>Profile</a></li>
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fas fa-exchange-alt"></i>Trade</a></li>
+                <li class="nav-item"><a href="research.html" class="nav-link"><i class="fas fa-search"></i>Research</a></li>
+                <li class="nav-item"><a href="analytics.html" class="nav-link"><i class="fas fa-chart-line"></i>Analytics</a></li>
+                <li class="nav-item"><a href="settings.html" class="nav-link"><i class="fas fa-cog"></i>Settings</a></li>
+                <li class="nav-item"><a href="profile.html" class="nav-link active"><i class="fas fa-user"></i>Profile</a></li>
             </ul>
         </aside>
+        
         <main class="main-content">
             <header class="header">
                 <div class="welcome-section">
-                    <h1>Profile</h1>
-                    <p class="subtitle">View and edit your personal information</p>
+                    <h1>My Profile</h1>
+                    <p class="subtitle">Manage your account and preferences</p>
                 </div>
                 <div class="header-actions">
-                    <div class="user-avatar">TW</div>
+                    <div class="user-avatar">OR</div>
                 </div>
             </header>
-            <section class="profile-section">
-                <div class="profile-info">
-                    <div class="profile-avatar">TW</div>
-                    <div class="profile-details">
-                        <h3 id="profileName">Trader</h3>
-                        <p>Email: <span id="profileEmail">trader@email.com</span></p>
-                        <button class="btn btn-primary">Edit Profile</button>
+
+            <div class="profile-container">
+                <!-- Profile Header -->
+                <div class="profile-header">
+                    <div class="profile-header-content">
+                        <div class="profile-avatar-large">OR</div>
+                        <div class="profile-info">
+                            <h1 class="profile-name">Omar Radwan</h1>
+                            <p class="profile-title">Premium Trader • Active since 2024</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <div class="stat-value">$12,567</div>
+                                    <div class="stat-label">Portfolio Value</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">47</div>
+                                    <div class="stat-label">Trades Made</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-value">+15.2%</div>
+                                    <div class="stat-label">Total Return</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </section>
+
+                <!-- Profile Content -->
+                <div class="profile-content">
+                    <!-- Personal Information -->
+                    <div class="profile-card">
+                        <h2 class="card-title">
+                            <i class="fas fa-user"></i>
+                            Personal Information
+                        </h2>
+                        <div class="info-item">
+                            <span class="info-label">Full Name</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="info-value">Omar Radwan</span>
+                                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="info-value">omar.radwan@email.com</span>
+                                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phone</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="info-value">+1 (555) 123-4567</span>
+                                <button class="edit-btn"><i class="fas fa-edit"></i></button>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Location</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <select class="location-select" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px; padding: 8px 12px; color: white; font-size: 14px; min-width: 150px;">
+                                    <option value="us" style="background: #2a2a2a; color: white;">United States</option>
+                                    <option value="ca" style="background: #2a2a2a; color: white;">Canada</option>
+                                    <option value="uk" style="background: #2a2a2a; color: white;">United Kingdom</option>
+                                    <option value="de" style="background: #2a2a2a; color: white;">Germany</option>
+                                    <option value="fr" style="background: #2a2a2a; color: white;">France</option>
+                                    <option value="jp" style="background: #2a2a2a; color: white;">Japan</option>
+                                    <option value="au" style="background: #2a2a2a; color: white;">Australia</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Member Since</span>
+                            <span class="info-value">January 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Account Settings -->
+                    <div class="profile-card">
+                        <h2 class="card-title">
+                            <i class="fas fa-cog"></i>
+                            Account Settings
+                        </h2>
+                        <div class="info-item">
+                            <span class="info-label">Account Type</span>
+                            <span class="info-value" style="color: #4f46e5;">Premium</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Two-Factor Authentication</span>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email Notifications</span>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Push Notifications</span>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Theme</span>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span class="theme-label">Light</span>
+                                <div class="toggle-switch active" id="themeToggle"></div>
+                                <span class="theme-label">Dark</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trading Preferences -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-chart-line"></i>
+                        Trading Preferences
+                    </h2>
+                    <div class="preferences-grid">
+                        <div class="preference-item">
+                            <span class="info-label">Default Order Type</span>
+                            <span class="info-value">Market Order</span>
+                        </div>
+                        <div class="preference-item">
+                            <span class="info-label">Risk Level</span>
+                            <span class="info-value">Moderate</span>
+                        </div>
+                        <div class="preference-item">
+                            <span class="info-label">Auto-Invest</span>
+                            <div class="toggle-switch"></div>
+                        </div>
+                        <div class="preference-item">
+                            <span class="info-label">Price Alerts</span>
+                            <div class="toggle-switch active"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="profile-card">
+                    <h2 class="card-title">
+                        <i class="fas fa-history"></i>
+                        Recent Activity
+                    </h2>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-arrow-up"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Bought 10 shares of AAPL</div>
+                            <div class="activity-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-arrow-down"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Sold 5 shares of TSLA</div>
+                            <div class="activity-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Price alert triggered for MSFT</div>
+                            <div class="activity-time">2 days ago</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="activity-content">
+                            <div class="activity-title">Added GOOGL to watchlist</div>
+                            <div class="activity-time">3 days ago</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-primary">
+                        <i class="fas fa-edit"></i>
+                        Edit Profile
+                    </button>
+                    <button class="btn-primary">
+                        <i class="fas fa-key"></i>
+                        Change Password
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-download"></i>
+                        Export Data
+                    </button>
+                    <button class="btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
         </main>
     </div>
-    <script src="js/script.js"></script>
+
+    <script>
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+        
+        // Check for saved theme preference or default to dark mode
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        if (savedTheme === 'light') {
+            body.classList.add('light-mode');
+            themeToggle.classList.remove('active');
+        }
+
+        // Theme toggle event listener
+        themeToggle.addEventListener('click', function() {
+            body.classList.toggle('light-mode');
+            this.classList.toggle('active');
+            
+            // Save theme preference
+            const theme = body.classList.contains('light-mode') ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+        });
+
+        // Other toggle switches functionality
+        document.querySelectorAll('.toggle-switch').forEach(toggle => {
+            if (toggle.id !== 'themeToggle') {
+                toggle.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            }
+        });
+
+        // Location select functionality
+        const locationSelect = document.querySelector('.location-select');
+        locationSelect.addEventListener('change', function() {
+            console.log('Location changed to:', this.value);
+            // Add location change functionality here
+        });
+
+        // Edit buttons functionality
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Add edit functionality here
+                console.log('Edit clicked');
+            });
+        });
+
+        // Action buttons functionality
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const action = this.textContent.trim();
+                console.log('Action:', action);
+                // Add specific functionality for each button
+            });
+        });
+    </script>
 </body>
 </html>

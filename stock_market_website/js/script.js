@@ -124,7 +124,6 @@ async function loadTrendingStocks() {
                 </div>
                 ${holdings > 0 ? `<div class="holdings-info">Owned: ${holdings} shares</div>` : ''}
                 <div class="stock-actions">
-                    ${holdings > 0 ? `<button class="stock-btn sell" onclick="sellStock('${symbol}', ${data.price})">Sell</button>` : ''}
                 </div>
             `;
             stockCard.addEventListener('click', (e) => {

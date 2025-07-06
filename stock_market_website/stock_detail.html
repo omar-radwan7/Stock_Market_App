@@ -9,6 +9,265 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="js/script.js" defer></script>
     <script src="js/stock.js" defer></script>
+    <style>
+        /* Light Mode Styles */
+        body.light-mode {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+
+        body.light-mode .stock-details-container {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        body.light-mode .header-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .balance-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .balance-label {
+            color: #666;
+        }
+
+        body.light-mode .balance-value {
+            color: #333;
+        }
+
+        body.light-mode .stock-symbol {
+            color: #333;
+        }
+
+        body.light-mode .stock-name {
+            color: #666;
+        }
+
+        body.light-mode .stock-price {
+            color: #333;
+        }
+
+        body.light-mode .chart-section {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .chart-title {
+            color: #333;
+        }
+
+        body.light-mode .time-filter {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #666;
+        }
+
+        body.light-mode .time-filter.active,
+        body.light-mode .time-filter:hover {
+            background: #4f46e5;
+            color: white;
+        }
+
+        body.light-mode .stats-card,
+        body.light-mode .ranges-card {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .card-title {
+            color: #333;
+        }
+
+        body.light-mode .stat-label,
+        body.light-mode .range-label {
+            color: #666;
+        }
+
+        body.light-mode .stat-value {
+            color: #333;
+        }
+
+        body.light-mode .range-current {
+            color: #333;
+        }
+
+        body.light-mode .range-values span {
+            color: #666;
+        }
+
+        body.light-mode .meta-label {
+            color: #666;
+        }
+
+        body.light-mode .meta-value {
+            color: #333;
+        }
+
+        body.light-mode .holdings-info {
+            color: #666;
+        }
+
+        body.light-mode .trade-modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .trade-modal-title {
+            color: #333;
+        }
+
+        body.light-mode .trade-modal-subtitle {
+            color: #666;
+        }
+
+        body.light-mode .trade-info-card {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        body.light-mode .trade-info-label {
+            color: #666;
+        }
+
+        body.light-mode .trade-info-value {
+            color: #333;
+        }
+
+        body.light-mode .shares-input-label {
+            color: #666;
+        }
+
+        body.light-mode .shares-input {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        body.light-mode .shares-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        body.light-mode .total-cost-label {
+            color: #666;
+        }
+
+        body.light-mode .total-cost-value {
+            color: #333;
+        }
+
+        body.light-mode .trade-modal-btn-cancel {
+            background: transparent;
+            border: 2px solid rgba(0, 0, 0, 0.2);
+            color: #333;
+        }
+
+        body.light-mode .page-title {
+            color: #333;
+        }
+
+        body.light-mode .back-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            color: #333;
+        }
+
+        body.light-mode .back-btn:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        /* Theme Toggle in Settings */
+        .settings-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 10px 15px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .settings-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .settings-toggle-icon {
+            font-size: 14px;
+            color: white;
+        }
+
+        .settings-toggle-text {
+            font-size: 12px;
+            color: white;
+            font-weight: 500;
+        }
+
+        .theme-label {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #4f46e5;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        body.light-mode .settings-toggle {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .settings-toggle:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        body.light-mode .settings-toggle-icon,
+        body.light-mode .settings-toggle-text,
+        body.light-mode .theme-label {
+            color: #333;
+        }
+
+        body.light-mode .toggle-switch {
+            background: rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 <body>
     <div class="stock-details-container">
@@ -21,7 +280,11 @@
                 <div class="header-title">
                     <div class="page-title">Stock Details</div>
                 </div>
-                <div style="width: 40px;"></div>
+                <div class="settings-toggle" id="themeToggle">
+                    <span class="theme-label">Light</span>
+                    <div class="toggle-switch active" id="themeSwitch"></div>
+                    <span class="theme-label">Dark</span>
+                </div>
             </div>
 
             <!-- Portfolio Balance Card -->
@@ -646,6 +909,28 @@
 
         // Event listeners
         document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const themeToggle = document.getElementById('themeToggle');
+            const themeSwitch = document.getElementById('themeSwitch');
+            const body = document.body;
+            
+            // Check for saved theme preference or default to dark mode
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                body.classList.add('light-mode');
+                themeSwitch.classList.remove('active');
+            }
+
+            // Theme toggle event listener
+            themeToggle.addEventListener('click', function() {
+                body.classList.toggle('light-mode');
+                themeSwitch.classList.toggle('active');
+                
+                // Save theme preference
+                const theme = body.classList.contains('light-mode') ? 'light' : 'dark';
+                localStorage.setItem('theme', theme);
+            });
+
             document.getElementById('buyBtn').addEventListener('click', function() {
                 showTradeModal('buy');
             });
