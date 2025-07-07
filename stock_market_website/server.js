@@ -3,7 +3,7 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const FMP_API_KEY = 'j1u46LGOa7YdHb8C0Lc6sE3yCLBffM91';
+const FMP_API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
 const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
 
 app.use(cors());
