@@ -3,7 +3,7 @@ import 'auth_service.dart';
 import 'sign_in_page.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key}) : super(key: key);
+  const SignUpPage({super.key});
 
   @override
   _SignUpPageState createState() => _SignUpPageState();
@@ -15,8 +15,6 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
-  bool _isLoading = false;
-  String? _errorMessage;
 
   @override
   void dispose() {
@@ -28,10 +26,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> _signUp() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-        _errorMessage = null;
-      });
       try {
         await _authService.signUp(
           _emailController.text.trim(),
@@ -56,14 +50,13 @@ class _SignUpPageState extends State<SignUpPage> {
           }
         }
       } catch (e) {
-        setState(() {
-          _errorMessage = e.toString();
-        });
-      } finally {
         if (mounted) {
-          setState(() {
-            _isLoading = false;
-          });
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
         }
       }
     }

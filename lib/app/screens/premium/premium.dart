@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/theme_provider.dart';
 
 class Premiumpage extends StatelessWidget {
+  const Premiumpage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -311,7 +311,7 @@ class Premiumpage extends StatelessWidget {
                 const SizedBox(height: 16),
                 
                 // Features List
-                ...features.map((feature) => _buildFeatureItem(feature, isDark)).toList(),
+                ...features.map((feature) => _buildFeatureItem(feature, isDark)),
                 const SizedBox(height: 24),
                 
                 // Choose Plan Button

@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme.light(
           primary: Color(0xFF4C336F),
           secondary: Color(0xFF3DE85F),
-          background: Colors.white,
+          surface: Colors.white,
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
@@ -76,7 +76,7 @@ class MyApp extends StatelessWidget {
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFF4C336F),
           secondary: Color(0xFF3DE85F),
-          background: Color(0xFF0D1531),
+          surface: Color(0xFF0D1531),
         ),
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
@@ -99,7 +99,7 @@ class MyApp extends StatelessWidget {
 }
 
 class AuthenticationWrapper extends StatelessWidget {
-  const AuthenticationWrapper({Key? key}) : super(key: key);
+  const AuthenticationWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -173,7 +173,6 @@ class _MainNavigationState extends State<MainNavigation> {
   @override
   Widget build(BuildContext context) {
     final themeProvider = Provider.of<ThemeProvider>(context);
-    final isDark = themeProvider.themeMode == ThemeMode.dark;
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(

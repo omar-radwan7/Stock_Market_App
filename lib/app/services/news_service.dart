@@ -15,8 +15,6 @@ class NewsArticle {
 }
 
 class NewsService {
-  final String _baseUrl = 'https://api.example.com/news'; // Replace with actual API endpoint
-
   Future<List<NewsArticle>> fetchNews() async {
     try {
       // For now, return mock data since we don't have a real API

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Viewmorepage extends StatelessWidget {
+  const Viewmorepage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);

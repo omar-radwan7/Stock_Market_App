@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../providers/news_provider.dart';
 
 class NewsPage extends StatelessWidget {
   final List<Map<String, dynamic>> curatedNews = [
@@ -145,6 +143,8 @@ Regulatory Impact:
     },
   ];
 
+  NewsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -266,7 +266,7 @@ Regulatory Impact:
                         source: article['source']!,
                         category: article['category']!,
                         isDark: isDark,
-                      )).toList(),
+                      )),
                     ],
                   ),
                 ),
@@ -289,7 +289,7 @@ class NewsCard extends StatefulWidget {
   final bool isDark;
 
   const NewsCard({
-    Key? key,
+    super.key,
     required this.title,
     required this.summary,
     required this.fullContent,
@@ -297,7 +297,7 @@ class NewsCard extends StatefulWidget {
     required this.source,
     required this.category,
     required this.isDark,
-  }) : super(key: key);
+  });
 
   @override
   State<NewsCard> createState() => _NewsCardState();

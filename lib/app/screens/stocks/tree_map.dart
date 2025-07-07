@@ -58,7 +58,7 @@ class TreeMapScreen extends StatelessWidget {
                 child: Consumer<StockProvider>(
                   builder: (context, stockProvider, child) {
                     if (stockProvider.isLoading && stockProvider.mostActive.isEmpty) {
-                      return Container(
+                      return SizedBox(
                         height: 400,
                         child: Center(
                           child: CircularProgressIndicator(
@@ -71,7 +71,7 @@ class TreeMapScreen extends StatelessWidget {
                     }
 
                     if (stockProvider.errorMessage != null) {
-                      return Container(
+                      return SizedBox(
                         height: 400,
                         child: Center(
                           child: Container(

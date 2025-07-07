@@ -3,11 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../providers/portfolio_provider.dart';
 import '../../providers/stock_provider.dart';
-import '../../services/portfolio_service.dart';
-import '../../services/stock_service.dart';
-import '../../screens/profile/profile.dart';
 import '../../screens/stocks/stock_detail_screen.dart';
-import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 
 class Homepage extends StatefulWidget {

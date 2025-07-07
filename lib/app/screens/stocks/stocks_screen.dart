@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Stockspage extends StatelessWidget {
+  const Stockspage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -20,7 +22,7 @@ class Stockspage extends StatelessWidget {
               Positioned(
                 left: -3,
                 top: 33,
-                child: Container(
+                child: SizedBox(
                   width: 423,
                   height: 44,
                   child: Stack(
@@ -38,7 +40,7 @@ class Stockspage extends StatelessWidget {
                               Positioned(
                                 left: 0,
                                 top: 0,
-                                child: Container(width: 423, height: 30, child: Stack()),
+                                child: SizedBox(width: 423, height: 30, child: Stack()),
                               ),
                               Positioned(
                                 left: 340,
@@ -49,9 +51,9 @@ class Stockspage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   spacing: 4,
                                   children: [
-                                    Container(width: 20, height: 14, child: Stack()),
-                                    Container(width: 16, height: 14, child: Stack()),
-                                    Container(
+                                    SizedBox(width: 20, height: 14, child: Stack()),
+                                    SizedBox(width: 16, height: 14, child: Stack()),
+                                    SizedBox(
                                       width: 25,
                                       height: 12,
                                       child: Stack(
@@ -77,7 +79,7 @@ class Stockspage extends StatelessWidget {
                               Positioned(
                                 left: 346,
                                 top: 8,
-                                child: Container(width: 6, height: 6, child: Stack()),
+                                child: SizedBox(width: 6, height: 6, child: Stack()),
                               ),
                               Positioned(
                                 left: 21,
@@ -96,7 +98,7 @@ class Stockspage extends StatelessWidget {
                                       Positioned(
                                         left: 11,
                                         top: 3,
-                                        child: Container(width: 33, height: 15, child: Stack()),
+                                        child: SizedBox(width: 33, height: 15, child: Stack()),
                                       ),
                                     ],
                                   ),
@@ -920,7 +922,7 @@ class Stockspage extends StatelessWidget {
               Positioned(
                 left: 29,
                 top: 77,
-                child: Container(width: 24, height: 24, child: Stack()),
+                child: SizedBox(width: 24, height: 24, child: Stack()),
               ),
             ],
           ),

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:provider/provider.dart';
 import '../providers/portfolio_provider.dart';
-import '../models/portfolio_model.dart';
 
 class StockList extends StatelessWidget {
   const StockList({super.key});
