@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const FMP_API_KEY = 'WTeRGfGpNyQZoBkeYLuWJ8tzO9y9V8H2';
+const FMP_API_KEY = 'Your API Here Please:)';
 const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
 
 app.use(express.static(__dirname));
