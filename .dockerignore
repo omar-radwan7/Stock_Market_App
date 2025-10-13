@@ -1,0 +1,32 @@
+.git
+.gitignore
+
+# Flutter/Dart build and tooling
+build
+.dart_tool
+.packages
+.pub-cache
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# IDE/editor & logs
+.idea
+.vscode
+*.iml
+**/*.log
+
+# Platform-specific (not needed for web build)
+android
+ios
+macos
+windows
+linux
+
+# Node modules and other website artifacts
+node_modules
+stock_market_website/node_modules
+stock_market_website/build
+stock_market_website/.next
+
+
