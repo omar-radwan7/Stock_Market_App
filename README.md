@@ -1,7 +1,92 @@
-bash -c 'cat > README.md << "EOF"
 # Stock Market App
 
 A comprehensive Flutter application for stock market analysis, portfolio management, and financial news. This cross-platform mobile and web application provides real-time market data, interactive charts, and personalized investment tracking.
+
+---
+
+## App Screenshots & Feature Walkthrough
+
+Below are key sections of the app with screenshots and explanations:
+
+### Registration Screen
+
+![Registration Screen](screenshots/screen1.png)
+
+New users can sign up using email/password or Google/Apple accounts. The form features validation for a secure onboarding experience.
+
+---
+
+### Login Screen
+
+![Login Screen](screenshots/screen2.png)
+
+Returning users log in securely with email/password or third-party providers. Error handling ensures smooth authentication.
+
+---
+
+### Home Dashboard (Dark Theme)
+
+![Home Dashboard](screenshots/screen3.png)
+
+Get an instant overview of portfolio performance, daily gain, and market movers. The dashboard provides quick access to your investment status.
+
+---
+
+### Home Dashboard (Light Theme)
+
+![Home Dashboard Light](screenshots/screen4.png)
+
+A visually appealing light mode for user preference. All essential market data and navigation remain accessible.
+
+---
+
+### Portfolio Screen
+
+![Portfolio Screen](screenshots/screen5.png)
+
+Track your holdings and overall portfolio value. Individual stock performance is visualized, making it easy to manage investments.
+
+---
+
+### Profile & Premium Membership
+
+![Profile Screen](screenshots/screen6.png)
+
+Manage your account settings and premium membership. Upgrade for advanced analytics and exclusive features.
+
+---
+
+### Financial News Feed
+
+![Market News](screenshots/screen7.png)
+
+Stay informed with curated financial news, market analysis, and insights. News articles are categorized for easy browsing.
+
+---
+
+### Live Market Overview
+
+![Market Overview](screenshots/screen8.png)
+
+Visualize sector performance and live market movements with interactive maps and summary charts.
+
+---
+
+### Premium Plans
+
+![Premium Plans](screenshots/screen9.png)
+
+Choose a subscription plan to unlock advanced analytics, enhanced watchlists, and priority support.
+
+---
+
+### Stock Detail View
+
+![Stock Detail Screen](screenshots/screen10.png)
+
+Dive deep into individual stocks: view price history, interactive charts, and key statistics across multiple time ranges.
+
+---
 
 ## Overview
 
@@ -250,4 +335,3 @@ For technical support and questions:
 - Check the project issue tracker
 - Consult the Makefile help command for available operations
 - Refer to the comprehensive code comments for implementation details
-EOF'
