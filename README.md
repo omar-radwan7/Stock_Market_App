@@ -8,81 +8,76 @@ A comprehensive Flutter application for stock market analysis, portfolio managem
 
 Below are key sections of the app with screenshots and explanations:
 
-### Registration Screen
+### Registration Screen!
+![Registration_screen](https://github.com/user-attachments/assets/7145f81b-6f2a-4cf5-80cc-c3b416715869)
 
-![Registration Screen](screenshots/screen1.png)
 
 New users can sign up using email/password or Google/Apple accounts. The form features validation for a secure onboarding experience.
 
 ---
 
-### Login Screen
+### Login Screen![login_screen](https://github.com/user-attachments/assets/9261b7d9-540b-4519-ae76-dfeb469056a3)
 
-![Login Screen](screenshots/screen2.png)
+
+
 
 Returning users log in securely with email/password or third-party providers. Error handling ensures smooth authentication.
 
 ---
 
-### Home Dashboard (Dark Theme)
+### Home Dashboard (Dark Theme)![Home_Dashboard_Screen](https://github.com/user-attachments/assets/b63153f3-6bbf-4f37-b6aa-93004e59ed85)
 
-![Home Dashboard](screenshots/screen3.png)
+
 
 Get an instant overview of portfolio performance, daily gain, and market movers. The dashboard provides quick access to your investment status.
 
 ---
 
-### Home Dashboard (Light Theme)
+### Home Dashboard (Light Theme)![Light_Mode](https://github.com/user-attachments/assets/b4192c9d-adbc-45b1-8d1f-31061ff95ef2)
 
-![Home Dashboard Light](screenshots/screen4.png)
 
 A visually appealing light mode for user preference. All essential market data and navigation remain accessible.
 
 ---
 
 ### Portfolio Screen
+![Portfolio_screen](https://github.com/user-attachments/assets/c1eaf8a5-657d-4ed6-82e0-ab9daec93299)
 
-![Portfolio Screen](screenshots/screen5.png)
 
 Track your holdings and overall portfolio value. Individual stock performance is visualized, making it easy to manage investments.
 
 ---
 
-### Profile & Premium Membership
-
-![Profile Screen](screenshots/screen6.png)
+### Profile screen ![Profile_screen](https://github.com/user-attachments/assets/91632666-c3b0-4997-9649-c39df7760861)
 
 Manage your account settings and premium membership. Upgrade for advanced analytics and exclusive features.
 
 ---
 
-### Financial News Feed
-
-![Market News](screenshots/screen7.png)
+### Financial News Feed![News_Screen](https://github.com/user-attachments/assets/26956ca4-8b52-4608-a020-206eb1a5c5e5)
 
 Stay informed with curated financial news, market analysis, and insights. News articles are categorized for easy browsing.
 
 ---
 
 ### Live Market Overview
+![Stock_market_tree_Screen](https://github.com/user-attachments/assets/db231847-745b-4f46-abb5-98531a3816f7)
 
-![Market Overview](screenshots/screen8.png)
 
 Visualize sector performance and live market movements with interactive maps and summary charts.
 
 ---
 
 ### Premium Plans
+![premium_screen](https://github.com/user-attachments/assets/1b913c4b-acd6-422b-b03d-c358f7f82a21)
 
-![Premium Plans](screenshots/screen9.png)
 
 Choose a subscription plan to unlock advanced analytics, enhanced watchlists, and priority support.
 
 ---
 
 ### Stock Detail View
-
-![Stock Detail Screen](screenshots/screen10.png)
+![Stock_details_Screen](https://github.com/user-attachments/assets/f3fe798c-7698-4861-9c36-ba3e7f4196ae)
 
 Dive deep into individual stocks: view price history, interactive charts, and key statistics across multiple time ranges.
 
