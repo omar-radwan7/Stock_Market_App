@@ -1,206 +1,134 @@
 # Stock Market App
 
-A comprehensive Flutter application for stock market analysis, portfolio management, and financial news. This cross-platform mobile and web application provides real-time market data, interactive charts, and personalized investment tracking.
-
----
-
-## App Screenshots & Feature Walkthrough
-
-Below are key sections of the app with screenshots and explanations:
-
-### Registration Screen!
-![Registration_screen](https://github.com/user-attachments/assets/7145f81b-6f2a-4cf5-80cc-c3b416715869)
-
-
-New users can sign up using email/password or Google/Apple accounts. The form features validation for a secure onboarding experience.
-
----
-
-### Login Screen![login_screen](https://github.com/user-attachments/assets/9261b7d9-540b-4519-ae76-dfeb469056a3)
-
-
-
-
-Returning users log in securely with email/password or third-party providers. Error handling ensures smooth authentication.
-
----
-
-### Home Dashboard (Dark Theme)![Home_Dashboard_Screen](https://github.com/user-attachments/assets/b63153f3-6bbf-4f37-b6aa-93004e59ed85)
-
-
-
-Get an instant overview of portfolio performance, daily gain, and market movers. The dashboard provides quick access to your investment status.
-
----
-
-### Home Dashboard (Light Theme)![Light_Mode](https://github.com/user-attachments/assets/b4192c9d-adbc-45b1-8d1f-31061ff95ef2)
-
-
-A visually appealing light mode for user preference. All essential market data and navigation remain accessible.
-
----
-
-### Portfolio Screen
-![Portfolio_screen](https://github.com/user-attachments/assets/c1eaf8a5-657d-4ed6-82e0-ab9daec93299)
-
-
-Track your holdings and overall portfolio value. Individual stock performance is visualized, making it easy to manage investments.
-
----
-
-### Profile screen ![Profile_screen](https://github.com/user-attachments/assets/91632666-c3b0-4997-9649-c39df7760861)
-
-Manage your account settings and premium membership. Upgrade for advanced analytics and exclusive features.
-
----
-
-### Financial News Feed![News_Screen](https://github.com/user-attachments/assets/26956ca4-8b52-4608-a020-206eb1a5c5e5)
-
-Stay informed with curated financial news, market analysis, and insights. News articles are categorized for easy browsing.
-
----
-
-### Live Market Overview
-![Stock_market_tree_Screen](https://github.com/user-attachments/assets/db231847-745b-4f46-abb5-98531a3816f7)
-
-
-Visualize sector performance and live market movements with interactive maps and summary charts.
-
----
-
-### Premium Plans
-![premium_screen](https://github.com/user-attachments/assets/1b913c4b-acd6-422b-b03d-c358f7f82a21)
-
-
-Choose a subscription plan to unlock advanced analytics, enhanced watchlists, and priority support.
-
----
-
-### Stock Detail View
-![Stock_details_Screen](https://github.com/user-attachments/assets/f3fe798c-7698-4861-9c36-ba3e7f4196ae)
-
-Dive deep into individual stocks: view price history, interactive charts, and key statistics across multiple time ranges.
+A comprehensive cross-platform Flutter application for stock market analysis, portfolio management, and financial news. Provides real-time market data, interactive charts, and personalized investment tracking across mobile, web, and desktop.
 
 ---
 
 ## Overview
 
-The Stock Market App is a modern financial application built with Flutter that offers a complete suite of tools for investors and traders. The application features a clean, intuitive interface with both light and dark themes, providing users with essential market information and portfolio management capabilities.
+The Stock Market App gives investors and traders a complete suite of tools in one clean, intuitive interface. Built with Flutter, it supports both light and dark themes and delivers a consistent experience across Android, iOS, Web, and Desktop.
+
+---
+
+## Screenshots
+
+| Registration | Login | Home (Dark) |
+|---|---|---|
+| ![Registration](https://github.com/user-attachments/assets/7145f81b-6f2a-4cf5-80cc-c3b416715869) | ![Login](https://github.com/user-attachments/assets/9261b7d9-540b-4519-ae76-dfeb469056a3) | ![Home Dark](https://github.com/user-attachments/assets/b63153f3-6bbf-4f37-b6aa-93004e59ed85) |
+
+| Home (Light) | Portfolio | Stock Detail |
+|---|---|---|
+| ![Home Light](https://github.com/user-attachments/assets/b4192c9d-adbc-45b1-8d1f-31061ff95ef2) | ![Portfolio](https://github.com/user-attachments/assets/c1eaf8a5-657d-4ed6-82e0-ab9daec93299) | ![Stock Detail](https://github.com/user-attachments/assets/f3fe798c-7698-4861-9c36-ba3e7f4196ae) |
+
+| News Feed | Market Overview | Premium Plans |
+|---|---|---|
+| ![News](https://github.com/user-attachments/assets/26956ca4-8b52-4608-a020-206eb1a5c5e5) | ![Market](https://github.com/user-attachments/assets/db231847-745b-4f46-abb5-98531a3816f7) | ![Premium](https://github.com/user-attachments/assets/1b913c4b-acd6-422b-b03d-c358f7f82a21) |
+
+---
 
 ## Features
 
-### Authentication System
-- User registration and login with email and password
+### Authentication
+- Email/password registration and login with form validation
+- Google and Apple sign-in support
+- Session management and automatic sign-out
 - Secure local authentication using SharedPreferences
-- Session management and automatic sign-out functionality
-- Form validation and error handling
 
 ### Portfolio Management
-- Real-time portfolio balance tracking
-- Investment holdings overview with detailed breakdowns
-- Portfolio performance analytics and percentage gains
+- Real-time portfolio balance and performance tracking
+- Holdings overview with detailed breakdowns and percentage gains
 - Interactive portfolio summary with visual representations
 - Stock position management and tracking
 
 ### Stock Market Data
-- Real-time stock price information
-- Interactive stock charts with multiple time ranges
+- Real-time stock prices with interactive charts
+- Multiple time range views per stock
 - Market overview with tree map visualization
 - Top gainers, losers, and most active stocks
-- Stock detail screens with comprehensive information
-- Search functionality for stocks and companies
+- Company search functionality
 
 ### Financial News
-- Curated financial news feed
+- Curated news feed with category filtering (Monetary Policy, Technology, Global Markets, Energy)
 - Market analysis and expert insights
-- Category-based news organization (Monetary Policy, Technology, Global Markets, Energy)
-- Detailed article views with full content
-- News source attribution and publication dates
-
-### Market Analysis
-- Interactive tree map for market sector visualization
-- Performance charts with FL Chart integration
-- Market trend analysis and insights
-- Sector-wise performance tracking
+- Full article view with source attribution and publication dates
 
 ### User Interface
-- Modern Material Design interface
 - Light and dark theme support
-- Responsive design for multiple screen sizes
+- Modern Material Design
 - Smooth animations and transitions
-- Intuitive bottom navigation with four main sections
+- Responsive layout for all screen sizes
+- Bottom navigation with four main sections
 
 ### Cross-Platform Support
-- Native Android and iOS applications
+- Android and iOS mobile apps
 - Web application with responsive design
-- Desktop support for Linux, macOS, and Windows
-- Consistent user experience across all platforms
+- Desktop support for Windows, macOS, and Linux
 
-## Technical Architecture
+---
 
-### State Management
-- Provider pattern for efficient state management
-- Separate providers for stocks, portfolio, news, and theme
-- Reactive UI updates based on data changes
-- Centralized data flow and state handling
+## Architecture
 
-### Data Services
-- RESTful API integration for real-time market data
-- Local data caching and offline support
-- Firebase integration for cloud services
-- HTTP client for external API communication
-
-### Dependencies
-- **Flutter SDK**: Cross-platform development framework
-- **Provider**: State management solution
-- **FL Chart**: Interactive chart visualization
-- **SharedPreferences**: Local data storage
-- **Firebase**: Authentication and cloud services
-- **HTTP**: API communication
-- **Geolocator**: Location services
-- **URL Launcher**: External link handling
-
-## Project Structure
+The app follows a **Provider-based state management** pattern with a clean separation between data, business logic, and UI layers.
 
 ```
 lib/
 ├── app/
-│   ├── models/          # Data models for stocks, portfolio, news
-│   ├── providers/       # State management providers
-│   ├── screens/         # Application screens and pages
+│   ├── models/          # Data models — stocks, portfolio, news
+│   ├── providers/       # State management — StockProvider, PortfolioProvider, NewsProvider, ThemeProvider
+│   ├── screens/
 │   │   ├── home/        # Dashboard and main screen
 │   │   ├── portfolio/   # Portfolio management
-│   │   ├── stocks/      # Stock market data and charts
+│   │   ├── stocks/      # Market data and charts
 │   │   ├── news/        # Financial news feed
-│   │   ├── profile/     # User profile management
-│   │   └── premium/     # Premium features
-│   ├── services/        # API and data services
+│   │   ├── profile/     # User profile and settings
+│   │   └── premium/     # Subscription and premium features
+│   ├── services/        # API and Firebase communication layer
 │   └── widgets/         # Reusable UI components
 ├── auth/                # Authentication screens and services
-└── main.dart           # Application entry point
+└── main.dart            # App entry point
 ```
 
-## Web Application
+---
 
-The project includes a complementary web application built with HTML, CSS, and JavaScript:
+## Tech Stack
 
-- **TradeWise Platform**: Web-based trading interface
-- Real-time stock data visualization
-- Portfolio management dashboard
-- Market research tools
-- User profile management
-- Responsive design for desktop and mobile browsers
+| Layer | Technology |
+|---|---|
+| Framework | Flutter (Dart) |
+| State Management | Provider |
+| Authentication | Firebase Auth |
+| Cloud Services | Firebase |
+| Charts | FL Chart |
+| Local Storage | SharedPreferences |
+| Networking | HTTP |
+| Location | Geolocator |
 
-## Installation and Setup
+---
+
+## Dependencies
+
+```yaml
+provider              # State management using the Provider pattern
+fl_chart              # Interactive charts for stock price visualization
+firebase_core         # Firebase initialization
+firebase_auth         # User authentication and session management
+shared_preferences    # Local storage for caching and offline support
+http                  # RESTful API communication for market data
+geolocator            # Location services for region-based data
+url_launcher          # External link handling for news and resources
+```
+
+---
+
+## Getting Started
 
 ### Prerequisites
-- Flutter SDK (version 3.7.2 or higher)
+- Flutter SDK 3.7.2+
 - Dart SDK
 - Node.js (for web components)
-- Android Studio or Xcode (for mobile development)
+- Android Studio or Xcode (for mobile)
 
 ### Quick Setup
-Run the automated setup script to install dependencies and configure the project:
 
 ```bash
 chmod +x setup.sh
@@ -208,125 +136,95 @@ chmod +x setup.sh
 ```
 
 ### Manual Setup
-1. Clone the repository
-2. Install Flutter dependencies:
-   ```bash
-   flutter pub get
-   ```
-3. Install web dependencies:
-   ```bash
-   cd stock_market_website
-   npm install
-   ```
-
-### Development Commands
-
-The project includes a comprehensive Makefile for automation:
 
 ```bash
-# Show all available commands
-make help
+# 1. Clone the repository
+git clone https://github.com/omar-radwan7/Stock_Market_App.git
+cd Stock_Market_App
 
-# Quick start (setup and run)
-make quick-start
+# 2. Install Flutter dependencies
+flutter pub get
 
-# Run the application
-make run
+# 3. Install web dependencies
+cd stock_market_website
+npm install
 
-# Run web version
-make run-web
-
-# Build for all platforms
-make build-all
-
-# Run tests
-make test
-
-# Clean project
-make clean
+# 4. Run the app
+flutter run
 ```
 
-## Building and Deployment
+### Makefile Commands
 
-### Mobile Applications
-- **Android**: Generate APK or App Bundle for Google Play Store
-- **iOS**: Build for App Store distribution (macOS required)
+```bash
+make help          # Show all available commands
+make quick-start   # Setup and run in one step
+make run           # Run mobile app
+make run-web       # Run web version
+make build-all     # Build for all platforms
+make test          # Run tests
+make clean         # Clean build artifacts
+```
 
-### Web Application
-- Build optimized web version for deployment
-- Serve locally for testing and development
-- Deploy to web hosting services
-
-### Desktop Applications
-- Build native desktop apps for Windows, macOS, and Linux
-- Cross-platform compatibility with platform-specific optimizations
+---
 
 ## Configuration
 
-### Environment Setup
-- Configure Firebase project for authentication and cloud services
-- Set up API keys for market data providers
-- Configure build settings for different platforms
+### Firebase Setup
+1. Create a Firebase project at [console.firebase.google.com](https://console.firebase.google.com)
+2. Enable Authentication (Email/Password, Google, Apple)
+3. Add your Android/iOS app and download the config files
+4. Place `google-services.json` in `android/app/` and `GoogleService-Info.plist` in `ios/Runner/`
 
-### Customization
-- Modify theme colors and styling
-- Add custom stock data sources
-- Implement additional chart types and visualizations
-- Extend news feed with custom sources
+### Market Data API
+- Configure your market data provider API key in the environment settings
+- Ensure compliance with the provider's terms of service for real-time data usage
+
+---
 
 ## Testing
 
-The application includes comprehensive testing capabilities:
-- Unit tests for business logic
-- Widget tests for UI components
-- Integration tests for user workflows
-- Performance testing and optimization
+```bash
+# Unit tests
+flutter test
 
-## Performance Optimization
+# Widget tests
+flutter test test/widget_test.dart
 
-- Efficient state management with Provider
-- Optimized chart rendering with FL Chart
-- Lazy loading for large datasets
-- Image caching and optimization
-- Memory management and cleanup
+# Integration tests
+flutter drive --target=test_driver/app.dart
+```
 
-## Security Features
+---
 
-- Secure authentication with Firebase
-- Local data encryption
-- API key protection
-- Input validation and sanitization
-- Secure communication protocols
+## Web Application
 
-## Future Enhancements
+The project includes a companion web app — **TradeWise Platform** — built with HTML, CSS, and JavaScript:
 
-- Real-time push notifications
-- Advanced charting tools
-- Social trading features
-- AI-powered market predictions
-- Cryptocurrency support
-- Advanced portfolio analytics
-- Paper trading simulation
-- Watchlist management
-- Price alerts and notifications
+- Real-time stock data visualization
+- Portfolio management dashboard
+- Market research tools
+- Responsive design for desktop and mobile browsers
 
-## Contributing
+---
 
-This project follows Flutter best practices and includes:
-- Comprehensive code documentation
-- Consistent coding standards
-- Modular architecture
-- Error handling and logging
-- Performance monitoring
+## Security
+
+- Firebase Authentication for secure user management
+- Local data encryption for sensitive storage
+- API key protection via environment configuration
+- Input validation and sanitization throughout
+- Secure HTTPS communication
+
+---
 
 ## License
 
-This project is developed for educational and demonstration purposes. Please ensure compliance with financial data provider terms of service when using real market data.
+This project is developed for educational and demonstration purposes. Please ensure compliance with your financial data provider's terms of service when using real market data.
+
+---
 
 ## Support
 
-For technical support and questions:
-- Review the Flutter documentation
-- Check the project issue tracker
-- Consult the Makefile help command for available operations
-- Refer to the comprehensive code comments for implementation details
+- Review the [Flutter documentation](https://flutter.dev/docs)
+- Check the project issue tracker on GitHub
+- Run `make help` for available CLI operations
