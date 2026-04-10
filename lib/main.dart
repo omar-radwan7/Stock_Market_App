@@ -7,6 +7,7 @@ import 'app/screens/news/news_screen.dart';
 import 'app/screens/stocks/tree_map.dart';
 import 'app/screens/profile/profile.dart';
 import 'app/screens/premium/premium.dart';
+import 'app/providers/auth_provider.dart';
 import 'app/providers/news_provider.dart';
 import 'app/providers/portfolio_provider.dart';
 import 'app/providers/stock_provider.dart';
@@ -14,6 +15,7 @@ import 'auth/sign_in_page.dart';
 import 'auth/sign_up_page.dart';
 import 'auth/auth_service.dart';
 import 'app/providers/theme_provider.dart';
+import 'app/widgets/animated_bottom_navbar.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +32,7 @@ void main() {
         ChangeNotifierProvider(create: (_) => PortfolioProvider()),
         ChangeNotifierProvider(create: (_) => StockProvider()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
       ],
       child: const MyApp(),
     ),
@@ -121,6 +124,10 @@ class AuthenticationWrapper extends StatelessWidget {
 
           if (isSignedIn) {
             print("Redirecting to MainNavigation (Home)...");
+            // Sync with AuthProvider (Note: In a real app we'd fetch the stored name)
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<AuthProvider>().setUser('user@example.com', 'Omar Radwan');
+            });
             return const MainNavigation();
           } else {
             print("Redirecting to SignInPage...");
@@ -137,6 +144,7 @@ class AuthenticationWrapper extends StatelessWidget {
   }
 }
 
+
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
@@ -149,9 +157,9 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<Widget> _screens = [
     const Homepage(),
-    const PortfolioScreen(),
-    NewsPage(),
-    const TreeMapScreen(),
+    const TreeMapScreen(), // For Search/Explore
+    const PortfolioScreen(), // For Portfolio
+    NewsPage(), // For Profile/News
   ];
 
   void _onItemTapped(int index) {
@@ -172,34 +180,14 @@ class _MainNavigationState extends State<MainNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
-        body: Stack(
-          children: [
-            _screens[_selectedIndex],
-          ],
-        ),
-        bottomNavigationBar: BottomNavigationBar(
+        extendBody: true, // This allows the notch to be visible over the body
+        body: _screens[_selectedIndex],
+        bottomNavigationBar: AnimatedBottomNavBar(
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          type: BottomNavigationBarType.fixed,
-          backgroundColor: Theme.of(context).primaryColor,
-          selectedItemColor: Theme.of(context).colorScheme.secondary,
-          unselectedItemColor: Colors.white.withOpacity(0.5),
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_wallet),
-              label: 'Portfolio',
-            ),
-            BottomNavigationBarItem(icon: Icon(Icons.article), label: 'News'),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.grid_view),
-              label: 'Market',
-            ),
-          ],
         ),
       ),
     );

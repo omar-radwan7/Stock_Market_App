@@ -36,10 +36,13 @@ class TreeMapScreen extends StatelessWidget {
               SliverAppBar(
                 floating: true,
                 pinned: true,
-                backgroundColor: Colors.transparent,
+                backgroundColor: isDark ? const Color(0xFF1A1A2E).withOpacity(0.8) : const Color(0xFF667EEA).withOpacity(0.8),
                 elevation: 0,
-                expandedHeight: 70,
+                expandedHeight: 80,
                 flexibleSpace: FlexibleSpaceBar(
+                  background: isDark 
+                    ? Container(color: const Color(0xFF1A1A2E).withOpacity(0.7))
+                    : Container(color: const Color(0xFF667EEA).withOpacity(0.7)),
                   titlePadding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 12,
@@ -47,9 +50,10 @@ class TreeMapScreen extends StatelessWidget {
                   title: Text(
                     'Market Overview',
                     style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w900,
                       color: Colors.white,
-                      fontSize: 24,
+                      fontSize: 22,
+                      letterSpacing: -0.5,
                     ),
                   ),
                 ),
@@ -314,6 +318,9 @@ class TreeMapScreen extends StatelessWidget {
                     );
                   },
                 ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 120),
               ),
             ],
           ),

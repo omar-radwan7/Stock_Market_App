@@ -3,8 +3,8 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const FMP_API_KEY = 'ty7RTtW3cMOnH3eizxFHEFZ4qjZ4xkYw';
-const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
+const FMP_API_KEY = 'j6Xtk992vMRUsyPxm1LV4VYndTXRh29s';
+const FMP_BASE_URL = 'https://financialmodelingprep.com/stable';
 
 app.use(cors());
 app.use(express.static(__dirname));
@@ -40,7 +40,7 @@ app.get('/api/quote/:symbol', async (req, res) => {
 
     try {
         console.log(`Fetching quote for: ${symbol.toUpperCase()}`);
-        const response = await fetch(`${FMP_BASE_URL}/quote/${symbol.toUpperCase()}?apikey=${FMP_API_KEY}`);
+        const response = await fetch(`${FMP_BASE_URL}/quote?symbol=${symbol.toUpperCase()}&apikey=${FMP_API_KEY}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -72,7 +72,7 @@ app.get('/api/search/:query', async (req, res) => {
 
     try {
         console.log(`Searching for: ${query}`);
-        const response = await fetch(`${FMP_BASE_URL}/search?query=${encodeURIComponent(query)}&limit=${limit}&apikey=${FMP_API_KEY}`);
+        const response = await fetch(`${FMP_BASE_URL}/search-name?query=${encodeURIComponent(query)}&limit=${limit}&apikey=${FMP_API_KEY}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -95,7 +95,7 @@ app.get('/api/profile/:symbol', async (req, res) => {
 
     try {
         console.log(`Fetching profile for: ${symbol.toUpperCase()}`);
-        const response = await fetch(`${FMP_BASE_URL}/profile/${symbol.toUpperCase()}?apikey=${FMP_API_KEY}`);
+        const response = await fetch(`${FMP_BASE_URL}/profile?symbol=${symbol.toUpperCase()}&apikey=${FMP_API_KEY}`);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

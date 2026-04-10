@@ -4,8 +4,8 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const FMP_API_KEY = 'Your API Here Please:)';
-const FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3';
+const FMP_API_KEY = 'j6Xtk992vMRUsyPxm1LV4VYndTXRh29s';
+const FMP_BASE_URL = 'https://financialmodelingprep.com/stable';
 
 app.use(express.static(__dirname));
 app.use(express.json());
@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/api/quote/:symbol', async (req, res) => {
     const { symbol } = req.params;
     try {
-        const response = await fetch(`${FMP_BASE_URL}/quote/${symbol}?apikey=${FMP_API_KEY}`);
+        const response = await fetch(`${FMP_BASE_URL}/quote?symbol=${symbol}&apikey=${FMP_API_KEY}`);
         const data = await response.json();
         console.log('API response for', symbol, ':', data); // Log the raw response
         if (Array.isArray(data) && data.length > 0) {
@@ -33,7 +33,7 @@ app.get('/api/quote/:symbol', async (req, res) => {
 app.get('/api/profile/:symbol', async (req, res) => {
     const { symbol } = req.params;
     try {
-        const response = await fetch(`${FMP_BASE_URL}/profile/${symbol}?apikey=${FMP_API_KEY}`);
+        const response = await fetch(`${FMP_BASE_URL}/profile?symbol=${symbol}&apikey=${FMP_API_KEY}`);
         const data = await response.json();
         console.log('Profile API response for', symbol, ':', data); // Log the raw response
         if (Array.isArray(data) && data.length > 0) {

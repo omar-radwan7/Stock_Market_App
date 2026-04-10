@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class StockApiService {
-  final String _apiKey = 'Your API Here Please:)';
-  final String _baseUrl = 'https://financialmodelingprep.com/api/v3';
+  final String _apiKey = 'j6Xtk992vMRUsyPxm1LV4VYndTXRh29s';
+  final String _baseUrl = 'https://financialmodelingprep.com/stable';
 
   Future<bool> testConnection() async {
     try {
       print('Testing API connection...'); // Debug log
       final response = await http
-          .get(Uri.parse('$_baseUrl/stock/list?apikey=$_apiKey'))
+          .get(Uri.parse('$_baseUrl/stock-list?apikey=$_apiKey'))
           .timeout(
             const Duration(seconds: 20),
             onTimeout: () => throw Exception('Request timed out'),
@@ -36,7 +36,7 @@ class StockApiService {
 
   Future<List<dynamic>> fetchTopGainers() async {
     try {
-      final url = '$_baseUrl/stock_market/gainers?apikey=$_apiKey';
+      final url = '$_baseUrl/biggest-gainers?apikey=$_apiKey';
       print('Fetching top gainers from: $url');
 
       final response = await http
@@ -74,7 +74,7 @@ class StockApiService {
 
   Future<List<dynamic>> fetchTopLosers() async {
     try {
-      final url = '$_baseUrl/stock_market/losers?apikey=$_apiKey';
+      final url = '$_baseUrl/biggest-losers?apikey=$_apiKey';
       print('Fetching top losers from: $url');
 
       final response = await http
@@ -112,7 +112,7 @@ class StockApiService {
 
   Future<List<dynamic>> fetchMostActive() async {
     try {
-      final url = '$_baseUrl/stock_market/actives?apikey=$_apiKey';
+      final url = '$_baseUrl/most-actives?apikey=$_apiKey';
       print('Fetching most active from: $url');
 
       final response = await http
@@ -150,7 +150,7 @@ class StockApiService {
 
   Future<Map<String, dynamic>> fetchStockQuote(String symbol) async {
     try {
-      final url = '$_baseUrl/quote/$symbol?apikey=$_apiKey';
+      final url = '$_baseUrl/quote?symbol=$symbol&apikey=$_apiKey';
       print('Fetching quote for $symbol from: $url'); // Debug URL
 
       final response = await http
@@ -192,7 +192,7 @@ class StockApiService {
 
   Future<List<dynamic>> fetchMarketNews() async {
     try {
-      final url = '$_baseUrl/fmp/articles?page=0&size=50&apikey=$_apiKey';
+      final url = '$_baseUrl/fmp-articles?apikey=$_apiKey';
       print('Fetching market news from: $url');
 
       final response = await http

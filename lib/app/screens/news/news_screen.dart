@@ -175,60 +175,25 @@ Regulatory Impact:
               SliverAppBar(
                 floating: true,
                 pinned: true,
-                backgroundColor: Colors.transparent,
+                backgroundColor: isDark ? const Color(0xFF1A1A2E).withOpacity(0.8) : const Color(0xFF667EEA).withOpacity(0.8),
                 elevation: 0,
-                expandedHeight: 70,
+                expandedHeight: 80,
                 flexibleSpace: FlexibleSpaceBar(
+                  background: isDark 
+                    ? Container(color: const Color(0xFF1A1A2E).withOpacity(0.7))
+                    : Container(color: const Color(0xFF667EEA).withOpacity(0.7)),
                   titlePadding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 12,
                   ),
-                  title: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          'Market News',
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 24,
-                          ),
-                        ),
-                      ),
-                      // Profile Button
-                      Container(
-                        width: 36,
-                        height: 36,
-                        decoration: BoxDecoration(
-                          color: isDark 
-                            ? Colors.white.withOpacity(0.1)
-                            : Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.2),
-                            width: 1,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            Icons.person_outline,
-                            color: Colors.white,
-                            size: 18,
-                          ),
-                          onPressed: () {
-                            Navigator.pushNamed(context, '/profile');
-                          },
-                          padding: EdgeInsets.zero,
-                        ),
-                      ),
-                    ],
+                  title: Text(
+                    'Market News',
+                    style: theme.textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      fontSize: 22,
+                      letterSpacing: -0.5,
+                    ),
                   ),
                 ),
               ),
@@ -270,6 +235,9 @@ Regulatory Impact:
                     ],
                   ),
                 ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 120),
               ),
             ],
           ),

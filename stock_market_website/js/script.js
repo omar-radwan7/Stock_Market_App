@@ -549,6 +549,7 @@ function setupEventListeners() {
 function navigateToPage(pageName) {
     const pageMap = {
         'trade': 'trade.html',
+        'portfolio': 'portfolio.html',
         'research': 'research.html',
         'analytics': 'analytics.html',
         'settings': 'settings.html',

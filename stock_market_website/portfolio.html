@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - TradeWise Platform</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --secondary: #7c3aed;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg-dark: #0f1419;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+        }
+
+        .portfolio-header-card {
+            background: #111;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 50px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .portfolio-header-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .portfolio-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.3em;
+            color: #666;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+        }
+
+        .portfolio-label::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10B981;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+
+        .net-worth-amount {
+            font-size: 72px;
+            font-weight: 300;
+            margin-bottom: 32px;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: -3px;
+            color: #fff;
+        }
+
+        .gain-stats {
+            display: flex;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 500;
+            font-family: 'Courier New', Courier, monospace;
+            color: #eee;
+        }
+
+        .stat-value.success-text { color: #10B981; }
+        .stat-value.danger-text { color: #EF4444; }
+
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h3 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .holdings-table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 0;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .holdings-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .holdings-table th {
+            text-align: left;
+            padding: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.5);
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .holdings-table td {
+            padding: 20px;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 15px;
+        }
+
+        .holdings-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .stock-info-cell {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stock-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .stock-symbol-text {
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .stock-name-text {
+            font-size: 12px;
+            opacity: 0.6;
+        }
+
+        .profit-text {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .loss-text {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .allocation-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-container-large {
+            width: 100%;
+            height: 300px;
+            position: relative;
+        }
+
+        .btn-action {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 1024px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Light Mode Overrides */
+        body.light-mode .chart-card,
+        body.light-mode .holdings-table-container,
+        body.light-mode .allocation-card {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        body.light-mode .holdings-table th {
+            color: #666;
+            background: #f8fafc;
+        }
+
+        body.light-mode .holdings-table td {
+            color: #333;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        body.light-mode .stock-info-cell .stock-symbol-text {
+            color: #1e293b;
+        }
+
+        body.light-mode .stat-card-mini {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">T</div>
+                <span>TradeWise Platform</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="index.html" class="nav-link" data-section="trade">
+                        <i class="fas fa-exchange-alt"></i>
+                        Trade
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="portfolio.html" class="nav-link active" data-section="portfolio">
+                        <i class="fas fa-briefcase"></i>
+                        Portfolio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="research.html" class="nav-link" data-section="research">
+                        <i class="fas fa-search"></i>
+                        Research
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="analytics.html" class="nav-link" data-section="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        Analytics
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="settings.html" class="nav-link" data-section="settings">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="profile.html" class="nav-link" data-section="profile">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="header">
+                <div class="welcome-section">
+                    <h1>Your <span class="highlight">Portfolio</span></h1>
+                    <p class="subtitle">Track your performance and holdings</p>
+                </div>
+                
+                <div class="header-actions">
+                    <input type="text" class="search-box" placeholder="Search portfolio..." id="globalSearch">
+                    <button class="btn btn-primary" onclick="window.print()">
+                        <i class="fas fa-file-export"></i> Report
+                    </button>
+                    <div class="user-avatar">OR</div>
+                </div>
+            </header>
+
+            <!-- Portfolio Summary Card -->
+            <div class="portfolio-header-card">
+                <div class="header-content">
+                    <div class="portfolio-label">Status: Active Market</div>
+                    <div class="net-worth-amount" id="totalValue">$0.00</div>
+                    
+                    <div class="gain-stats">
+                        <div class="stat-item">
+                            <div class="stat-label">DAILY PERFORMANCE</div>
+                            <div class="stat-value success-text" id="dayGain">+$0.00 (0.00%)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">TOTAL UNREALIZED P/L</div>
+                            <div class="stat-value success-text" id="totalReturn">+$0.00 (0.00%)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">LIQUIDITY (CASH)</div>
+                            <div class="stat-value" id="cashBalance">$0.00</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-label">MARGIN POWER</div>
+                            <div class="stat-value" id="buyingPower">$0.00</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="portfolio-grid">
+                <div class="chart-card">
+                    <div class="section-header">
+                        <h3>Performance History</h3>
+                        <div class="chart-filters">
+                            <button class="btn-action">1W</button>
+                            <button class="btn-action">1M</button>
+                            <button class="btn-action active">3M</button>
+                            <button class="btn-action">1Y</button>
+                        </div>
+                    </div>
+                    <div class="chart-container-large">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="allocation-card">
+                    <div class="section-header">
+                        <h3>Asset Allocation</h3>
+                    </div>
+                    <div style="width: 250px; height: 250px; position: relative;">
+                        <canvas id="allocationChart"></canvas>
+                    </div>
+                    <div id="allocationLegend" style="margin-top: 20px; width: 100%;">
+                        <!-- Legend will be populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Holdings Section -->
+            <div class="holdings-table-container">
+                <div class="section-header" style="padding: 25px 30px 10px;">
+                    <h3>All Holdings</h3>
+                    <div class="table-actions">
+                        <button class="btn-action"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                </div>
+                <table class="holdings-table">
+                    <thead>
+                        <tr>
+                            <th>ASSET</th>
+                            <th>STAKE</th>
+                            <th>AVG PRICE</th>
+                            <th>CURRENT PRICE</th>
+                            <th>MARKET VALUE</th>
+                            <th>TOTAL RETURN</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdingsTableBody">
+                        <!-- Rows populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon theme-toggle-icon"></i>
+        <span class="theme-toggle-text">Dark Mode</span>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Apply theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-mode');
+                document.querySelector('.theme-toggle-text').textContent = 'Light Mode';
+                document.querySelector('.theme-toggle-icon').className = 'fas fa-sun theme-toggle-icon';
+            }
+
+            // Load Portfolio Data
+            await loadPortfolioData();
+            
+            // Initialize Portfolio Charts
+            initPortfolioCharts();
+        });
+
+        async function loadPortfolioData() {
+            const balance = getBalance();
+            const holdings = getAllHoldings();
+            const symbols = Object.keys(holdings);
+            
+            document.getElementById('cashBalance').textContent = formatCurrency(balance);
+            document.getElementById('buyingPower').textContent = formatCurrency(balance);
+            
+            let totalHoldingsValue = 0;
+            const tableBody = document.getElementById('holdingsTableBody');
+            tableBody.innerHTML = '';
+            
+            if (symbols.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 40px; opacity: 0.5;">No holdings yet. Start trading to see your assets here!</td></tr>';
+                document.getElementById('totalValue').textContent = formatCurrency(balance);
+                return;
+            }
+
+            const stocksData = await fetchMultipleStocks(symbols);
+            
+            stocksData.forEach(({symbol, data, error}) => {
+                if (error || !data) return;
+                
+                const shares = holdings[symbol];
+                const marketValue = shares * data.price;
+                totalHoldingsValue += marketValue;
+                
+                // Mock average price (in real app this would come from trade history)
+                const avgPrice = data.previousClose * 0.95; 
+                const totalCost = shares * avgPrice;
+                const totalReturn = marketValue - totalCost;
+                const returnPercent = (totalReturn / totalCost) * 100;
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="stock-info-cell">
+                            <div class="stock-icon">${symbol.substring(0, 2)}</div>
+                            <div>
+                                <div class="stock-symbol-text">${symbol}</div>
+                                <div class="stock-name-text">${symbol} Inc.</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${shares} Shares</td>
+                    <td>${formatCurrency(avgPrice)}</td>
+                    <td>${formatCurrency(data.price)}</td>
+                    <td>${formatCurrency(marketValue)}</td>
+                    <td class="${totalReturn >= 0 ? 'profit-text' : 'loss-text'} text-right">
+                        ${totalReturn >= 0 ? '+' : ''}${formatCurrency(totalReturn)}<br>
+                        <small>(${returnPercent.toFixed(2)}%)</small>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+            
+            const totalNetWorth = balance + totalHoldingsValue;
+            document.getElementById('totalValue').textContent = formatCurrency(totalNetWorth);
+            
+            // Random performance stats for demo
+            document.getElementById('dayGain').textContent = `+$${(totalNetWorth * 0.012).toFixed(2)} (1.2%)`;
+            document.getElementById('totalReturn').textContent = `+$${(totalHoldingsValue * 0.08).toFixed(2)} (8.0%)`;
+        }
+
+        function initPortfolioCharts() {
+            // Performance Chart
+            const perfCtx = document.getElementById('performanceChart').getContext('2d');
+            const isLight = document.body.classList.contains('light-mode');
+            const primaryColor = '#4f46e5';
+            
+            new Chart(perfCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                    datasets: [{
+                        label: 'Portfolio Value',
+                        data: [12000, 11500, 12800, 13100, 12900, 13500, 14200, 14800, 14500, 15200, 15900, 16500],
+                        borderColor: primaryColor,
+                        borderWidth: 4,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        tension: 0.4,
+                        fill: true,
+                        backgroundColor: (context) => {
+                            const chart = context.chart;
+                            const {ctx, chartArea} = chart;
+                            if (!chartArea) return null;
+                            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            gradient.addColorStop(0, 'rgba(79, 70, 229, 0.2)');
+                            gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
+                            return gradient;
+                        }
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: isLight ? '#64748b' : 'rgba(255,255,255,0.5)' }
+                        },
+                        y: {
+                            grid: { color: isLight ? '#f1f5f9' : 'rgba(255,255,255,0.05)' },
+                            ticks: { 
+                                color: isLight ? '#64748b' : 'rgba(255,255,255,0.5)',
+                                callback: value => '$' + value.toLocaleString()
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Allocation Chart
+            const allocCtx = document.getElementById('allocationChart').getContext('2d');
+            new Chart(allocCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Tech', 'ETF', 'Cash', 'Crypto'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: ['#4f46e5', '#7c3aed', '#10b981', '#f59e0b'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const isLight = body.classList.toggle('light-mode');
+            const theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            
+            document.querySelector('.theme-toggle-text').textContent = isLight ? 'Light Mode' : 'Dark Mode';
+            document.querySelector('.theme-toggle-icon').className = isLight ? 'fas fa-sun theme-toggle-icon' : 'fas fa-moon theme-toggle-icon';
+            
+            // Refresh charts
+            initPortfolioCharts();
+        }
+
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 2
+            }).format(amount || 0);
+        }
+    </script>
+</body>
+</html>

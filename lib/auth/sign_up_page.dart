@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../app/providers/auth_provider.dart';
 import 'auth_service.dart';
 import 'sign_in_page.dart';
 
@@ -32,6 +34,9 @@ class _SignUpPageState extends State<SignUpPage> {
           _passwordController.text,
         );
         if (mounted) {
+          // Sync with AuthProvider
+          context.read<AuthProvider>().setUser(_emailController.text, _nameController.text);
+          
           // Show success message
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

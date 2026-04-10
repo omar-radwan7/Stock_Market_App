@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../premium/premium.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../providers/theme_provider.dart';
 
 class Profilepage extends StatelessWidget {
@@ -140,13 +141,17 @@ class Profilepage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text(
-                        'Omar Radwan',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Consumer<AuthProvider>(
+                        builder: (context, auth, child) {
+                          return Text(
+                            auth.currentUser?.displayName ?? 'User',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
                       ),
                       const SizedBox(height: 8),
                       Container(

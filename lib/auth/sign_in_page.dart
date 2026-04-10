@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../app/providers/auth_provider.dart';
 import 'auth_service.dart';
 
 class SignInPage extends StatefulWidget {
@@ -31,7 +33,11 @@ class _SignInPageState extends State<SignInPage> {
       if (!mounted) return;
 
       if (success) {
-        Navigator.of(context).pushReplacementNamed('/home');
+        // Sync with AuthProvider
+        if (mounted) {
+          context.read<AuthProvider>().setUser(_emailController.text, 'Omar Radwan');
+          Navigator.of(context).pushReplacementNamed('/home');
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
