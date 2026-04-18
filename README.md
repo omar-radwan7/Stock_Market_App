@@ -14,11 +14,14 @@ The Stock Market App gives investors and traders a complete suite of tools in on
 
 | Registration | Login | Home (Dark) |
 |---|---|---|
-| ![Registration](https://github.com/user-attachments/assets/7145f81b-6f2a-4cf5-80cc-c3b416715869) | ![Login](https://github.com/user-attachments/assets/9261b7d9-540b-4519-ae76-dfeb469056a3) | ![Home Dark](https://github.com/user-attachments/assets/b63153f3-6bbf-4f37-b6aa-93004e59ed85) |
+| ![Registration](https://github.com/user-attachments/assets/7145f81b-6f2a-4cf5-80cc-c3b416715869) | ![Login](https://github.com/user-attachments/assets/9261b7d9-540b-4519-ae76-dfeb469056a3) | ![Home Dark](<img width="431" height="889" alt="Screenshot_2026-04-10_20-14-55" src="https://github.com/user-attachments/assets/3ac3e4f8-a0ca-4dc6-9a51-f20d6fbd1c34" />
+) |
 
 | Home (Light) | Portfolio | Stock Detail |
 |---|---|---|
-| ![Home Light](https://github.com/user-attachments/assets/b4192c9d-adbc-45b1-8d1f-31061ff95ef2) | ![Portfolio](https://github.com/user-attachments/assets/c1eaf8a5-657d-4ed6-82e0-ab9daec93299) | ![Stock Detail](https://github.com/user-attachments/assets/f3fe798c-7698-4861-9c36-ba3e7f4196ae) |
+| ![Home Light](<img width="438" height="897" alt="Screenshot_2026-04-10_20-15-23" src="https://github.com/user-attachments/assets/ca0c40eb-ce27-45ce-9409-708236e656fd" />
+) | ![Portfolio](<img width="438" height="884" alt="Screenshot_2026-04-10_20-16-14" src="https://github.com/user-attachments/assets/51d65aad-3be4-4efb-b766-9d770d0d1ff9" />
+) | ![Stock Detail](https://github.com/user-attachments/assets/f3fe798c-7698-4861-9c36-ba3e7f4196ae) |
 
 | News Feed | Market Overview | Premium Plans |
 |---|---|---|
